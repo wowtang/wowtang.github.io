@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="keywords" content="博客">
+<meta name="description" content="温故而知新">
+<meta name="theme-color" content="#000">
+<title>大事件 | Sunrise.博客</title>
+<link rel="shortcut icon" href="/favicon.ico?v=1735736269858">
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="stylesheet" href="/media/css/gemini.css">
+
+<link rel="stylesheet" href="/media/fonts/font-awesome.css">
+<link
+  href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Rosario:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext"
+  rel="stylesheet" type="text/css">
+
+<link href="/media/hljs/styles/androidstudio.css"
+  rel="stylesheet">
+
+<script src="/media/hljs/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.ui.min.js"></script>
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+  <meta name="description" content="大事件" />
+  <meta name="keywords" content="" />
+</head>
+
+<body>
+  <div class="head-top-line"></div>
+  <div class="header-box">
+    
+<div class="gemini">
+  <header class="header  ">
+    <div class="blog-header box-shadow-wrapper bg-color " id="header">
+      <div class="nav-toggle" id="nav_toggle">
+        <div class="toggle-box">
+          <div class="line line-top"></div>
+          <div class="line line-center"></div>
+          <div class="line line-bottom"></div>
+        </div>
+      </div>
+      <div class="site-meta">       
+        <div class="site-title">
+          
+            <a href="/" class="brand">
+              <span>Sunrise.博客</span>
+            </a>  
+          
+        </div>
+        
+          <p class="subtitle">首次访问本站可能加载较慢，请理解🙏</p>
+        
+      </div>
+      <nav class="site-nav" id="site_nav">
+        <ul id="nav_ul">
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="/" target="_self">
+                  <i class="fa fa-home"></i> 首页
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="/archives/" target="_self">
+                  <i class="fa fa-archive"></i> 归档
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="/tags/" target="_self">
+                  <i class="fa fa-tags"></i> 标签
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="/post/about/" target="_self">
+                  <i class="fa fa-user"></i> 关于
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://wowtang.github.io/post/bigthings/" target="_self">
+                  <i class="fa fa-globe"></i> 博客大事件！
+                </a>
+              
+            </li>
+          
+          
+            
+              <li class="nav-item ">
+                <a href="/friends/" target="_self">
+                  
+                    <i class="fa fa-address-book"></i> 友情链接
+                  
+                </a>
+              </li>
+            
+          
+        </ul>
+      </nav>
+    </div>
+  </header>
+</div>
+
+<script type="text/javascript"> 
+ 
+  let showNav = true;
+
+  let navToggle = document.querySelector('#nav_toggle'),
+  siteNav = document.querySelector('#site_nav');
+  
+  function navClick() {
+    let sideBar = document.querySelector('.sidebar');
+    let navUl = document.querySelector('#nav_ul');
+    navToggle.classList.toggle('nav-toggle-active');
+    siteNav.classList.toggle('nav-menu-active');
+    if (siteNav.classList.contains('nav-menu-active')) {
+      siteNav.style = "height: " + (navUl.children.length * 42) +"px !important";
+    } else {
+      siteNav.style = "";
+    }
+  }
+
+  navToggle.addEventListener('click',navClick);  
+</script>
+  </div>
+  <div class="main-continer">
+    
+    <div
+      class="section-layout gemini ">
+      <div class="section-layout-wrapper">
+        
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper bg-color right-motion" id="sidebar">
+      
+        <div class="post-list-sidebar">
+          <div class="sidebar-title">
+            <span id="tocSideBar" class="sidebar-title-item sidebar-title-active">文章目录</span>
+            <span id="metaSideBar" class="sidebar-title-item">站点概览</span>
+          </div>
+        </div>
+      
+      <div class="sidebar-body gemini" id="sidebar_body">
+        
+          
+            <div class="post-side-meta" id="post_side_meta">
+              
+<div class="sidebar-wrapper box-shadow-wrapper bg-color">
+  <div class="sidebar-item">
+    <img class="site-author-image right-motion" src="/images/avatar.png"/>
+    <p class="site-author-name">Sunrise.</p>
+    
+    <div class="site-description right-motion">
+      
+        <p id="binft">一个来自浙江的中学生……</p>
+      
+    </div>
+    
+  </div>
+  <div class="sidebar-item side-item-stat right-motion">
+    <div class="sidebar-item-box">
+      <a href="/archives/">
+        
+        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-name">文章</span>
+      </a>
+    </div>
+    <div class="sidebar-item-box">
+      <a href="">
+        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-name">分类</span>
+      </a>
+    </div>
+    <div class="sidebar-item-box">
+      <a href="/tags/">
+        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-name">标签</span>
+      </a>
+    </div>
+  </div>
+  
+    
+      <div class="sidebar-item">
+        <span class="site-item-rss">
+            <i class="fa fa-rss"></i>
+            <a href="https://wowtang.top/atom.xml" target="_blank">RSS</a>
+        </span>
+      </div>
+    
+  
+  
+
+
+</div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#2024">2024</a>
+<ul>
+<li><a href="#12%E6%9C%88">12月</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
+          
+        
+      </div>
+    </div>
+  
+</div>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
+
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+        <div class="section-box box-shadow-wrapper">
+          <div class="section bg-color post post-page">
+            <header class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://wowtang.top/post/bigthings/">
+      大事件
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span>发布于</span>
+      <span>2024-12-29</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>1分钟</span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>35<span class="pc-show">字数</span></span>
+    </span>
+    
+    
+    
+    <span id="/post/bigthings/" data-flag-title="大事件" class="meta-item pc-show leancloud_visitors">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-eye"></i>
+      <span>浏览量：<span class="leancloud-visitors-count"></span></span>
+    </span>
+    
+  </div>
+</header>
+            <div class="post-body next-md-body" id="post_body">
+              <h2 id="2024">2024</h2>
+<h3 id="12月">12月</h3>
+<ul>
+<li>2024-12-19 20:56:10 博客更新评论系统。</li>
+<li>2024-12-19 14:15:00 我的博客上线啦！站点：https://wowtang.top/</li>
+</ul>
+
+            </div>
+            <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Sunrise.
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://wowtang.top/post/bigthings/" title="大事件">https://wowtang.top/post/bigthings/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+    </div>
+    <div class="nav-next">
+      
+    </div>
+  </div>
+</div>
+            
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<div id="vcomments" style="padding: 10px 0px 0px 0px"></div>
+
+<style>
+  .v .veditor {
+    min-height: 10rem;
+    background-image: url('https://upimage.alexhchu.com/2020/04/21/47eda59424daa.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: none;
+  }
+
+  .v .vwrap {
+    border: 1px solid #000 !important;
+  }
+
+  .v .vbtn {
+    padding: .1rem 1.5rem !important
+    border-color: #fff !important;
+    background-color: #49b1f5 !important;
+    color: #fff !important;
+    font-size: 1.5rem !important;
+  }
+
+  .v .vcards .vcard .vh .vmeta .vat {
+    padding: 0 .8rem !important;
+    border: 1px solid #00c4b6 !important;
+    border-radius: 5px !important;
+    color: #00c4b6 !important;
+  }
+</style>
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'MePSpEqjVBz1fVJ3oCSCh9nD-gzGzoHsz',
+    appKey: 'MTdEH54BKQjTs3zbXi2q8gks',
+    avatar: 'identicon',
+    placeholder: '',
+    pageSize: '',
+    lang: 'zh-cn',
+    visitor: 'true' === 'true',
+    highlight: 'true' === 'true',
+    avatarForce: 'true' === 'false',
+  });
+</script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-box">
+  <footer class="footer">
+    <div class="copyright">
+      Copyright © 2024 - 2025 B=by <a href="https://wowtang.top" target="_blank">Sunrise.</a><br>
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            本站共被访问了 <span id="busuanzi_value_site_pv"></span> 次 | 
+	本站访客数共 <span id="busuanzi_value_site_uv"></span> 人 | 
+	本页面被访问了 <span id="busuanzi_value_page_pv"></span> 次<br>
+本站在风雨中安全运行：<span id="sitetime" style="color:#096"></span>
+<script>
+function siteTime() {
+    // 获取当前时间
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth();
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+
+    // 网站上线时间，注意月份参数从0开始（0代表1月）
+    var launchDate = new Date(2024, 11, 29, 14, 15, 00);
+
+    // 时间差值（毫秒数）
+    var diff = today - launchDate;
+
+    // 以下分别计算年、天、小时、分钟、秒
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+
+    // 考虑闰年情况来计算准确的年数
+    var diffYears = Math.floor(diff / years);
+    var remainingDiff = diff - diffYears * years;
+    var leapYearsCount = Math.floor(diffYears / 4) - Math.floor(diffYears / 100) + Math.floor(diffYears / 400);
+    remainingDiff += leapYearsCount * days;
+
+    var diffDays = Math.floor(remainingDiff / days);
+    remainingDiff -= diffDays * days;
+
+    var diffHours = Math.floor(remainingDiff / hours);
+    remainingDiff -= diffHours * hours;
+
+    var diffMinutes = Math.floor(remainingDiff / minutes);
+    remainingDiff -= diffMinutes * minutes;
+
+    var diffSeconds = Math.floor(remainingDiff / seconds);
+
+    document.getElementById("sitetime").innerHTML = "" + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+}
+// 使用setInterval实现每秒更新时间显示，达到实时变动效果
+setInterval(siteTime, 1000);
+siteTime();
+</script>
+
+        </div>
+    <div class="poweredby">
+      <a href="https://icp.gov.moe/?keyword=20255556" target="_blank">萌ICP备20255556号</a>
+    </div>
+  </footer>
+  
+  
+  <div class="gemini back-to-top" id="back_to_top">
+    <i class="fa fa-arrow-up"></i>
+    
+    <span class="scrollpercent">
+      <span id="back_to_top_text">0</span>%
+    </span>
+    
+  </div>
+  
+  
+  
+</div>
+<script>
+
+  let sideBarOpen = 'sidebar-open';
+  let body = document.body;
+  let back2Top = document.querySelector('#back_to_top'),
+  back2TopText = document.querySelector('#back_to_top_text'),
+  drawerBox = document.querySelector('#drawer_box'),
+  rightSideBar = document.querySelector('.sidebar'),
+  viewport = document.querySelector('body');
+
+  function scrollAnimation(currentY, targetY) {
+   
+    let needScrollTop = targetY - currentY
+    let _currentY = currentY
+    setTimeout(() => {
+      const dist = Math.ceil(needScrollTop / 10)
+      _currentY += dist
+      window.scrollTo(_currentY, currentY)
+      if (needScrollTop > 10 || needScrollTop < -10) {
+        scrollAnimation(_currentY, targetY)
+      } else {
+        window.scrollTo(_currentY, targetY)
+      }
+    }, 1)
+  }
+
+  back2Top.addEventListener("click", function(e) {
+    scrollAnimation(document.scrollingElement.scrollTop, 0);
+    e.stopPropagation();
+    return false;
+  });
+  
+  window.addEventListener('scroll', function(e) {
+    let percent = document.scrollingElement.scrollTop / (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) * 100;
+    if (percent > 1 && !back2Top.classList.contains('back-top-active')) {
+      back2Top.classList.add('back-top-active');
+    }
+    if (percent == 0) {
+      back2Top.classList.remove('back-top-active');
+    }
+    if (back2TopText) {
+      back2TopText.textContent = Math.floor(percent);
+    }
+  });
+
+  
+  let hasCacu = false;
+  window.onresize = function() {
+    if (window.width > 991) {
+      calcuHeight();
+    } else {
+      hasCacu = false;
+    }
+  }
+
+  function calcuHeight() {
+    // 动态调整站点概览高度
+    if (!hasCacu && back2Top.classList.contains('pisces') || back2Top.classList.contains('gemini')) {
+      let sideBar = document.querySelector('.sidebar');
+      let navUl = document.querySelector('#site_nav');
+      sideBar.style = 'margin-top:' + (navUl.offsetHeight + navUl.offsetTop + 15) + 'px;';
+      hasCacu = true;
+    }
+  }
+  calcuHeight();
+  
+  let open = false, MOTION_TIME = 300, RIGHT_MOVE_DIS = '320px';
+
+  if (drawerBox) {
+    let rightMotions = document.querySelectorAll('.right-motion');
+    let right = drawerBox.classList.contains('right');
+
+    let transitionDir = right ? "transition.slideRightIn" : "transition.slideLeftIn";
+
+    let openProp, closeProp;
+    if (right) {
+      openProp = {
+        paddingRight: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingRight: '0px'
+      };
+    } else {
+      openProp = {
+        paddingLeft: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingLeft: '0px'
+      };
+    }
+
+    drawerBox.onclick = function() {
+      open = !open;
+      window.Velocity(rightSideBar, 'stop');
+      window.Velocity(viewport, 'stop');
+      window.Velocity(rightMotions, 'stop');
+      if (open) {
+        window.Velocity(rightSideBar, {
+          width: RIGHT_MOVE_DIS
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, transitionDir,{ });
+          }
+        })
+        window.Velocity(viewport, openProp,{
+          duration: MOTION_TIME
+        });
+      } else {
+        window.Velocity(rightSideBar, {
+          width: '0px'
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, {
+              opacity: 0
+            });
+          }
+        })
+        window.Velocity(viewport, closeProp ,{
+          duration: MOTION_TIME
+        });
+      }
+      for (let i = 0; i < drawerBox.children.length; i++) {
+        drawerBox.children[i].classList.toggle('muse-line');
+      }
+      drawerBox.classList.toggle(sideBarOpen);
+    }
+  }
+
+  // 链接跳转
+  let newWindow = 'true'
+  if (newWindow === 'true') {
+    let links = document.querySelectorAll('.post-body a')
+    links.forEach(item => {
+      if (!item.classList.contains('btn')) {
+        item.setAttribute("target","_blank");
+      }
+    })
+  }
+  // 代码高亮
+  hljs.initHighlightingOnLoad();
+
+</script>
+    <div class="light-box" id="light_box"></div>
+<script>
+  let imgs = document.querySelectorAll('.post-body img');
+  let lightBox = document.querySelector('#light_box');
+  lightBox.addEventListener('mousedown', (e) => {
+    e.preventDefault()
+  })
+  lightBox.addEventListener('mousewheel', (e) => {
+    e.preventDefault()
+  })
+  let width = window.innerWidth * 0.8;
+  lightBox.onclick = () => {
+    let img = lightBox.querySelector('img');
+    lightBox.style = '';
+    img && img.remove();
+  }
+  imgs.forEach(item => {
+    item.onclick = function (e) {
+      let lightImg = document.createElement('img');
+      lightImg.src = this.src;
+      lightBox.style = `height: 100%; opacity: 1; background-color: rgba(0, 0, 0, 0.5);cursor: zoom-out;`;
+      lightImg.style = `width: ${width}px; border: 1px solid #fff; border-radius: 2px;`;
+      lightImg.onclick = function () {
+        lightBox.style = '';
+        this.remove();
+      }
+      lightBox.append(lightImg);
+    }
+  })
+</script>
+  </div>
+</body>
+<input hidden id="copy" />
+<script>
+  //拿来主义(真香)^_^，Clipboard 实现摘自掘金 https://juejin.im/post/5aefeb6e6fb9a07aa43c20af
+  window.Clipboard = (function (window, document, navigator) {
+    var textArea,
+      copy;
+
+    // 判断是不是ios端
+    function isOS() {
+      return navigator.userAgent.match(/ipad|iphone/i);
+    }
+    //创建文本元素
+    function createTextArea(text) {
+      textArea = document.createElement('textArea');
+      textArea.value = text;
+      textArea.style.width = 0;
+      textArea.style.height = 0;
+      textArea.clientHeight = 0;
+      textArea.clientWidth = 0;
+      document.body.appendChild(textArea);
+    }
+    //选择内容
+    function selectText() {
+      var range,
+        selection;
+
+      if (isOS()) {
+        range = document.createRange();
+        range.selectNodeContents(textArea);
+        selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        textArea.setSelectionRange(0, 999999);
+      } else {
+        textArea.select();
+      }
+    }
+
+    //复制到剪贴板
+    function copyToClipboard() {
+      try {
+        document.execCommand("Copy")
+      } catch (err) {
+        alert("复制错误！请手动复制！")
+      }
+      document.body.removeChild(textArea);
+    }
+
+    copy = function (text) {
+      createTextArea(text);
+      selectText();
+      copyToClipboard();
+    };
+
+    return {
+      copy: copy
+    };
+  })(window, document, navigator);
+
+  function copyCode(e) {
+    if (e.srcElement.tagName === 'SPAN' && e.srcElement.classList.contains('copy-code')) {
+      let code = e.currentTarget.querySelector('code');
+      var text = code.innerText;
+      if (e.srcElement.textContent === '复制成功') {
+        console.log('复制操作频率过高');
+        return;
+      }
+      e.srcElement.textContent = '复制成功';
+      (function (elem) {
+        setTimeout(() => {
+          if (elem.textContent === '复制成功') {
+            elem.textContent = '复制代码'
+          }
+        }, 1000);
+      })(e.srcElement)
+      Clipboard.copy(text);
+    }
+  }
+
+  let pres = document.querySelectorAll('pre');
+  pres.forEach(pre => {
+    let code = pre.querySelector('code');
+    let copyElem = document.createElement('span');
+    copyElem.classList.add('copy-code');
+    copyElem.textContent = '复制代码';
+    pre.appendChild(copyElem);
+    pre.onclick = copyCode
+  })
+</script>
+<script src="/media/js/motion.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+<script>
+  var scroll = new SmoothScroll('a[href*="#"]', {
+    speed: 500
+  });
+</script>
+
+<!-- <div class="search-mask" id="search_mask">
+  <div class="search-box">
+    <div class="search-title">
+      <i class="fa fa-search"></i>
+      <div class="input-box">
+        <input type="text" placeholder="搜索">
+      </div>
+      <i class="fa fa-times-circle"></i>
+    </div>
+    <div class="result">
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/goodbye2024/"" data-c="
+          &lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+">Good bye！2024</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/dyunamtzy/"" data-c="
+          &lt;h2 id=&#34;引言&#34;&gt;引言&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”，公众好奇心瞬间被点燃，谣言迅速扩散。此事背后成因复杂，且看我们深入探究，为何小小截图有这般扰乱舆论、颠覆真相之力。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;截图谣言的荒诞上演&#34;&gt;“截图谣言”的荒诞上演&lt;/h2&gt;
+&lt;p&gt;在信息如潮奔涌的当今时代，网络这方天地里，一张毫不起眼的视频截图，竟能在转瞬之间掀起惊涛骇浪，蜕变成为造谣的“万恶之源”。回首近期引发热议的那位摩托车博主（抖音：Una）事件，其骑行途中随手拍下的一段再寻常不过的日常视频，画面仅仅定格在斑马线前礼让行人的瞬间，一位等待过马路的年轻女孩偶然入镜。这本是城市街头司空见惯的一幕，没有任何出奇之处，然而，那位博主为了在流量的赛道上抢占先机、博得关注热度，竟动起了歪脑筋，蓄意配上“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”这般极具暧昧且误导性极强的文案（我认为此处该博主还有调侃女孩身材胖，能装得下一个博主）。&lt;/p&gt;
+&lt;p&gt;此信息一经发布，公众的眼球仿若被一块强力磁石牢牢吸附。在这个全民热衷于挖掘新奇情感故事、好似对八卦有着无尽渴望的时代浪潮之下，绝大多数人瞬间就被那先入为主的臆想冲昏了头脑。他们看到截图里面容姣好、青春洋溢的女孩，再结合那充满戏剧性、引人遐想的文字暗示，便不假思索地在心底认定这是一场网恋“见光死”的狗血剧情，迫不及待地按下手机屏幕上的转发键，仿若自己掌握了独家爆料一般。就这样，这条源于一张截图的信息如脱缰野马，在网络世界里肆意狂奔，一场由截图引发的谣言闹剧就此盛大开场，愈演愈烈。&lt;/p&gt;
+&lt;h2 id=&#34;公众快餐式认知埋隐患&#34;&gt;公众“快餐式”认知埋隐患&lt;/h2&gt;
+&lt;p&gt;究竟为何区区一张截图具备如此惊人的魔力？追根溯源，其中一大关键因素在于公众认知模式的“快餐化”。身处现代社会快节奏的生活漩涡之中，人们每日被繁忙的事务裹挟，在海量信息扑面而来时，不知不觉便养成了“速食”习惯。大家就如同忙碌的上班族在拥挤的通勤路上匆忙吞咽早餐一般，根本无暇停下脚步，对纷至沓来的信息仔细甄别。&lt;/p&gt;
+&lt;p&gt;当看到那张看似蕴含精彩故事的截图时，人们本能地遵循第一印象进行评判，内心急于享受分享奇闻带来的社交谈资快感，以此在朋友、同事间彰显自己知晓“秘闻”的独特性，进而懒于花费宝贵的时间精力去核实背后的真相。这种贪图一时新鲜、轻信表面信息的心理，使得谣言滋生的土壤愈发肥沃，就像为杂草的疯长提供了充足养分一般，为不实信息的传播大开方便之门，让谣言得以轻易扎根、蔓延。&lt;/p&gt;
+&lt;h2 id=&#34;社交媒体推波助澜&#34;&gt;社交媒体“推波助澜”&lt;/h2&gt;
+&lt;p&gt;社交媒体的独特属性更是为截图谣言的肆虐“添柴加火”，使其呈燎原之势。如今，各大平台在激烈的流量竞争中你追我赶、各显神通，算法设计无一不是侧重于推送能快速引发热度的内容。一张夺人眼球的截图，搭配上博人关注的文案，简直完美契合平台打造“爆款”的迫切需求，仿若一把精准击中靶心的利箭，瞬间就能通过复杂精妙的算法被精准投放到数以万计、甚至百万计的用户手中。&lt;/p&gt;
+&lt;p&gt;而且，在群体传播情境下，著名的“沉默的螺旋”效应愈发凸显。当大部分人看到某一信息被广泛转发、热烈讨论时，会下意识地认为这就是确凿无疑的事实，进而出于从众心理跟风传播，生怕自己成为不合群的“异类”，被社交圈子所孤立。如此循环往复，谣言如同滚雪球一般越滚越大，一发不可收拾，在网络空间里肆意横行，所到之处一片混乱，舆论生态被严重破坏。&lt;/p&gt;
+&lt;h2 id=&#34;法律意识淡薄助纣为虐&#34;&gt;法律意识淡薄“助纣为虐”&lt;/h2&gt;
+&lt;p&gt;不得不提的是，法律意识的普遍淡薄也是截图谣言泛滥的重要因素，犹如为谣言的扩散松开了缰绳。涉事博主毫无顾忌地炮制不实内容，其内心笃定网络世界的匿名性能够帮他逃脱法律制裁，妄图以微小的造谣成本——不过是动动手指敲下几个字、配上一张图，换取巨额的流量回报，实现自己所谓的“网红梦”。&lt;/p&gt;
+&lt;p&gt;与此同时，广大普通网民同样缺乏对转发行为法律责任的清晰认知，天真地以为动动手指分享一下有趣的截图无伤大雅，全然不知自己不经意间已沦为谣言的“帮凶”。在他们眼中，转发或许只是日常消遣的一个小举动，却不知这一次次无心之举汇聚起来，使得谣言在这种无意识的助推下，如入无人之境，严重扰乱网络秩序，侵害他人权益，让网络世界变得乌烟瘴气。&lt;/p&gt;
+&lt;h2 id=&#34;多方携手斩谣路&#34;&gt;多方携手斩“谣”路&lt;/h2&gt;
+&lt;p&gt;为杜绝此类因视频截图引发的谣言乱象，重建清朗网络空间，让信息流通回归正轨，需各方协同发力，共筑坚实防线。民众要提升媒介素养，在面对诱人截图时保持冷静、审慎，摒弃盲目跟风的冲动，养成核实信息的良好习惯，以理性思维判断真假。社交媒体平台应肩负起沉甸甸的社会责任，优化算法规则，摒弃单纯流量至上的短视导向，将更多优质、真实的内容推送给用户，同时严格审核信息源头，利用先进技术手段及时拦截可疑截图谣言，从传播渠道上斩断谣言“触手”。法律监管务必持续强化，立法部门不断完善相关法律法规，明确界定造谣传谣行为的边界与惩处标准，执法部门则加大打击力度，提高造谣传谣的违法成本，对恶意造谣者严惩不贷，让法律之剑高悬，形成强大威慑，令不法分子望而却步。唯有全社会形成合力，才能让视频截图回归真实记录的本貌，不再成为滋生谣言的“温床”，还网络一片风清气正，让信息的清流润泽每一位网民。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这篇文章就写到这里了喔，各位明年见！&lt;/p&gt;
+&lt;/blockquote&gt;
+">浅谈：为什么一张视频截图就能成为造谣的源头？</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/thanks/"" data-c="
+          &lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;姓名&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;日期&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;渠道&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;交易流水号/订单号&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;金额&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;暂无，你想成为第一位吗😍&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+">赞助列表</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/handanczsr/"" data-c="
+          &lt;h2 id=&#34;引言&#34;&gt;引言&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;案件详情&#34;&gt;案件详情&lt;/h2&gt;
+&lt;p&gt;13岁的张某某、李某与同班同学王某某因金钱方面的矛盾，关系逐渐紧张。张某某竟心生恶念，提议杀害王某某后平分其钱财，二人多次共谋，并由张某某选定废弃蔬菜大棚为作案地点，提前携带铁锹挖坑准备掩埋。当日下午，张某某以出去玩为由将王某某骗出，李某则因电动自行车需置于马某某家充电，遂骑马某某的电动自行车载着马某某，与张某某一同前往大棚。途中，李某受张某某指使将杀人计划告知马某某。到达大棚后，张某某持铁锹残忍地砸向王某某头部，李某在旁协助控制，马某某目睹此景后吓得逃离现场。张某某、李某将王某某杀害后掩埋尸体，随后骑电动自行车逃离，并转走王某某手机中的钱平分，还指使马某某砸毁手机卡，将手机交由李某扔掉，妄图销毁证据。案发后，马某某良心未泯，选择自首并带领警方找到埋尸地点。&lt;/p&gt;
+&lt;h2 id=&#34;审判结果&#34;&gt;审判结果&lt;/h2&gt;
+&lt;p&gt;2024年12月30日，邯郸市中级人民法院一审公开宣判，主犯张某某被判处无期徒刑，剥夺政治权利终身；李某被判处有期徒刑十二年；马某某因未参与犯罪预谋和具体加害行为，依法不予刑事处罚，但依据司法建议和检察建议，经专门教育指导委员会评估同意，公安机关和教育部门将依法对其进行专门矫治教育.&lt;/p&gt;
+&lt;h2 id=&#34;案件反思&#34;&gt;案件反思&lt;/h2&gt;
+&lt;h3 id=&#34;青少年心理健康问题&#34;&gt;青少年心理健康问题&lt;/h3&gt;
+&lt;p&gt;初中阶段的孩子正处于青春期，心理波动大，自我意识强，情绪易冲动。张某某等三人在面对同学间的矛盾时，无法有效控制情绪和行为，最终导致悲剧发生，这凸显了青少年心理健康教育的重要性和紧迫性 。家庭和学校应更加关注孩子的心理健康，帮助他们学会正确应对挫折和矛盾，培养积极乐观的心态和良好的情绪管理能力。&lt;/p&gt;
+&lt;h3 id=&#34;学校教育的缺失&#34;&gt;学校教育的缺失&lt;/h3&gt;
+&lt;p&gt;学校在注重学业成绩的同时，对学生的心理健康教育和法治教育有所忽视。心理课程和咨询室未能充分发挥作用，老师也未及时察觉学生间的矛盾隐患，未能在矛盾萌芽时进行有效疏导，反映出学校在教育工作中的不足。学校应加强心理健康教育和法治教育，配备专业师资，丰富教育形式和内容，引导学生树立正确的人生观和价值观，增强学生的法律意识和法治观念.&lt;/p&gt;
+&lt;h3 id=&#34;家庭教育的不足&#34;&gt;家庭教育的不足&lt;/h3&gt;
+&lt;p&gt;部分家长只关注孩子成绩，忽视其内心需求，亲子交流匮乏，使得孩子在成长中缺乏情感沟通和正确引导，无法树立正确的价值观和行为准则，这也是导致孩子走上歧途的重要因素之一。家长要给予孩子足够的关爱和陪伴，注重培养其良好的品德和行为习惯，与孩子建立信任关系，及时发现和解决问题，引导孩子树立正确的道德观和价值观。&lt;/p&gt;
+&lt;h3 id=&#34;社会环境的影响&#34;&gt;社会环境的影响&lt;/h3&gt;
+&lt;p&gt;社会环境中的不良因素，如暴力文化、游戏中的血腥场景等，可能影响孩子对生命的敬畏和对法律的认知，为青少年的成长带来潜在风险。社会应加强对文化市场的监管，净化网络环境，减少暴力、血腥等不良信息的传播，为青少年营造健康向上的成长氛围.&lt;/p&gt;
+&lt;h2 id=&#34;结语&#34;&gt;结语&lt;/h2&gt;
+&lt;p&gt;为避免此类悲剧重演，需多方共同努力。学校要切实加强心理健康教育和法治教育，将其纳入日常教学体系，定期开展心理辅导活动和法治宣传讲座，提高学生的心理素质和法律素养。家庭方面，家长要转变教育观念，重视孩子的全面发展，不仅关注学业成绩，更要关心孩子的心理健康和品德培养，营造温馨和谐的家庭氛围。社会层面，需进一步加强文化市场管理，严格审查各类文化产品和网络信息，杜绝不良内容的传播，同时，要积极开展各类有益的青少年活动，引导他们树立正确的价值观和行为准则，为未成年人的健康成长创造良好的社会环境.&lt;/p&gt;
+">浅谈：“3月10日邯郸初中生杀同学案”——令人痛心的悲剧与深刻反思</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/yingzi/"" data-c="
+          &lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘生活骗局、曝光不良现象，以看似真实、接地气的视频风格赢得了众多观众的信赖，一度被大家奉为正义的代言人。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;往事&#34;&gt;往事&lt;/h2&gt;
+&lt;p&gt;回首往昔，2024 年 9 月 23 日的那一幕至今令人印象深刻。他与博主刘宇现身河北石家庄新华区某广场附近的多家酒店民宿，手持检测仪器，表情严肃紧张，在一间间客房里“精准”发现隐藏的针孔式摄像头，随后报警，却遭遇酒店、民宿老板的围堵。视频一经发布，瞬间点燃网络怒火，网友们义愤填膺，为博主的遭遇打抱不平，舆论热度急剧攀升。好在 9 月 24 日，石家庄市公安局新华分局迅速行动，抓获涉嫌非法使用窃听、窃照专用器材罪的嫌疑人，处置了民宿业主的过激行为，让大众以为正义得以伸张。9 月 25 日，该博主发表致歉声明，还承诺免费为石家庄拍摄文旅宣传视频，不少粉丝为其“勇于担当”的态度点赞，殊不知，这竟是一场精心设计的骗局开场。&lt;/p&gt;
+&lt;p&gt;后续的发展愈发惊人，11 月 8 日他曝光某妇幼保健院内暗藏针孔摄像头，12 月 8 日又将矛头指向某幼儿园存在偷拍隐患，一次次冲击着公众的心理防线。但真相终究难以掩盖，随着网友的细心挖掘和警方的深入调查，背后丑陋的真相浮出水面。原来，这一切都是“影子不会说谎”及其团队的自导自演。&lt;/p&gt;
+&lt;h2 id=&#34;动机&#34;&gt;动机&lt;/h2&gt;
+&lt;p&gt;他们之所以策划这一系列闹剧，首要动机便是流量变现的巨大诱惑。在如今这个流量即金钱的自媒体时代，从平台广告分成、商业推广，到直播带货、粉丝打赏，无一不是以流量为基石。他们深知，具有争议性、刺激性的虚假内容能够迅速抓住观众的眼球，霸占热搜榜单，像此类假偷拍揭秘事件，短时间内便能使粉丝量和播放量呈爆发式增长，为后续的收益转化提供坚实保障。&lt;/p&gt;
+&lt;p&gt;其次，是为了打造一个完美的人设以谋取长远利益。一开始塑造的正义揭秘者形象，极易收获粉丝的信任，仿佛是守护大众隐私安全的卫士。凭借这样的正面人设，日后无论是涉足新的创作领域，还是与大品牌展开商业合作，都能得心应手，开启源源不断的财富通道，尽享声名与利益的双丰收。&lt;/p&gt;
+&lt;p&gt;最后，是产品推销带来的暴利驱使。他们为达目的不择手段，甚至在检测环节大做手脚。他们提前将摄像头数据写入自家的“防偷拍检测仪器”，事先在各地民宿、酒店、医院、幼儿园等场所隐秘安装针孔摄像头，接着把这些摄像头的精准位置、型号等关键信息录入仪器。如此一来，当他们佯装进行检测时，仪器便能按照预设数据精准“报警”，营造出一种检测仪器无比专业、神奇的假象，让不明就里的观众深信不疑。这不仅是对公众信任的严重践踏，更是利用大众对隐私安全的担忧，为后续高价推销伪劣检测仪器铺路。凭借这一阴招，他们把虚假内容编造得“天衣无缝”，牢牢操控舆论走向，直到真相大白，才让公众惊觉被愚弄之深。&lt;/p&gt;
+&lt;h2 id=&#34;结果&#34;&gt;结果&lt;/h2&gt;
+&lt;p&gt;然而，他们的行径造成的危害极其严重。从微观层面看，那些无端被牵连的酒店、民宿、医院、幼儿园等场所，声誉遭受重创，生意一落千丈，业主们苦不堪言；宏观而言，整个社会陷入莫名的恐慌之中，民众对公共场所的安全感急剧下降，人与人之间的信任也受到极大的冲击。更糟糕的是，这给自媒体行业树立了极其恶劣的榜样，让部分心怀不轨的创作者看到了走捷径的“希望”。&lt;/p&gt;
+&lt;p&gt;好在天网恢恢，疏而不漏。公安部果断出手，指挥多地公安机关联合开展集中统一收网行动。随着警笛声划破夜空，35 名犯罪嫌疑人纷纷落网，35 名犯罪嫌疑人逐一落网，30 余件窃听窃照设备、4000 余套伪劣“防偷拍检测仪器”被查获，这场闹剧终于落下帷幕。&lt;/p&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+&lt;p&gt;此事件无疑给自媒体行业的从业者们敲响了警钟。创作者必须坚守道德底线，要知道，真实是内容的生命，一旦陷入虚假的泥沼，即便拥有再多的粉丝和光环，也终将化为泡影；平台更要肩负起监管重任，强化审核机制，利用大数据分析、人工复查等手段，将虚假内容扼杀在摇篮之中；而作为观众的我们，也要练就一双火眼金睛，不盲目跟风点赞、转发，让那些妄图通过虚假手段博眼球的博主无处遁形。唯有三方携手共进，才能营造出一个风清气正、真实可信的网络环境，让自媒体回归其传递正能量、记录美好生活的初心与正轨。&lt;/p&gt;
+&lt;h2 id=&#34;公安官方发布警情通报&#34;&gt;【公安官方发布】警情通报&lt;/h2&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https://wowtang.top/post-images/1735488374507.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;h2 id=&#34;定位文章结尾&#34;&gt;定位文章结尾&lt;/h2&gt;
+">浅谈：博主“影子不会说谎”及其团队“自导自演”事件</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/bigthings/"" data-c="
+          &lt;h2 id=&#34;2024&#34;&gt;2024&lt;/h2&gt;
+&lt;h3 id=&#34;12月&#34;&gt;12月&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;2024-12-19 20:56:10 博客更新评论系统。&lt;/li&gt;
+&lt;li&gt;2024-12-19 14:15:00 我的博客上线啦！站点：https://wowtang.top/&lt;/li&gt;
+&lt;/ul&gt;
+">大事件</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/about/"" data-c="
+          &lt;blockquote&gt;
+&lt;p&gt;欢迎来到我的小站呀，很高兴遇见你！🤝&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;关于本站&#34;&gt;🏠 关于本站&lt;/h2&gt;
+&lt;p&gt;一个来自浙江中学生的个人博客小站……&lt;/p&gt;
+&lt;h2 id=&#34;博主是谁&#34;&gt;👨‍💻 博主是谁&lt;/h2&gt;
+&lt;p&gt;Sunrise.&lt;/p&gt;
+&lt;h2 id=&#34;兴趣爱好&#34;&gt;⛹ 兴趣爱好&lt;/h2&gt;
+&lt;p&gt;🎮游戏！&lt;/p&gt;
+&lt;h2 id=&#34;联系我呀&#34;&gt;📬 联系我呀&lt;/h2&gt;
+&lt;p&gt;QQ：2468841720&lt;/p&gt;
+&lt;h2 id=&#34;投喂我呀&#34;&gt;💰 投喂我呀&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://ifdian.net/order/create?user_id=78b6cdfac6aa11ef9cb952540025c377&#34;&gt;⚡️爱发电投喂&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;https://qr.alipay.com/fkx13264k09iixl5xpovf9b&#34;&gt;🔵支付宝跳转（手机访问网页可用）&lt;/a&gt;&lt;br&gt;
+收款图片依次为：微信、支付宝、QQ&lt;br&gt;
+&lt;img src=&#34;https://wowtang.top/post-images/1735566651598.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;赞助列表点我跳转查看&#34;&gt;&lt;a href=&#34;https://wowtang.top/post/thanks/&#34;&gt;🙏赞助列表（点我跳转查看）&lt;/a&gt;&lt;/h2&gt;
+">About Me</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/hello-gridea/"" data-c="
+          &lt;p&gt;👏  欢迎使用 &lt;strong&gt;Gridea&lt;/strong&gt; ！&lt;br&gt;
+✍️  &lt;strong&gt;Gridea&lt;/strong&gt; 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/getgridea/gridea&#34;&gt;Github&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;https://gridea.dev/&#34;&gt;Gridea 主页&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;https://fehey.com/&#34;&gt;示例网站&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;特性&#34;&gt;特性👇&lt;/h2&gt;
+&lt;p&gt;📝  你可以使用最酷的 &lt;strong&gt;Markdown&lt;/strong&gt; 语法，进行快速创作&lt;/p&gt;
+&lt;p&gt;🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片&lt;/p&gt;
+&lt;p&gt;🏷️  你可以对文章进行标签分组&lt;/p&gt;
+&lt;p&gt;📋  你可以自定义菜单，甚至可以创建外部链接菜单&lt;/p&gt;
+&lt;p&gt;💻  你可以在 &lt;strong&gt;Windows&lt;/strong&gt;，&lt;strong&gt;MacOS&lt;/strong&gt; 或 &lt;strong&gt;Linux&lt;/strong&gt; 设备上使用此客户端&lt;/p&gt;
+&lt;p&gt;🌎  你可以使用 &lt;strong&gt;𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌&lt;/strong&gt; 或 &lt;strong&gt;Coding Pages&lt;/strong&gt; 向世界展示，未来将支持更多平台&lt;/p&gt;
+&lt;p&gt;💬  你可以进行简单的配置，接入 &lt;a href=&#34;https://github.com/gitalk/gitalk&#34;&gt;Gitalk&lt;/a&gt; 或 &lt;a href=&#34;https://github.com/SukkaW/DisqusJS&#34;&gt;DisqusJS&lt;/a&gt; 评论系统&lt;/p&gt;
+&lt;p&gt;🇬🇧  你可以使用&lt;strong&gt;中文简体&lt;/strong&gt;或&lt;strong&gt;英语&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力&lt;/p&gt;
+&lt;p&gt;🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步&lt;/p&gt;
+&lt;p&gt;🌱 当然 &lt;strong&gt;Gridea&lt;/strong&gt; 还很年轻，有很多不足，但请相信，它会不停向前 🏃&lt;/p&gt;
+&lt;p&gt;未来，它一定会成为你离不开的伙伴&lt;/p&gt;
+&lt;p&gt;尽情发挥你的才华吧！&lt;/p&gt;
+&lt;p&gt;😘 Enjoy~&lt;/p&gt;
+">Hello Gridea</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" href="https://wowtang.top/post/tools/"" data-c="
+          &lt;p&gt;&lt;a href=&#34;https://wowtang.top/calculator/&#34;&gt;计算器&lt;/a&gt;&lt;/p&gt;
+">小工具（Sunrise.开发）</a>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<script>
+  // var escape = "[{&#34;content&#34;:&#34;&lt;blockquote&gt;\n&lt;p&gt;&lt;strong&gt;启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。&lt;/strong&gt;&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;!-- more --&gt;\n&#34;,&#34;fileName&#34;:&#34;goodbye2024&#34;,&#34;abstract&#34;:&#34;&lt;blockquote&gt;\n&lt;p&gt;&lt;strong&gt;启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。&lt;/strong&gt;&lt;/p&gt;\n&lt;/blockquote&gt;\n&#34;,&#34;title&#34;:&#34;Good bye！2024&#34;,&#34;tags&#34;:[{&#34;name&#34;:2024,&#34;slug&#34;:&#34;mzxHPR99Ey&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/mzxHPR99Ey/&#34;},{&#34;name&#34;:&#34;Say Goodbye&#34;,&#34;slug&#34;:&#34;Lq_Eo2Sre9e&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/Lq_Eo2Sre9e/&#34;}],&#34;date&#34;:&#34;2025-01-01 00:00:00&#34;,&#34;dateFormat&#34;:&#34;2025-01-01&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/goodbye2024/&#34;,&#34;hideInList&#34;:false,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;1 min read&#34;,&#34;time&#34;:10000,&#34;words&#34;:52,&#34;minutes&#34;:1},&#34;description&#34;:&#34;\n启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。\n\n\n...&#34;,&#34;toc&#34;:&#34;&#34;},{&#34;content&#34;:&#34;&lt;h2 id=\&#34;引言\&#34;&gt;引言&lt;/h2&gt;\n&lt;blockquote&gt;\n&lt;p&gt;当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”，公众好奇心瞬间被点燃，谣言迅速扩散。此事背后成因复杂，且看我们深入探究，为何小小截图有这般扰乱舆论、颠覆真相之力。&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;!-- more --&gt;\n&lt;h2 id=\&#34;截图谣言的荒诞上演\&#34;&gt;“截图谣言”的荒诞上演&lt;/h2&gt;\n&lt;p&gt;在信息如潮奔涌的当今时代，网络这方天地里，一张毫不起眼的视频截图，竟能在转瞬之间掀起惊涛骇浪，蜕变成为造谣的“万恶之源”。回首近期引发热议的那位摩托车博主（抖音：Una）事件，其骑行途中随手拍下的一段再寻常不过的日常视频，画面仅仅定格在斑马线前礼让行人的瞬间，一位等待过马路的年轻女孩偶然入镜。这本是城市街头司空见惯的一幕，没有任何出奇之处，然而，那位博主为了在流量的赛道上抢占先机、博得关注热度，竟动起了歪脑筋，蓄意配上“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”这般极具暧昧且误导性极强的文案（我认为此处该博主还有调侃女孩身材胖，能装得下一个博主）。&lt;/p&gt;\n&lt;p&gt;此信息一经发布，公众的眼球仿若被一块强力磁石牢牢吸附。在这个全民热衷于挖掘新奇情感故事、好似对八卦有着无尽渴望的时代浪潮之下，绝大多数人瞬间就被那先入为主的臆想冲昏了头脑。他们看到截图里面容姣好、青春洋溢的女孩，再结合那充满戏剧性、引人遐想的文字暗示，便不假思索地在心底认定这是一场网恋“见光死”的狗血剧情，迫不及待地按下手机屏幕上的转发键，仿若自己掌握了独家爆料一般。就这样，这条源于一张截图的信息如脱缰野马，在网络世界里肆意狂奔，一场由截图引发的谣言闹剧就此盛大开场，愈演愈烈。&lt;/p&gt;\n&lt;h2 id=\&#34;公众快餐式认知埋隐患\&#34;&gt;公众“快餐式”认知埋隐患&lt;/h2&gt;\n&lt;p&gt;究竟为何区区一张截图具备如此惊人的魔力？追根溯源，其中一大关键因素在于公众认知模式的“快餐化”。身处现代社会快节奏的生活漩涡之中，人们每日被繁忙的事务裹挟，在海量信息扑面而来时，不知不觉便养成了“速食”习惯。大家就如同忙碌的上班族在拥挤的通勤路上匆忙吞咽早餐一般，根本无暇停下脚步，对纷至沓来的信息仔细甄别。&lt;/p&gt;\n&lt;p&gt;当看到那张看似蕴含精彩故事的截图时，人们本能地遵循第一印象进行评判，内心急于享受分享奇闻带来的社交谈资快感，以此在朋友、同事间彰显自己知晓“秘闻”的独特性，进而懒于花费宝贵的时间精力去核实背后的真相。这种贪图一时新鲜、轻信表面信息的心理，使得谣言滋生的土壤愈发肥沃，就像为杂草的疯长提供了充足养分一般，为不实信息的传播大开方便之门，让谣言得以轻易扎根、蔓延。&lt;/p&gt;\n&lt;h2 id=\&#34;社交媒体推波助澜\&#34;&gt;社交媒体“推波助澜”&lt;/h2&gt;\n&lt;p&gt;社交媒体的独特属性更是为截图谣言的肆虐“添柴加火”，使其呈燎原之势。如今，各大平台在激烈的流量竞争中你追我赶、各显神通，算法设计无一不是侧重于推送能快速引发热度的内容。一张夺人眼球的截图，搭配上博人关注的文案，简直完美契合平台打造“爆款”的迫切需求，仿若一把精准击中靶心的利箭，瞬间就能通过复杂精妙的算法被精准投放到数以万计、甚至百万计的用户手中。&lt;/p&gt;\n&lt;p&gt;而且，在群体传播情境下，著名的“沉默的螺旋”效应愈发凸显。当大部分人看到某一信息被广泛转发、热烈讨论时，会下意识地认为这就是确凿无疑的事实，进而出于从众心理跟风传播，生怕自己成为不合群的“异类”，被社交圈子所孤立。如此循环往复，谣言如同滚雪球一般越滚越大，一发不可收拾，在网络空间里肆意横行，所到之处一片混乱，舆论生态被严重破坏。&lt;/p&gt;\n&lt;h2 id=\&#34;法律意识淡薄助纣为虐\&#34;&gt;法律意识淡薄“助纣为虐”&lt;/h2&gt;\n&lt;p&gt;不得不提的是，法律意识的普遍淡薄也是截图谣言泛滥的重要因素，犹如为谣言的扩散松开了缰绳。涉事博主毫无顾忌地炮制不实内容，其内心笃定网络世界的匿名性能够帮他逃脱法律制裁，妄图以微小的造谣成本——不过是动动手指敲下几个字、配上一张图，换取巨额的流量回报，实现自己所谓的“网红梦”。&lt;/p&gt;\n&lt;p&gt;与此同时，广大普通网民同样缺乏对转发行为法律责任的清晰认知，天真地以为动动手指分享一下有趣的截图无伤大雅，全然不知自己不经意间已沦为谣言的“帮凶”。在他们眼中，转发或许只是日常消遣的一个小举动，却不知这一次次无心之举汇聚起来，使得谣言在这种无意识的助推下，如入无人之境，严重扰乱网络秩序，侵害他人权益，让网络世界变得乌烟瘴气。&lt;/p&gt;\n&lt;h2 id=\&#34;多方携手斩谣路\&#34;&gt;多方携手斩“谣”路&lt;/h2&gt;\n&lt;p&gt;为杜绝此类因视频截图引发的谣言乱象，重建清朗网络空间，让信息流通回归正轨，需各方协同发力，共筑坚实防线。民众要提升媒介素养，在面对诱人截图时保持冷静、审慎，摒弃盲目跟风的冲动，养成核实信息的良好习惯，以理性思维判断真假。社交媒体平台应肩负起沉甸甸的社会责任，优化算法规则，摒弃单纯流量至上的短视导向，将更多优质、真实的内容推送给用户，同时严格审核信息源头，利用先进技术手段及时拦截可疑截图谣言，从传播渠道上斩断谣言“触手”。法律监管务必持续强化，立法部门不断完善相关法律法规，明确界定造谣传谣行为的边界与惩处标准，执法部门则加大打击力度，提高造谣传谣的违法成本，对恶意造谣者严惩不贷，让法律之剑高悬，形成强大威慑，令不法分子望而却步。唯有全社会形成合力，才能让视频截图回归真实记录的本貌，不再成为滋生谣言的“温床”，还网络一片风清气正，让信息的清流润泽每一位网民。&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;这篇文章就写到这里了喔，各位明年见！&lt;/p&gt;\n&lt;/blockquote&gt;\n&#34;,&#34;fileName&#34;:&#34;dyunamtzy&#34;,&#34;abstract&#34;:&#34;&lt;h2 id=\&#34;引言\&#34;&gt;引言&lt;/h2&gt;\n&lt;blockquote&gt;\n&lt;p&gt;当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”，公众好奇心瞬间被点燃，谣言迅速扩散。此事背后成因复杂，且看我们深入探究，为何小小截图有这般扰乱舆论、颠覆真相之力。&lt;/p&gt;\n&lt;/blockquote&gt;\n&#34;,&#34;title&#34;:&#34;浅谈：为什么一张视频截图就能成为造谣的源头？&#34;,&#34;tags&#34;:[{&#34;name&#34;:&#34;新闻&#34;,&#34;slug&#34;:&#34;uIiBkNr6CY&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/uIiBkNr6CY/&#34;},{&#34;name&#34;:&#34;浅谈&#34;,&#34;slug&#34;:&#34;QhlOmV-gWX&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/QhlOmV-gWX/&#34;}],&#34;date&#34;:&#34;2024-12-31 18:31:43&#34;,&#34;dateFormat&#34;:&#34;2024-12-31&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/dyunamtzy/&#34;,&#34;hideInList&#34;:false,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;7 min read&#34;,&#34;time&#34;:385000,&#34;words&#34;:1928,&#34;minutes&#34;:7},&#34;description&#34;:&#34;引言\n\n当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想...&#34;,&#34;toc&#34;:&#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%BC%95%E8%A8%80\&#34;&gt;引言&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E6%88%AA%E5%9B%BE%E8%B0%A3%E8%A8%80%E7%9A%84%E8%8D%92%E8%AF%9E%E4%B8%8A%E6%BC%94\&#34;&gt;“截图谣言”的荒诞上演&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%85%AC%E4%BC%97%E5%BF%AB%E9%A4%90%E5%BC%8F%E8%AE%A4%E7%9F%A5%E5%9F%8B%E9%9A%90%E6%82%A3\&#34;&gt;公众“快餐式”认知埋隐患&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E7%A4%BE%E4%BA%A4%E5%AA%92%E4%BD%93%E6%8E%A8%E6%B3%A2%E5%8A%A9%E6%BE%9C\&#34;&gt;社交媒体“推波助澜”&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E6%B3%95%E5%BE%8B%E6%84%8F%E8%AF%86%E6%B7%A1%E8%96%84%E5%8A%A9%E7%BA%A3%E4%B8%BA%E8%99%90\&#34;&gt;法律意识淡薄“助纣为虐”&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%A4%9A%E6%96%B9%E6%90%BA%E6%89%8B%E6%96%A9%E8%B0%A3%E8%B7%AF\&#34;&gt;多方携手斩“谣”路&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;},{&#34;content&#34;:&#34;&lt;table&gt;\n&lt;thead&gt;\n&lt;tr&gt;\n&lt;th style=\&#34;text-align:center\&#34;&gt;姓名&lt;/th&gt;\n&lt;th style=\&#34;text-align:center\&#34;&gt;日期&lt;/th&gt;\n&lt;th style=\&#34;text-align:center\&#34;&gt;渠道&lt;/th&gt;\n&lt;th style=\&#34;text-align:center\&#34;&gt;交易流水号/订单号&lt;/th&gt;\n&lt;th style=\&#34;text-align:center\&#34;&gt;金额&lt;/th&gt;\n&lt;/tr&gt;\n&lt;/thead&gt;\n&lt;tbody&gt;\n&lt;tr&gt;\n&lt;td style=\&#34;text-align:center\&#34;&gt;暂无，你想成为第一位吗😍&lt;/td&gt;\n&lt;td style=\&#34;text-align:center\&#34;&gt;&lt;/td&gt;\n&lt;td style=\&#34;text-align:center\&#34;&gt;&lt;/td&gt;\n&lt;td style=\&#34;text-align:center\&#34;&gt;&lt;/td&gt;\n&lt;td style=\&#34;text-align:center\&#34;&gt;&lt;/td&gt;\n&lt;/tr&gt;\n&lt;/tbody&gt;\n&lt;/table&gt;\n&#34;,&#34;fileName&#34;:&#34;thanks&#34;,&#34;abstract&#34;:&#34;&#34;,&#34;title&#34;:&#34;赞助列表&#34;,&#34;tags&#34;:[],&#34;date&#34;:&#34;2024-12-30 20:47:33&#34;,&#34;dateFormat&#34;:&#34;2024-12-30&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/thanks/&#34;,&#34;hideInList&#34;:true,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;1 min read&#34;,&#34;time&#34;:5000,&#34;words&#34;:26,&#34;minutes&#34;:1},&#34;description&#34;:&#34;\n\n\n姓名\n日期\n渠道\n交易流水号/订单号\n金额\n\n\n\n\n暂无，你想成为第一位吗😍\n\n\n\n\n\n\n\n...&#34;,&#34;toc&#34;:&#34;&#34;},{&#34;content&#34;:&#34;&lt;h2 id=\&#34;引言\&#34;&gt;引言&lt;/h2&gt;\n&lt;blockquote&gt;\n&lt;p&gt;2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;!-- more --&gt;\n&lt;h2 id=\&#34;案件详情\&#34;&gt;案件详情&lt;/h2&gt;\n&lt;p&gt;13岁的张某某、李某与同班同学王某某因金钱方面的矛盾，关系逐渐紧张。张某某竟心生恶念，提议杀害王某某后平分其钱财，二人多次共谋，并由张某某选定废弃蔬菜大棚为作案地点，提前携带铁锹挖坑准备掩埋。当日下午，张某某以出去玩为由将王某某骗出，李某则因电动自行车需置于马某某家充电，遂骑马某某的电动自行车载着马某某，与张某某一同前往大棚。途中，李某受张某某指使将杀人计划告知马某某。到达大棚后，张某某持铁锹残忍地砸向王某某头部，李某在旁协助控制，马某某目睹此景后吓得逃离现场。张某某、李某将王某某杀害后掩埋尸体，随后骑电动自行车逃离，并转走王某某手机中的钱平分，还指使马某某砸毁手机卡，将手机交由李某扔掉，妄图销毁证据。案发后，马某某良心未泯，选择自首并带领警方找到埋尸地点。&lt;/p&gt;\n&lt;h2 id=\&#34;审判结果\&#34;&gt;审判结果&lt;/h2&gt;\n&lt;p&gt;2024年12月30日，邯郸市中级人民法院一审公开宣判，主犯张某某被判处无期徒刑，剥夺政治权利终身；李某被判处有期徒刑十二年；马某某因未参与犯罪预谋和具体加害行为，依法不予刑事处罚，但依据司法建议和检察建议，经专门教育指导委员会评估同意，公安机关和教育部门将依法对其进行专门矫治教育.&lt;/p&gt;\n&lt;h2 id=\&#34;案件反思\&#34;&gt;案件反思&lt;/h2&gt;\n&lt;h3 id=\&#34;青少年心理健康问题\&#34;&gt;青少年心理健康问题&lt;/h3&gt;\n&lt;p&gt;初中阶段的孩子正处于青春期，心理波动大，自我意识强，情绪易冲动。张某某等三人在面对同学间的矛盾时，无法有效控制情绪和行为，最终导致悲剧发生，这凸显了青少年心理健康教育的重要性和紧迫性 。家庭和学校应更加关注孩子的心理健康，帮助他们学会正确应对挫折和矛盾，培养积极乐观的心态和良好的情绪管理能力。&lt;/p&gt;\n&lt;h3 id=\&#34;学校教育的缺失\&#34;&gt;学校教育的缺失&lt;/h3&gt;\n&lt;p&gt;学校在注重学业成绩的同时，对学生的心理健康教育和法治教育有所忽视。心理课程和咨询室未能充分发挥作用，老师也未及时察觉学生间的矛盾隐患，未能在矛盾萌芽时进行有效疏导，反映出学校在教育工作中的不足。学校应加强心理健康教育和法治教育，配备专业师资，丰富教育形式和内容，引导学生树立正确的人生观和价值观，增强学生的法律意识和法治观念.&lt;/p&gt;\n&lt;h3 id=\&#34;家庭教育的不足\&#34;&gt;家庭教育的不足&lt;/h3&gt;\n&lt;p&gt;部分家长只关注孩子成绩，忽视其内心需求，亲子交流匮乏，使得孩子在成长中缺乏情感沟通和正确引导，无法树立正确的价值观和行为准则，这也是导致孩子走上歧途的重要因素之一。家长要给予孩子足够的关爱和陪伴，注重培养其良好的品德和行为习惯，与孩子建立信任关系，及时发现和解决问题，引导孩子树立正确的道德观和价值观。&lt;/p&gt;\n&lt;h3 id=\&#34;社会环境的影响\&#34;&gt;社会环境的影响&lt;/h3&gt;\n&lt;p&gt;社会环境中的不良因素，如暴力文化、游戏中的血腥场景等，可能影响孩子对生命的敬畏和对法律的认知，为青少年的成长带来潜在风险。社会应加强对文化市场的监管，净化网络环境，减少暴力、血腥等不良信息的传播，为青少年营造健康向上的成长氛围.&lt;/p&gt;\n&lt;h2 id=\&#34;结语\&#34;&gt;结语&lt;/h2&gt;\n&lt;p&gt;为避免此类悲剧重演，需多方共同努力。学校要切实加强心理健康教育和法治教育，将其纳入日常教学体系，定期开展心理辅导活动和法治宣传讲座，提高学生的心理素质和法律素养。家庭方面，家长要转变教育观念，重视孩子的全面发展，不仅关注学业成绩，更要关心孩子的心理健康和品德培养，营造温馨和谐的家庭氛围。社会层面，需进一步加强文化市场管理，严格审查各类文化产品和网络信息，杜绝不良内容的传播，同时，要积极开展各类有益的青少年活动，引导他们树立正确的价值观和行为准则，为未成年人的健康成长创造良好的社会环境.&lt;/p&gt;\n&#34;,&#34;fileName&#34;:&#34;handanczsr&#34;,&#34;abstract&#34;:&#34;&lt;h2 id=\&#34;引言\&#34;&gt;引言&lt;/h2&gt;\n&lt;blockquote&gt;\n&lt;p&gt;2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。&lt;/p&gt;\n&lt;/blockquote&gt;\n&#34;,&#34;title&#34;:&#34;浅谈：“3月10日邯郸初中生杀同学案”——令人痛心的悲剧与深刻反思&#34;,&#34;tags&#34;:[{&#34;name&#34;:&#34;新闻&#34;,&#34;slug&#34;:&#34;uIiBkNr6CY&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/uIiBkNr6CY/&#34;},{&#34;name&#34;:&#34;浅谈&#34;,&#34;slug&#34;:&#34;QhlOmV-gWX&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/QhlOmV-gWX/&#34;}],&#34;date&#34;:&#34;2024-12-30 18:04:07&#34;,&#34;dateFormat&#34;:&#34;2024-12-30&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/handanczsr/&#34;,&#34;hideInList&#34;:false,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;5 min read&#34;,&#34;time&#34;:260000,&#34;words&#34;:1299,&#34;minutes&#34;:5},&#34;description&#34;:&#34;引言\n\n2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。\n\n\n案件详情\n13岁的张某某、李某与同班同学王某某因金钱方面的矛盾，关系...&#34;,&#34;toc&#34;:&#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%BC%95%E8%A8%80\&#34;&gt;引言&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E6%A1%88%E4%BB%B6%E8%AF%A6%E6%83%85\&#34;&gt;案件详情&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%AE%A1%E5%88%A4%E7%BB%93%E6%9E%9C\&#34;&gt;审判结果&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E6%A1%88%E4%BB%B6%E5%8F%8D%E6%80%9D\&#34;&gt;案件反思&lt;/a&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E9%9D%92%E5%B0%91%E5%B9%B4%E5%BF%83%E7%90%86%E5%81%A5%E5%BA%B7%E9%97%AE%E9%A2%98\&#34;&gt;青少年心理健康问题&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%AD%A6%E6%A0%A1%E6%95%99%E8%82%B2%E7%9A%84%E7%BC%BA%E5%A4%B1\&#34;&gt;学校教育的缺失&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%AE%B6%E5%BA%AD%E6%95%99%E8%82%B2%E7%9A%84%E4%B8%8D%E8%B6%B3\&#34;&gt;家庭教育的不足&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E7%A4%BE%E4%BC%9A%E7%8E%AF%E5%A2%83%E7%9A%84%E5%BD%B1%E5%93%8D\&#34;&gt;社会环境的影响&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E7%BB%93%E8%AF%AD\&#34;&gt;结语&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;},{&#34;content&#34;:&#34;&lt;h2 id=\&#34;前言\&#34;&gt;前言&lt;/h2&gt;\n&lt;blockquote&gt;\n&lt;p&gt;在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘生活骗局、曝光不良现象，以看似真实、接地气的视频风格赢得了众多观众的信赖，一度被大家奉为正义的代言人。&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;!-- more --&gt;\n&lt;h2 id=\&#34;往事\&#34;&gt;往事&lt;/h2&gt;\n&lt;p&gt;回首往昔，2024 年 9 月 23 日的那一幕至今令人印象深刻。他与博主刘宇现身河北石家庄新华区某广场附近的多家酒店民宿，手持检测仪器，表情严肃紧张，在一间间客房里“精准”发现隐藏的针孔式摄像头，随后报警，却遭遇酒店、民宿老板的围堵。视频一经发布，瞬间点燃网络怒火，网友们义愤填膺，为博主的遭遇打抱不平，舆论热度急剧攀升。好在 9 月 24 日，石家庄市公安局新华分局迅速行动，抓获涉嫌非法使用窃听、窃照专用器材罪的嫌疑人，处置了民宿业主的过激行为，让大众以为正义得以伸张。9 月 25 日，该博主发表致歉声明，还承诺免费为石家庄拍摄文旅宣传视频，不少粉丝为其“勇于担当”的态度点赞，殊不知，这竟是一场精心设计的骗局开场。&lt;/p&gt;\n&lt;p&gt;后续的发展愈发惊人，11 月 8 日他曝光某妇幼保健院内暗藏针孔摄像头，12 月 8 日又将矛头指向某幼儿园存在偷拍隐患，一次次冲击着公众的心理防线。但真相终究难以掩盖，随着网友的细心挖掘和警方的深入调查，背后丑陋的真相浮出水面。原来，这一切都是“影子不会说谎”及其团队的自导自演。&lt;/p&gt;\n&lt;h2 id=\&#34;动机\&#34;&gt;动机&lt;/h2&gt;\n&lt;p&gt;他们之所以策划这一系列闹剧，首要动机便是流量变现的巨大诱惑。在如今这个流量即金钱的自媒体时代，从平台广告分成、商业推广，到直播带货、粉丝打赏，无一不是以流量为基石。他们深知，具有争议性、刺激性的虚假内容能够迅速抓住观众的眼球，霸占热搜榜单，像此类假偷拍揭秘事件，短时间内便能使粉丝量和播放量呈爆发式增长，为后续的收益转化提供坚实保障。&lt;/p&gt;\n&lt;p&gt;其次，是为了打造一个完美的人设以谋取长远利益。一开始塑造的正义揭秘者形象，极易收获粉丝的信任，仿佛是守护大众隐私安全的卫士。凭借这样的正面人设，日后无论是涉足新的创作领域，还是与大品牌展开商业合作，都能得心应手，开启源源不断的财富通道，尽享声名与利益的双丰收。&lt;/p&gt;\n&lt;p&gt;最后，是产品推销带来的暴利驱使。他们为达目的不择手段，甚至在检测环节大做手脚。他们提前将摄像头数据写入自家的“防偷拍检测仪器”，事先在各地民宿、酒店、医院、幼儿园等场所隐秘安装针孔摄像头，接着把这些摄像头的精准位置、型号等关键信息录入仪器。如此一来，当他们佯装进行检测时，仪器便能按照预设数据精准“报警”，营造出一种检测仪器无比专业、神奇的假象，让不明就里的观众深信不疑。这不仅是对公众信任的严重践踏，更是利用大众对隐私安全的担忧，为后续高价推销伪劣检测仪器铺路。凭借这一阴招，他们把虚假内容编造得“天衣无缝”，牢牢操控舆论走向，直到真相大白，才让公众惊觉被愚弄之深。&lt;/p&gt;\n&lt;h2 id=\&#34;结果\&#34;&gt;结果&lt;/h2&gt;\n&lt;p&gt;然而，他们的行径造成的危害极其严重。从微观层面看，那些无端被牵连的酒店、民宿、医院、幼儿园等场所，声誉遭受重创，生意一落千丈，业主们苦不堪言；宏观而言，整个社会陷入莫名的恐慌之中，民众对公共场所的安全感急剧下降，人与人之间的信任也受到极大的冲击。更糟糕的是，这给自媒体行业树立了极其恶劣的榜样，让部分心怀不轨的创作者看到了走捷径的“希望”。&lt;/p&gt;\n&lt;p&gt;好在天网恢恢，疏而不漏。公安部果断出手，指挥多地公安机关联合开展集中统一收网行动。随着警笛声划破夜空，35 名犯罪嫌疑人纷纷落网，35 名犯罪嫌疑人逐一落网，30 余件窃听窃照设备、4000 余套伪劣“防偷拍检测仪器”被查获，这场闹剧终于落下帷幕。&lt;/p&gt;\n&lt;h2 id=\&#34;总结\&#34;&gt;总结&lt;/h2&gt;\n&lt;p&gt;此事件无疑给自媒体行业的从业者们敲响了警钟。创作者必须坚守道德底线，要知道，真实是内容的生命，一旦陷入虚假的泥沼，即便拥有再多的粉丝和光环，也终将化为泡影；平台更要肩负起监管重任，强化审核机制，利用大数据分析、人工复查等手段，将虚假内容扼杀在摇篮之中；而作为观众的我们，也要练就一双火眼金睛，不盲目跟风点赞、转发，让那些妄图通过虚假手段博眼球的博主无处遁形。唯有三方携手共进，才能营造出一个风清气正、真实可信的网络环境，让自媒体回归其传递正能量、记录美好生活的初心与正轨。&lt;/p&gt;\n&lt;h2 id=\&#34;公安官方发布警情通报\&#34;&gt;【公安官方发布】警情通报&lt;/h2&gt;\n&lt;figure data-type=\&#34;image\&#34; tabindex=\&#34;1\&#34;&gt;&lt;img src=\&#34;https://wowtang.top/post-images/1735488374507.png\&#34; alt=\&#34;\&#34; loading=\&#34;lazy\&#34;&gt;&lt;/figure&gt;\n&lt;h2 id=\&#34;定位文章结尾\&#34;&gt;定位文章结尾&lt;/h2&gt;\n&#34;,&#34;fileName&#34;:&#34;yingzi&#34;,&#34;abstract&#34;:&#34;&lt;h2 id=\&#34;前言\&#34;&gt;前言&lt;/h2&gt;\n&lt;blockquote&gt;\n&lt;p&gt;在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘生活骗局、曝光不良现象，以看似真实、接地气的视频风格赢得了众多观众的信赖，一度被大家奉为正义的代言人。&lt;/p&gt;\n&lt;/blockquote&gt;\n&#34;,&#34;title&#34;:&#34;浅谈：博主“影子不会说谎”及其团队“自导自演”事件&#34;,&#34;tags&#34;:[{&#34;name&#34;:&#34;新闻&#34;,&#34;slug&#34;:&#34;uIiBkNr6CY&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/uIiBkNr6CY/&#34;},{&#34;name&#34;:&#34;浅谈&#34;,&#34;slug&#34;:&#34;QhlOmV-gWX&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/QhlOmV-gWX/&#34;}],&#34;date&#34;:&#34;2024-12-29 23:59:43&#34;,&#34;dateFormat&#34;:&#34;2024-12-29&#34;,&#34;feature&#34;:&#34;https://wowtang.top/post-images/yingzi.png&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/yingzi/&#34;,&#34;hideInList&#34;:false,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;6 min read&#34;,&#34;time&#34;:311000,&#34;words&#34;:1536,&#34;minutes&#34;:6},&#34;description&#34;:&#34;前言\n\n在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘...&#34;,&#34;toc&#34;:&#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%89%8D%E8%A8%80\&#34;&gt;前言&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%BE%80%E4%BA%8B\&#34;&gt;往事&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%8A%A8%E6%9C%BA\&#34;&gt;动机&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E7%BB%93%E6%9E%9C\&#34;&gt;结果&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E6%80%BB%E7%BB%93\&#34;&gt;总结&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%85%AC%E5%AE%89%E5%AE%98%E6%96%B9%E5%8F%91%E5%B8%83%E8%AD%A6%E6%83%85%E9%80%9A%E6%8A%A5\&#34;&gt;【公安官方发布】警情通报&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%AE%9A%E4%BD%8D%E6%96%87%E7%AB%A0%E7%BB%93%E5%B0%BE\&#34;&gt;定位文章结尾&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;},{&#34;content&#34;:&#34;&lt;h2 id=\&#34;2024\&#34;&gt;2024&lt;/h2&gt;\n&lt;h3 id=\&#34;12月\&#34;&gt;12月&lt;/h3&gt;\n&lt;ul&gt;\n&lt;li&gt;2024-12-19 20:56:10 博客更新评论系统。&lt;/li&gt;\n&lt;li&gt;2024-12-19 14:15:00 我的博客上线啦！站点：https://wowtang.top/&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,&#34;fileName&#34;:&#34;bigthings&#34;,&#34;abstract&#34;:&#34;&#34;,&#34;title&#34;:&#34;大事件&#34;,&#34;tags&#34;:[],&#34;date&#34;:&#34;2024-12-29 15:36:02&#34;,&#34;dateFormat&#34;:&#34;2024-12-29&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/bigthings/&#34;,&#34;hideInList&#34;:true,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;1 min read&#34;,&#34;time&#34;:9000,&#34;words&#34;:35,&#34;minutes&#34;:1},&#34;description&#34;:&#34;2024\n12月\n\n2024-12-19 20:56:10 博客更新评论系统。\n2024-12-19 14:15:00 我的博客上线啦！站点：https://wowtang.top/\n\n...&#34;,&#34;toc&#34;:&#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024\&#34;&gt;2024&lt;/a&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#12%E6%9C%88\&#34;&gt;12月&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;},{&#34;content&#34;:&#34;&lt;blockquote&gt;\n&lt;p&gt;欢迎来到我的小站呀，很高兴遇见你！🤝&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;h2 id=\&#34;关于本站\&#34;&gt;🏠 关于本站&lt;/h2&gt;\n&lt;p&gt;一个来自浙江中学生的个人博客小站……&lt;/p&gt;\n&lt;h2 id=\&#34;博主是谁\&#34;&gt;👨‍💻 博主是谁&lt;/h2&gt;\n&lt;p&gt;Sunrise.&lt;/p&gt;\n&lt;h2 id=\&#34;兴趣爱好\&#34;&gt;⛹ 兴趣爱好&lt;/h2&gt;\n&lt;p&gt;🎮游戏！&lt;/p&gt;\n&lt;h2 id=\&#34;联系我呀\&#34;&gt;📬 联系我呀&lt;/h2&gt;\n&lt;p&gt;QQ：2468841720&lt;/p&gt;\n&lt;h2 id=\&#34;投喂我呀\&#34;&gt;💰 投喂我呀&lt;/h2&gt;\n&lt;p&gt;&lt;a href=\&#34;https://ifdian.net/order/create?user_id=78b6cdfac6aa11ef9cb952540025c377\&#34;&gt;⚡️爱发电投喂&lt;/a&gt;&lt;br&gt;\n&lt;a href=\&#34;https://qr.alipay.com/fkx13264k09iixl5xpovf9b\&#34;&gt;🔵支付宝跳转（手机访问网页可用）&lt;/a&gt;&lt;br&gt;\n收款图片依次为：微信、支付宝、QQ&lt;br&gt;\n&lt;img src=\&#34;https://wowtang.top/post-images/1735566651598.jpg\&#34; alt=\&#34;\&#34; loading=\&#34;lazy\&#34;&gt;&lt;/p&gt;\n&lt;h2 id=\&#34;赞助列表点我跳转查看\&#34;&gt;&lt;a href=\&#34;https://wowtang.top/post/thanks/\&#34;&gt;🙏赞助列表（点我跳转查看）&lt;/a&gt;&lt;/h2&gt;\n&#34;,&#34;fileName&#34;:&#34;about&#34;,&#34;abstract&#34;:&#34;&#34;,&#34;title&#34;:&#34;About Me&#34;,&#34;tags&#34;:[],&#34;date&#34;:&#34;2019-01-25 19:09:48&#34;,&#34;dateFormat&#34;:&#34;2019-01-25&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/about/&#34;,&#34;hideInList&#34;:true,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;1 min read&#34;,&#34;time&#34;:20000,&#34;words&#34;:97,&#34;minutes&#34;:1},&#34;description&#34;:&#34;\n欢迎来到我的小站呀，很高兴遇见你！🤝\n\n🏠 关于本站\n一个来自浙江中学生的个人博客小站……\n👨‍💻 博主是谁\nSunrise.\n⛹ 兴趣爱好\n🎮游戏！\n📬 联系我呀\nQQ：2468841720\n💰 投喂我呀\n⚡️爱发电投喂\n...&#34;,&#34;toc&#34;:&#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%85%B3%E4%BA%8E%E6%9C%AC%E7%AB%99\&#34;&gt;🏠 关于本站&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%8D%9A%E4%B8%BB%E6%98%AF%E8%B0%81\&#34;&gt;👨‍💻 博主是谁&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E5%85%B4%E8%B6%A3%E7%88%B1%E5%A5%BD\&#34;&gt;⛹ 兴趣爱好&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E8%81%94%E7%B3%BB%E6%88%91%E5%91%80\&#34;&gt;📬 联系我呀&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E6%8A%95%E5%96%82%E6%88%91%E5%91%80\&#34;&gt;💰 投喂我呀&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E8%B5%9E%E5%8A%A9%E5%88%97%E8%A1%A8%E7%82%B9%E6%88%91%E8%B7%B3%E8%BD%AC%E6%9F%A5%E7%9C%8B\&#34;&gt;🙏赞助列表（点我跳转查看）&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;},{&#34;content&#34;:&#34;&lt;p&gt;👏  欢迎使用 &lt;strong&gt;Gridea&lt;/strong&gt; ！&lt;br&gt;\n✍️  &lt;strong&gt;Gridea&lt;/strong&gt; 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...&lt;/p&gt;\n&lt;!-- more --&gt;\n&lt;p&gt;&lt;a href=\&#34;https://github.com/getgridea/gridea\&#34;&gt;Github&lt;/a&gt;&lt;br&gt;\n&lt;a href=\&#34;https://gridea.dev/\&#34;&gt;Gridea 主页&lt;/a&gt;&lt;br&gt;\n&lt;a href=\&#34;https://fehey.com/\&#34;&gt;示例网站&lt;/a&gt;&lt;/p&gt;\n&lt;h2 id=\&#34;特性\&#34;&gt;特性👇&lt;/h2&gt;\n&lt;p&gt;📝  你可以使用最酷的 &lt;strong&gt;Markdown&lt;/strong&gt; 语法，进行快速创作&lt;/p&gt;\n&lt;p&gt;🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片&lt;/p&gt;\n&lt;p&gt;🏷️  你可以对文章进行标签分组&lt;/p&gt;\n&lt;p&gt;📋  你可以自定义菜单，甚至可以创建外部链接菜单&lt;/p&gt;\n&lt;p&gt;💻  你可以在 &lt;strong&gt;Windows&lt;/strong&gt;，&lt;strong&gt;MacOS&lt;/strong&gt; 或 &lt;strong&gt;Linux&lt;/strong&gt; 设备上使用此客户端&lt;/p&gt;\n&lt;p&gt;🌎  你可以使用 &lt;strong&gt;𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌&lt;/strong&gt; 或 &lt;strong&gt;Coding Pages&lt;/strong&gt; 向世界展示，未来将支持更多平台&lt;/p&gt;\n&lt;p&gt;💬  你可以进行简单的配置，接入 &lt;a href=\&#34;https://github.com/gitalk/gitalk\&#34;&gt;Gitalk&lt;/a&gt; 或 &lt;a href=\&#34;https://github.com/SukkaW/DisqusJS\&#34;&gt;DisqusJS&lt;/a&gt; 评论系统&lt;/p&gt;\n&lt;p&gt;🇬🇧  你可以使用&lt;strong&gt;中文简体&lt;/strong&gt;或&lt;strong&gt;英语&lt;/strong&gt;&lt;/p&gt;\n&lt;p&gt;🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力&lt;/p&gt;\n&lt;p&gt;🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步&lt;/p&gt;\n&lt;p&gt;🌱 当然 &lt;strong&gt;Gridea&lt;/strong&gt; 还很年轻，有很多不足，但请相信，它会不停向前 🏃&lt;/p&gt;\n&lt;p&gt;未来，它一定会成为你离不开的伙伴&lt;/p&gt;\n&lt;p&gt;尽情发挥你的才华吧！&lt;/p&gt;\n&lt;p&gt;😘 Enjoy~&lt;/p&gt;\n&#34;,&#34;fileName&#34;:&#34;hello-gridea&#34;,&#34;abstract&#34;:&#34;&lt;p&gt;👏  欢迎使用 &lt;strong&gt;Gridea&lt;/strong&gt; ！&lt;br&gt;\n✍️  &lt;strong&gt;Gridea&lt;/strong&gt; 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...&lt;/p&gt;\n&#34;,&#34;title&#34;:&#34;Hello Gridea&#34;,&#34;tags&#34;:[{&#34;name&#34;:&#34;Gridea&#34;,&#34;slug&#34;:&#34;6S9xg3MjkK&#34;,&#34;used&#34;:true,&#34;link&#34;:&#34;https://wowtang.top/tag/6S9xg3MjkK/&#34;}],&#34;date&#34;:&#34;2018-12-12 00:00:00&#34;,&#34;dateFormat&#34;:&#34;2018-12-12&#34;,&#34;feature&#34;:&#34;https://wowtang.top/post-images/hello-gridea.png&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/hello-gridea/&#34;,&#34;hideInList&#34;:true,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;2 min read&#34;,&#34;time&#34;:62000,&#34;words&#34;:298,&#34;minutes&#34;:2},&#34;description&#34;:&#34;👏  欢迎使用 Gridea ！\n✍️  Gridea 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...\n\nGithub\nGridea 主页\n示例网站\n特性👇\n📝  你可以使用最酷的 Markdo...&#34;,&#34;toc&#34;:&#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#%E7%89%B9%E6%80%A7\&#34;&gt;特性👇&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;},{&#34;content&#34;:&#34;&lt;p&gt;&lt;a href=\&#34;https://wowtang.top/calculator/\&#34;&gt;计算器&lt;/a&gt;&lt;/p&gt;\n&#34;,&#34;fileName&#34;:&#34;tools&#34;,&#34;abstract&#34;:&#34;&#34;,&#34;title&#34;:&#34;小工具（Sunrise.开发）&#34;,&#34;tags&#34;:[],&#34;date&#34;:null,&#34;dateFormat&#34;:&#34;Invalid date&#34;,&#34;feature&#34;:&#34;&#34;,&#34;link&#34;:&#34;https://wowtang.top/post/tools/&#34;,&#34;hideInList&#34;:true,&#34;isTop&#34;:false,&#34;stats&#34;:{&#34;text&#34;:&#34;1 min read&#34;,&#34;time&#34;:0,&#34;words&#34;:3,&#34;minutes&#34;:1},&#34;description&#34;:&#34;计算器\n&#34;,&#34;toc&#34;:&#34;&#34;}]";
+  // var json = escape.substr(1, escape.length - 2);
+  // var datas = json.split(',');
+  // for (let i=0; i < datas.length; i++) {
+  //   let item = datas[i];
+  //   let attrs = item.split('34;:&#34')
+  //   debugger
+  //   console.log(datas[i])
+  // }
+  let escapeMap = new Map();
+  escapeMap.set('&#34;', '"');
+  escapeMap.set('&gt;', '>');
+  escapeMap.set('&#39;', "'");
+  escapeMap.set('&lt;', '<');
+  escapeMap.set('&quot;', '"');
+  escapeMap.set('&amp;', '&');
+</script> -->
+
+<script src="/media/js/mouse/peace.js"></script>
+
+
+<script src=" /media/js/cool.js"></script>
+
+</html>
