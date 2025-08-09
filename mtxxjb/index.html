@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>米兔/小寻手表内部解绑系统</title>
+    <style>
+        /* 全局字体设置 */
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+        }
+
+        /* 标题样式 */
+        h1 {
+            color: #e67e22;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 输入框样式 */
+        input[type="text"] {
+            border: 1px solid #bdc3c7;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #e67e22;
+            outline: none;
+            box-shadow: 0 0 5px rgba(230, 126, 34, 0.5);
+        }
+
+        /* 按钮样式 */
+        button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 表格样式 */
+        table {
+            text-align: center;
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table th,
+        table td {
+            vertical-align: middle;
+            padding: 12px;
+            border: 1px solid #ecf0f1;
+        }
+
+        table th {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* 状态颜色样式 */
+        .status-green {
+            color: #27ae60;
+        }
+
+        .status-gray {
+            color: #95a5a6;
+        }
+
+        .status-red {
+            color: #e74c3c;
+        }
+
+        .status-blue {
+            color: #3498db;
+        }
+
+        /* 自定义确认弹窗样式 */
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.3s ease;
+            width: 380px;
+            border: 2px solid #e67e22;
+            position: relative;
+            min-height: 200px; /* 增加最小高度以确保能装下对勾 */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content p {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #confirmUnbind {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        #confirmUnbind:hover {
+            background-color: #d35400;
+            box-shadow: 0 6px 12px rgba(211, 84, 0, 0.3);
+        }
+
+        #cancelUnbind {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        #cancelUnbind:hover {
+            background-color: #ccc;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 对勾动画样式 */
+        .checkmark {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #27ae60;
+            animation: scaleIn 0.3s ease;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            left: 35px;
+            top: 20px;
+            width: 30px;
+            height: 60px;
+            border: solid white;
+            border-width: 0 8px 8px 0;
+            transform: rotate(45deg);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 解绑完成消息样式 */
+        #unbindMessage {
+            transition: opacity 0.3s ease;
+        }
+
+        /* 查询按钮 */
+        #queryBtn {
+            background-color: #e67e22;
+        }
+
+        #queryBtn:hover {
+            background-color: #d35400;
+        }
+
+        /* 解绑按钮 */
+        .bg-blue-500 {
+            background-color: #ff9900; /* 修改为橙色，这里使用了十六进制颜色代码 #ff9900 表示橙色 */
+        }
+
+        .bg-blue-500:hover {
+            background-color: #e68a00; /* 鼠标悬停时的橙色变深一点，十六进制颜色代码 #e68a00 */
+        }
+
+        /* 确认解绑按钮 */
+        #confirmUnbind {
+            background-color: #e67e22;
+        }
+
+        #confirmUnbind:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center mb-8">米兔/小寻手表内部解绑系统</h1>
+        <div class="flex justify-center mb-4">
+            <input type="text" id="imei" placeholder="输入 IMEI"
+                class="border border-gray-300 p-2 rounded-l mr-2 w-1/4">
+            <input type="text" id="sn" placeholder="输入 SN"
+                class="border border-gray-300 p-2 mr-2 w-1/4">
+            <button id="queryBtn"
+                class="text-white p-2 rounded-r hover:bg-blue-600">查询</button>
+        </div>
+        <div id="resultTable" class="hidden">
+            <table class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border border-gray-300 p-2">IMEI</th>
+                        <th class="border border-gray-300 p-2">SN</th>
+                        <th class="border border-gray-300 p-2">在线状态</th>
+                        <th class="border border-gray-300 p-2">是否已加手表好友</th>
+                        <th class="border border-gray-300 p-2">是否绑定管理员账号</th>
+                        <th class="border border-gray-300 p-2">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        <div id="unbindMessage" class="mt-4 text-center hidden">
+            <p class="text-green-500 text-lg">解绑完成</p>
+        </div>
+    </div>
+    <!-- 自定义确认弹窗 -->
+    <div id="confirmationModal" class="confirmation-modal">
+        <div class="modal-content">
+            <p>是否确定解绑？</p>
+            <button id="confirmUnbind" class="text-white p-2 rounded mx-2 hover:bg-green-600">是</button>
+            <button id="cancelUnbind" class="bg-red-500 text-white p-2 rounded mx-2 hover:bg-red-600">否</button>
+            <div class="checkmark"></div>
+        </div>
+    </div>
+    <script>
+        const queryBtn = document.getElementById('queryBtn');
+        const resultTable = document.getElementById('resultTable');
+        const tableBody = document.getElementById('tableBody');
+        const unbindMessage = document.getElementById('unbindMessage');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const confirmUnbind = document.getElementById('confirmUnbind');
+        const cancelUnbind = document.getElementById('cancelUnbind');
+        const checkmark = document.querySelector('.checkmark');
+
+        let currentUnbindButton;
+
+        queryBtn.addEventListener('click', () => {
+            const imei = document.getElementById('imei').value;
+            const sn = document.getElementById('sn').value;
+
+            resultTable.classList.remove('hidden');
+            tableBody.innerHTML = '';
+            unbindMessage.classList.add('hidden');
+
+            const row = document.createElement('tr');
+
+            if (!imei) {
+                const emptyImeiCell = document.createElement('td');
+                emptyImeiCell.classList.add('border', 'border-gray-300', 'p-2');
+                row.appendChild(emptyImeiCell);
+            } else {
+                const imeiCell = document.createElement('td');
+                imeiCell.textContent = imei;
+                imeiCell.classList.add('border', 'border-gray-300', 'p-2');
+                row.appendChild(imeiCell);
+            }
+
+            if (!sn) {
+                const emptySnCell = document.createElement('td');
+                emptySnCell.classList.add('border', 'border-gray-300', 'p-2');
+                row.appendChild(emptySnCell);
+            } else {
+                const snCell = document.createElement('td');
+                snCell.textContent = sn;
+                snCell.classList.add('border', 'border-gray-300', 'p-2');
+                row.appendChild(snCell);
+            }
+
+            const statusCell = document.createElement('td');
+            statusCell.textContent = '● 在线';
+            statusCell.classList.add('border', 'border-gray-300', 'p-2', 'status-green');
+            statusCell.addEventListener('click', () => {
+                if (statusCell.textContent === '● 在线') {
+                    statusCell.textContent = '● 离线';
+                    statusCell.classList.remove('status-green');
+                    statusCell.classList.add('status-gray');
+                } else if (statusCell.textContent === '● 离线') {
+                    statusCell.textContent = '● 状态异常挂丢失模式';
+                    statusCell.classList.remove('status-gray');
+                    statusCell.classList.add('status-red');
+                } else {
+                    statusCell.textContent = '● 在线';
+                    statusCell.classList.remove('status-red');
+                    statusCell.classList.add('status-green');
+                }
+            });
+            row.appendChild(statusCell);
+
+            const friendCell = document.createElement('td');
+            friendCell.textContent = '● 否';
+            friendCell.classList.add('border', 'border-gray-300', 'p-2', 'status-gray');
+            friendCell.addEventListener('click', () => {
+                if (friendCell.textContent === '● 否') {
+                    friendCell.textContent = '● 是';
+                    friendCell.classList.remove('status-gray');
+                    friendCell.classList.add('status-blue');
+                } else {
+                    friendCell.textContent = '● 否';
+                    friendCell.classList.remove('status-blue');
+                    friendCell.classList.add('status-gray');
+                }
+            });
+            row.appendChild(friendCell);
+
+            const adminCell = document.createElement('td');
+            adminCell.textContent = '● 是';
+            adminCell.classList.add('border', 'border-gray-300', 'p-2', 'status-green');
+            adminCell.addEventListener('click', () => {
+                if (adminCell.textContent === '● 是') {
+                    adminCell.textContent = '● 否';
+                    adminCell.classList.remove('status-green');
+                    adminCell.classList.add('status-red');
+                } else {
+                    adminCell.textContent = '● 是';
+                    adminCell.classList.remove('status-red');
+                    adminCell.classList.add('status-green');
+                }
+            });
+            row.appendChild(adminCell);
+
+            const unbindCell = document.createElement('td');
+            const unbindBtn = document.createElement('button');
+            unbindBtn.textContent = '解绑';
+            unbindBtn.classList.add('bg-blue-500', 'text-white', 'p-2', 'rounded', 'hover:bg-blue-600');
+            unbindBtn.addEventListener('click', function () {
+                currentUnbindButton = this;
+                confirmationModal.style.display = 'flex';
+            });
+            unbindCell.appendChild(unbindBtn);
+            unbindCell.classList.add('border', 'border-gray-300', 'p-2');
+            row.appendChild(unbindCell);
+
+            tableBody.appendChild(row);
+        });
+
+        confirmUnbind.addEventListener('click', () => {
+            // 隐藏按钮和询问文本
+            const buttons = confirmationModal.querySelectorAll('button');
+            const question = confirmationModal.querySelector('p');
+            buttons.forEach(button => button.style.display = 'none');
+            question.style.display = 'none';
+
+            // 显示对勾动画
+            checkmark.style.display = 'block';
+
+            // 延迟一段时间后隐藏模态框并显示解绑完成消息
+            setTimeout(() => {
+                confirmationModal.style.display = 'none';
+                unbindMessage.classList.remove('hidden');
+                // 恢复按钮和询问文本显示
+                buttons.forEach(button => button.style.display = 'inline-block');
+                question.style.display = 'block';
+                checkmark.style.display = 'none';
+            }, 1500);
+        });
+
+        cancelUnbind.addEventListener('click', () => {
+            confirmationModal.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
