@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计算器</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://wowtang.top/images/avatar.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+      .calculator {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        input[type="button"] {
+            width: 70px;
+            height: 70px;
+            font-size: 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 15px;
+            background-color: #F5F5F5;
+            color: black;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        input[type="button"]:hover {
+            background-color: #D3D3D3;
+            transform: scale(1.1);
+        }
+        input[type="text"] {
+            width: 350px;
+            height: 80px;
+            font-size: 30px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            text-align: right;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/5.2.2/big.min.js"></script>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="result" disabled>
+        <br>
+        <input type="button" value="1" onclick="addToResult('1')">
+        <input type="button" value="2" onclick="addToResult('2')">
+        <input type="button" value="3" onclick="addToResult('3')">
+        <input type="button" value="+" onclick="addToResult('+')">
+        <br>
+        <input type="button" value="4" onclick="addToResult('4')">
+        <input type="button" value="5" onclick="addToResult('5')">
+        <input type="button" value="6" onclick="addToResult('6')">
+        <input type="button" value="-" onclick="addToResult('-')">
+        <br>
+        <input type="button" value="7" onclick="addToResult('7')">
+        <input type="button" value="8" onclick="addToResult('8')">
+        <input type="button" value="9" onclick="addToResult('9')">
+        <input type="button" value="*" onclick="addToResult('*')">
+        <br>
+        <input type="button" value="0" onclick="addToResult('0')">
+        <input type="button" value="." onclick="addToResult('.')">
+        <input type="button" value="=" onclick="calculate()">
+        <input type="button" value="/" onclick="addToResult('/')">
+        <br>
+        <input type="button" value="C" onclick="clearResult()">
+        <input type="button" value="⌫" onclick="backspace()">
+        <input type="button" value="%" onclick="addToResult('%')">
+        <input type="button" value="刷新" onclick="refreshPage()">
+    </div>
+
+    <script>
+        function addToResult(value) {
+            var result = document.getElementById('result');
+            result.value += value;
+        }
+
+        function clearResult() {
+            document.getElementById('result').value = '';
+        }
+
+        function calculate() {
+            try {
+                var result = document.getElementById('result');
+                var expression = result.value;
+                var answer = evalWithBig(expression);
+                if (answer.toString().length > 35) { // 假设 35 是显示区域的字符长度限制
+                    answer = parseFloat(answer.toPrecision(8)).toExponential();
+                }
+                result.value = answer.toString();
+            } catch (error) {
+                result.value = 'Error';
+            }
+        }
+
+        function evalWithBig(expression) {
+            var tokens = expression.split(/([+\-*/])/);
+            var num1 = new Big(tokens[0]);
+            for (var i = 1; i < tokens.length; i += 2) {
+                var operator = tokens[i];
+                var num2 = new Big(tokens[i + 1]);
+                if (operator === '+') {
+                    num1 = num1.plus(num2);
+                } else if (operator === '-') {
+                    num1 = num1.minus(num2);
+                } else if (operator === '*') {
+                    num1 = num1.times(num2);
+                } else if (operator === '/') {
+                    num1 = num1.div(num2);
+                }
+            }
+            return num1.toString();
+        }
+
+        function backspace() {
+            var result = document.getElementById('result');
+            var currentValue = result.value;
+            result.value = currentValue.slice(0, -1);
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            var key = event.key;
+            if (/[0-9+\-*/.=]/.test(key) || key === 'Enter' || key === 'Backspace' || key === 'Escape' || key === '%') {
+                addToResult(key);
+                if (key === 'Enter') {
+                    calculate();
+                } else if (key === 'Backspace') {
+                    backspace();
+                } else if (key === 'Escape') {
+                    clearResult();
+                }
+            } else if (event.keyCode === 112) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
