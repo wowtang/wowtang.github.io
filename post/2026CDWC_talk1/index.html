@@ -96,7 +96,9 @@
 [data-audio] audio[controls] {
   display: block;
 }
-</style>
+#vcomments .vpower {
+    display: none !important;
+}</style>
 
   <script>
     (function(){
@@ -173,7 +175,7 @@
 
 
 
-<a class="social-icon" href="/atom.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
+<a class="social-icon" href="/feed.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
 
     </footer>
   </aside>
@@ -420,13 +422,13 @@
 
 
 
-<a class="social-icon" href="/atom.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
+<a class="social-icon" href="/feed.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
 
     </div>
   </div>
 </div>
 </div>
-    <div data-widget="welcome" data-order="2">
+    <div data-widget="welcome" data-order="3">
 <div class="card-widget card-welcome">
   <div class="item-headline"><i class="fa-solid fa-hand-sparkles"></i><span>嗨～</span></div>
   <div class="welcome-content">
@@ -453,23 +455,11 @@
         
         <div class="aside-list-item">
           
-          <a class="thumbnail no-cover" href="/post/thanks/" title="赞助列表"><i class="fa-solid fa-file-lines"></i></a>
+          <a class="thumbnail no-cover" href="/post/about/" title="关于"><i class="fa-solid fa-file-lines"></i></a>
           
           <div class="content">
-            <a class="title" href="/post/thanks/" title="赞助列表">赞助列表</a>
-            <time class="date">Jul 18, 2026</time>
-          </div>
-        </div>
-        
-      
-        
-        <div class="aside-list-item">
-          
-          <a class="thumbnail no-cover" href="/post/tools/" title="小工具（Sunrise.开发）"><i class="fa-solid fa-file-lines"></i></a>
-          
-          <div class="content">
-            <a class="title" href="/post/tools/" title="小工具（Sunrise.开发）">小工具（Sunrise.开发）</a>
-            <time class="date">Jul 18, 2026</time>
+            <a class="title" href="/post/about/" title="关于">关于</a>
+            <time class="date">Dec 31, 9999</time>
           </div>
         </div>
         
@@ -481,7 +471,7 @@
           
           <div class="content">
             <a class="title" href="/post/bigthings/" title="Sunrise&#39;blog 大事件">Sunrise&#39;blog 大事件</a>
-            <time class="date">Dec 29, 2024</time>
+            <time class="date">Dec 31, 9999</time>
           </div>
         </div>
         
@@ -489,11 +479,23 @@
         
         <div class="aside-list-item">
           
-          <a class="thumbnail no-cover" href="/post/about/" title="关于"><i class="fa-solid fa-file-lines"></i></a>
+          <a class="thumbnail no-cover" href="/post/thanks/" title="赞助列表"><i class="fa-solid fa-file-lines"></i></a>
           
           <div class="content">
-            <a class="title" href="/post/about/" title="关于">关于</a>
-            <time class="date">Jan 25, 2019</time>
+            <a class="title" href="/post/thanks/" title="赞助列表">赞助列表</a>
+            <time class="date">Dec 31, 9999</time>
+          </div>
+        </div>
+        
+      
+        
+        <div class="aside-list-item">
+          
+          <a class="thumbnail no-cover" href="/post/tools/" title="小工具（Sunrise.开发）"><i class="fa-solid fa-file-lines"></i></a>
+          
+          <div class="content">
+            <a class="title" href="/post/tools/" title="小工具（Sunrise.开发）">小工具（Sunrise.开发）</a>
+            <time class="date">Dec 31, 9999</time>
           </div>
         </div>
         
@@ -602,7 +604,7 @@
   </div>
 </div>
 </div>
-    <div data-widget="toc" data-order="9">
+    <div data-widget="toc" data-order="2">
       <div id="toc-aside" class="toc-aside card-widget" hidden>
         <div class="item-headline"><i class="fa-solid fa-list"></i><span>目录</span></div>
         <ol id="toc-list" class="toc-list"></ol>
@@ -614,7 +616,7 @@
       var wrap = document.getElementById('card-widget-wrap');
       if (!wrap) return;
       
-      var stickyList = 'author'.split(',');
+      var stickyList = 'author,toc'.split(',');
       
       var items = Array.from(wrap.children);
       items.sort(function(a, b){
@@ -656,7 +658,7 @@
 
 
 
-<a class="social-icon" href="/atom.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
+<a class="social-icon" href="/feed.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
 
       </div>
     </div>
