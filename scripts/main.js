@@ -40,6 +40,17 @@
     }
     html.setAttribute('data-theme', resolved);
     html.dataset.themePref = mode;
+    // ============== 主题切换时同步更新导航文字颜色 ==============
+    var navEl = document.getElementById('nav');
+    if (navEl) {
+      var y = window.pageYOffset;
+      var isBannerTransparent = body.classList.contains('page-index') && y < 80;
+      if (resolved === 'dark' && !isBannerTransparent) {
+        navEl.classList.add('nav-text-dark');
+      } else {
+        navEl.classList.remove('nav-text-dark');
+      }
+    }
   }
   applyTheme(prefMode, false);
 
@@ -111,8 +122,10 @@
     var y = window.pageYOffset;
     if (nav) {
       // 首页 banner 区透明
+      var isBannerTransparent = false;
       if (body.classList.contains('page-index')) {
-        if (y < 80) nav.classList.add('nav-transparent'); else nav.classList.remove('nav-transparent');
+        if (y < 80) { nav.classList.add('nav-transparent'); isBannerTransparent = true; }
+        else { nav.classList.remove('nav-transparent'); isBannerTransparent = false; }
       }
       // 滚动方向隐藏（仅大屏 + 远离顶部）
       if (window.innerWidth > 992 && y > 240) {
@@ -123,6 +136,13 @@
       }
       // 远离顶部时增加阴影
       if (y > 80) nav.classList.add('nav-shrink'); else nav.classList.remove('nav-shrink');
+      // ============== 问题3修复：dark模式下，非Banner透明阶段的导航 强制用浅色文字 ==============
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      if (isDark && !isBannerTransparent) {
+        nav.classList.add('nav-text-dark');
+      } else {
+        nav.classList.remove('nav-text-dark');
+      }
     }
 
     // 阅读进度

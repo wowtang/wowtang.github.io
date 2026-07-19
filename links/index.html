@@ -356,16 +356,38 @@
   gap: 6px;
   padding: 6px 14px;
   background: #f2f2f2;
-  color: #000 !important;
+  color: #1f2d3d;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
 }
 .flink-apply-btn:hover {
   background: #e5e5e5;
-  color: #000 !important;
+  color: #1f2d3d;
   opacity: 0.9;
+}
+[data-theme="dark"] .flink-apply-btn {
+  background: #161b22;
+  color: #e6edf3 !important;
+  border-color: #30363d;
+}
+[data-theme="dark"] .flink-apply-btn:hover {
+  background: #21262d;
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .flink-name {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .flink-desc {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .flink-item:hover {
+  background: rgba(95, 169, 255, 0.1);
+  border-color: #5fa9ff;
+}
+[data-theme="dark"] .flink-item:hover .flink-name {
+  color: #5fa9ff;
 }
 </style>
 
@@ -435,66 +457,55 @@
   <div class="aside-list">
     
       
-        
-        <div class="aside-list-item">
-          
-          <a class="thumbnail no-cover" href="/post/about/" title="关于"><i class="fa-solid fa-file-lines"></i></a>
-          
-          <div class="content">
-            <a class="title" href="/post/about/" title="关于">关于</a>
-            <time class="date">Dec 31, 9999</time>
-          </div>
-        </div>
+      
+      
         
       
         
-        <div class="aside-list-item">
-          
-          <a class="thumbnail no-cover" href="/post/bigthings/" title="Sunrise&#39;blog 大事件"><i class="fa-solid fa-file-lines"></i></a>
-          
-          <div class="content">
-            <a class="title" href="/post/bigthings/" title="Sunrise&#39;blog 大事件">Sunrise&#39;blog 大事件</a>
-            <time class="date">Dec 31, 9999</time>
-          </div>
-        </div>
+      
+        
+      
+        
+      
         
       
         
         <div class="aside-list-item">
           
-          <a class="thumbnail no-cover" href="/post/thanks/" title="赞助列表"><i class="fa-solid fa-file-lines"></i></a>
+          <a class="thumbnail" href="/post/2026CDWC_talk1/" title="浅谈：一些关于今年华语辩论世界杯的看法"><img src="/post-images/2026CDWC_talk1.jpg" alt="浅谈：一些关于今年华语辩论世界杯的看法" onerror="this.onerror=null;this.src='/media/images/default-cover.svg';"></a>
           
           <div class="content">
-            <a class="title" href="/post/thanks/" title="赞助列表">赞助列表</a>
-            <time class="date">Dec 31, 9999</time>
+            <a class="title" href="/post/2026CDWC_talk1/" title="浅谈：一些关于今年华语辩论世界杯的看法">浅谈：一些关于今年华语辩论世界杯的看法</a>
+            <time class="date">Jul 19, 2026</time>
           </div>
         </div>
+        
         
       
         
         <div class="aside-list-item">
           
-          <a class="thumbnail no-cover" href="/post/tools/" title="小工具（Sunrise.开发）"><i class="fa-solid fa-file-lines"></i></a>
+          <a class="thumbnail" href="/post/goodbye2025/" title="Good bye！2025"><img src="/post-images/goodbye2025.png" alt="Good bye！2025" onerror="this.onerror=null;this.src='/media/images/default-cover.svg';"></a>
           
           <div class="content">
-            <a class="title" href="/post/tools/" title="小工具（Sunrise.开发）">小工具（Sunrise.开发）</a>
-            <time class="date">Dec 31, 9999</time>
+            <a class="title" href="/post/goodbye2025/" title="Good bye！2025">Good bye！2025</a>
+            <time class="date">Jan 01, 2026</time>
           </div>
         </div>
+        
         
       
         
         <div class="aside-list-item">
           
-          <a class="thumbnail no-cover" href="/post/link_sq/" title="友链申请"><i class="fa-solid fa-file-lines"></i></a>
+          <a class="thumbnail" href="/post/zhangdada/" title="浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌"><img src="/post-images/zhangdada.png" alt="浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌" onerror="this.onerror=null;this.src='/media/images/default-cover.svg';"></a>
           
           <div class="content">
-            <a class="title" href="/post/link_sq/" title="友链申请">友链申请</a>
-            <time class="date">Jul 20, 2026</time>
+            <a class="title" href="/post/zhangdada/" title="浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌">浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌</a>
+            <time class="date">Jan 27, 2025</time>
           </div>
         </div>
         
-      
         
       
         
@@ -505,9 +516,8 @@
       
         
       
-        
       
-        
+        <div class="aside-empty">暂无文章</div>
       
     
   </div>

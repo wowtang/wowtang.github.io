@@ -850,10 +850,639 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 /* ------ 22. 字体小细节 ------ */
 .fa-fw { width: 1.25em; text-align: center; }
 
-/* ------ 23. 防止首屏闪屏（暗色优先） ------ */
+/* ------ 23. 深色模式增强覆盖（修正浅色系硬编码） ------ */
+[data-theme="dark"] .card-info-counts {
+  border-top-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .card-info-social .social-icon {
+  background: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .card-info-social .social-icon:hover {
+  background: var(--primary);
+}
+[data-theme="dark"] .card-category-list-link:hover,
+[data-theme="dark"] .card-archive-list-link:hover {
+  background: rgba(95, 169, 255, 0.12);
+}
+[data-theme="dark"] .card-category-list-count,
+[data-theme="dark"] .card-archive-list-count {
+  background: rgba(95, 169, 255, 0.18);
+  color: var(--text-meta);
+}
+[data-theme="dark"] .tag-cloud-item {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-body);
+}
+[data-theme="dark"] .tag-cloud-item:hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .tags-cloud-item {
+  background: rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .tags-cloud-item:hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .about-social .social-icon {
+  background: rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .about-social .social-icon:hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .menus_item .site-page:hover {
+  background: rgba(95, 169, 255, 0.14);
+  color: var(--primary);
+}
+[data-theme="dark"] .menus_item_child {
+  background: var(--card-bg-solid);
+  box-shadow: 0 8px 24px 4px rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] .menus_item_child .site-page.child:hover {
+  background: rgba(95, 169, 255, 0.14);
+  color: var(--primary);
+}
+[data-theme="dark"] #nav-right .site-page:hover {
+  background: rgba(95, 169, 255, 0.14);
+  color: var(--primary);
+}
+[data-theme="dark"] .heatmap-cell { background: rgba(95, 169, 255, 0.08); }
+[data-theme="dark"] .heatmap-cell.level-0 { background: rgba(95, 169, 255, 0.08); }
+[data-theme="dark"] .heatmap-cell.level-1 { background: rgba(95, 169, 255, 0.3); }
+[data-theme="dark"] .heatmap-cell.level-2 { background: rgba(95, 169, 255, 0.55); }
+[data-theme="dark"] .heatmap-cell.level-3 { background: rgba(95, 169, 255, 0.85); }
+[data-theme="dark"] .heatmap-cell.level-4 { background: var(--primary); }
+[data-theme="dark"] .search-results li:hover,
+[data-theme="dark"] .search-results li.active {
+  background: rgba(95, 169, 255, 0.12);
+}
+[data-theme="dark"] .mobile-nav-item:hover {
+  background: rgba(95, 169, 255, 0.12);
+  color: var(--primary);
+}
+[data-theme="dark"] .article-readmore {
+  background: rgba(95, 169, 255, 0.12);
+}
+[data-theme="dark"] .article-readmore:hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .post-tag {
+  background: rgba(95, 169, 255, 0.14);
+}
+[data-theme="dark"] .post-tag:hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .toc-list li.toc-active {
+  background: rgba(45, 212, 191, 0.18);
+}
+[data-theme="dark"] .nav-shrink {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .card-widget:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+}
+[data-theme="dark"] .recent-post-item:hover {
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] .post-copyright {
+  background: rgba(95, 169, 255, 0.1);
+}
+[data-theme="dark"] .post-content th {
+  background: rgba(95, 169, 255, 0.18);
+}
+[data-theme="dark"] .rightside-btn {
+  background: var(--card-bg-solid);
+}
+[data-theme="dark"] .error-actions a {
+  background: var(--card-bg-solid);
+}
+[data-theme="dark"] .error-actions a:hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .pagination .page-number {
+  background: var(--card-bg);
+}
+[data-theme="dark"] .pagination .page-number:not(.disabled):hover {
+  background: var(--primary);
+  color: #fff;
+}
+[data-theme="dark"] .memo-item.card-widget {
+  background: rgba(22, 27, 34, 0.78);
+}
+
+/* =========================================================
+   Section 23.1 — 深色模式最终兜底（所有颜色硬编码，拒绝变量链）
+   文字：主标题 #e6edf3 / 正文 #c9d1d9 / 弱化 #8b949e
+   背景：卡片 rgba(22,27,34,0.78) / 实体 #161b22 / 导航 rgba(13,17,23,0.9)
+   主色：#5fa9ff（浅蓝） / 强调 #2dd4bf
+   ========================================================= */
+
+/* ---------- 专用导航 class（由 main.js 滚动/切换主题时加在 <nav id="nav"> 上） ---------- */
+#nav.nav-text-dark {
+  background: rgba(13, 17, 23, 0.9) !important;
+  backdrop-filter: blur(12px);
+}
+#nav.nav-text-dark .nav-site-title,
+#nav.nav-text-dark .nav-site-title:hover {
+  color: #e6edf3 !important;
+}
+#nav.nav-text-dark .menus_item .site-page {
+  color: #e6edf3 !important;
+}
+#nav.nav-text-dark .menus_item .site-page i {
+  color: inherit !important;
+  opacity: 0.88;
+}
+#nav.nav-text-dark #nav-right .site-page {
+  color: #e6edf3 !important;
+}
+#nav.nav-text-dark #nav-right .site-page i {
+  color: inherit !important;
+}
+#nav.nav-text-dark .menus_item_child {
+  background: #161b22 !important;
+  box-shadow: 0 8px 20px 5px rgba(0, 0, 0, 0.5) !important;
+}
+#nav.nav-text-dark .menus_item_child .site-page.child {
+  color: #c9d1d9 !important;
+}
+#nav.nav-text-dark .menus_item_child .site-page.child:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+#nav.nav-text-dark .menus_item .site-page:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+#nav.nav-text-dark #nav-right .site-page:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+
+/* --- 问题1补充：[data-theme="dark"] 下全局导航兜底（与 nav-text-dark 双重保障） --- */
+[data-theme="dark"] #nav.nav-shrink,
+[data-theme="dark"] #nav.nav-fixed,
+[data-theme="dark"] #nav {
+  background: rgba(13, 17, 23, 0.9);
+}
+[data-theme="dark"] #nav .nav-site-title,
+[data-theme="dark"] #nav .nav-site-title:hover {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] #nav .menus_item .site-page {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] #nav .menus_item .site-page i {
+  color: inherit !important;
+  opacity: 0.88;
+}
+[data-theme="dark"] #nav-right .site-page {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] #nav-right .site-page i {
+  color: inherit !important;
+}
+[data-theme="dark"] .menus_item_child {
+  background: #161b22 !important;
+  box-shadow: 0 8px 20px 5px rgba(0, 0, 0, 0.5) !important;
+}
+[data-theme="dark"] .menus_item_child .site-page.child {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .menus_item_child .site-page.child:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .menus_item .site-page:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] #nav-right .site-page:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+
+/* --- 问题2：全站文章标题 + 侧边栏小标题 纯黑 → 浅白 --- */
+[data-theme="dark"] .article-title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .article-title:hover {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .recent-post-info > .content {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .article-meta-wrap {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .article-meta-wrap a {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .article-meta-wrap a:hover {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .article-readmore {
+  color: #5fa9ff !important;
+  background: rgba(95, 169, 255, 0.12) !important;
+}
+[data-theme="dark"] .article-readmore:hover {
+  color: #fff !important;
+  background: #5fa9ff !important;
+}
+
+/* --- 问题2&3：侧边栏全部卡片（背景+所有文字层级）硬编码 --- */
+[data-theme="dark"] .card-widget-wrap > .card-widget {
+  background-image: none !important;
+  background: rgba(22, 27, 34, 0.78) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .card-widget {
+  background: rgba(22, 27, 34, 0.78) !important;
+  color: #c9d1d9 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+}
+[data-theme="dark"] .item-headline {
+  color: #e6edf3 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="dark"] .item-headline i {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .author-info-name {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .author-info-description {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .count-item .headline {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .count-item .length-num {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .card-info-counts {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="dark"] .aside-list-item {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="dark"] .aside-list-item .title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .aside-list-item .title:hover {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .aside-list-item .date {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .aside-list-item .thumbnail {
+  background: #161b22 !important;
+  color: #8b949e !important;
+}
+[data-theme="dark"] .card-category-list-link,
+[data-theme="dark"] .card-archive-list-link {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .card-category-list-link:hover,
+[data-theme="dark"] .card-archive-list-link:hover {
+  background: rgba(95, 169, 255, 0.18) !important;
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .card-category-list-count,
+[data-theme="dark"] .card-archive-list-count {
+  background: rgba(95, 169, 255, 0.2) !important;
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .tag-cloud-item {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .tag-cloud-item:hover {
+  background: #5fa9ff !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .webinfo-label {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .webinfo-value {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .webinfo-unit {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .welcome-content,
+[data-theme="dark"] .announcement-content {
+  color: #c9d1d9 !important;
+}
+
+/* ========== 第三轮修复样式 ========== */
+
+/* --- 问题1：详情页 Markdown 正文各级标题（h1/h2/h3/h4）硬编码浅色 --- */
+[data-theme="dark"] .post-content h1,
+[data-theme="dark"] .post-content h2,
+[data-theme="dark"] .post-content h3,
+[data-theme="dark"] .post-content h4,
+[data-theme="dark"] .post-content h5,
+[data-theme="dark"] .post-content h6 {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .post-content h1::before,
+[data-theme="dark"] .post-content h2::before,
+[data-theme="dark"] .post-content h3::before,
+[data-theme="dark"] .post-content h4::before {
+  background: #5fa9ff !important;
+}
+
+/* --- 问题2：闪念（日常说说）板块博主昵称 + 日期 --- */
+[data-theme="dark"] .memo-item .memo-name {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .memo-item .memo-date {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .memo-content,
+[data-theme="dark"] .memo-content p,
+[data-theme="dark"] .memo-content li,
+[data-theme="dark"] .memo-content span {
+  color: #c9d1d9 !important;
+}
+
+/* --- 问题3：友情链接板块 站点名称 + 简介描述 --- */
+[data-theme="dark"] .flink-item .flink-name {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .flink-item .flink-desc {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .flink-item:hover {
+  background: rgba(95, 169, 255, 0.1) !important;
+  border-color: #5fa9ff !important;
+}
+[data-theme="dark"] .flink-item:hover .flink-name {
+  color: #5fa9ff !important;
+}
+
+/* ========== 第四轮修复样式 ========== */
+
+/* --- 问题1：归档页面顶部「共 X 篇文章」文字 + 前置图标 --- */
+[data-theme="dark"] .archives-title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .archives-title i {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .archives-title strong {
+  color: #5fa9ff !important;
+}
+
+/* --- 问题2：归档页内所有文章标题、年份、日期、标签文字+图标 --- */
+[data-theme="dark"] .article-sort-item.year,
+[data-theme="dark"] .article-sort-item.year i {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .article-sort-item-time,
+[data-theme="dark"] .article-sort-item-time i,
+[data-theme="dark"] .article-sort-item-time time {
+  color: #8b949e !important;
+}
+[data-theme="dark"] a.article-sort-item-title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] a.article-sort-item-title:hover {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .article-sort-item-tags,
+[data-theme="dark"] .article-sort-item-tags a {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .article-sort-item-tags a:hover {
+  color: #5fa9ff !important;
+}
+
+/* --- 问题3：关于页面主体内容区域大标题（非导航栏） --- */
+[data-theme="dark"] .about-name {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .about-tagline {
+  color: #8b949e !important;
+}
+
+/* --- 问题4：关于页邮箱按钮 / RSS订阅按钮 常态+hover 配色（硬编码覆盖变量版） --- */
+[data-theme="dark"] .about-social .social-icon {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .about-social .social-icon i {
+  color: inherit !important;
+}
+[data-theme="dark"] .about-social .social-icon:hover {
+  background: #5fa9ff !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .about-social .social-icon:hover i {
+  color: #fff !important;
+}
+
+/* --- 问题5：文章详情页底部 footer（版权/作者/时间/链接/声明）栏目全部文字 --- */
+[data-theme="dark"] .post-copyright {
+  background: rgba(95, 169, 255, 0.08) !important;
+}
+[data-theme="dark"] .post-copyright-list li {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .post-copyright-list strong {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .post-copyright-list span {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .post-copyright-list a {
+  color: #5fa9ff !important;
+  border-bottom-color: rgba(95, 169, 255, 0.4) !important;
+}
+[data-theme="dark"] .post-copyright-list a:hover {
+  color: #8bc1ff !important;
+}
+[data-theme="dark"] .post-tags {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .post-tags i {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .post-tags a.post-tag {
+  color: #c9d1d9 !important;
+  background: rgba(95, 169, 255, 0.14) !important;
+}
+[data-theme="dark"] .post-tags a.post-tag:hover {
+  background: #5fa9ff !important;
+  color: #fff !important;
+}
+
+/* --- 问题6：文章底部「上一篇 / 下一篇」跳转按钮文字+图标 --- */
+[data-theme="dark"] .post-nav-item {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  border-color: #30363d !important;
+}
+[data-theme="dark"] .post-nav-item .label,
+[data-theme="dark"] .post-nav-item .label i,
+[data-theme="dark"] .post-nav-item .title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .post-nav-item:hover {
+  background: #5fa9ff !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .post-nav-item:hover .label,
+[data-theme="dark"] .post-nav-item:hover .label i,
+[data-theme="dark"] .post-nav-item:hover .title {
+  color: #fff !important;
+}
+
+/* --- 问题7：文章内「相关推荐」大标题 + 前置图标 --- */
+[data-theme="dark"] .related-posts-headline {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .related-posts-headline i {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .related-posts-list .aside-list-item .title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .related-posts-list .aside-list-item .title:hover {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .related-posts-list .aside-list-item .date {
+  color: #8b949e !important;
+}
+
+/* --- 问题8：评论区顶部「评论」二字 + 配套图标（7个平台统一 class: comment-headline） --- */
+[data-theme="dark"] .comment-headline {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .comment-headline i {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .comment-headline span {
+  color: #e6edf3 !important;
+}
+
+/* --- 问题9：以上所有文字的前置图标（兜底覆盖：容器下所有 i / svg 与文字颜色绑定） --- */
+[data-theme="dark"] .archives-title *,
+[data-theme="dark"] .article-sort-item.year *,
+[data-theme="dark"] .article-sort-item-time *,
+[data-theme="dark"] .post-copyright-list *,
+[data-theme="dark"] .post-nav-item *,
+[data-theme="dark"] .related-posts-headline *,
+[data-theme="dark"] .comment-headline * {
+  color: inherit !important;
+}
+[data-theme="dark"] .archives-title i,
+[data-theme="dark"] .article-sort-item.year i,
+[data-theme="dark"] .article-sort-item-time i,
+[data-theme="dark"] .post-tags i,
+[data-theme="dark"] .post-nav-item i,
+[data-theme="dark"] .related-posts-headline i,
+[data-theme="dark"] .comment-headline i {
+  fill: currentColor !important;
+}
+
+/* --- 问题2补充：作者卡片 邮箱/RSS 社交按钮图标颜色 --- */
+[data-theme="dark"] .card-info-social .social-icon {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .card-info-social .social-icon:hover {
+  background: #5fa9ff !important;
+  color: #fff !important;
+}
+
+/* --- 问题4：右侧悬浮按钮（主题切换+回顶部）图标硬编码浅色 --- */
+[data-theme="dark"] .rightside-btn {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+}
+[data-theme="dark"] .rightside-btn > * {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .rightside-btn i,
+[data-theme="dark"] .rightside-btn svg {
+  color: #e6edf3 !important;
+  fill: currentColor !important;
+}
+[data-theme="dark"] .rightside-btn:hover {
+  background: #5fa9ff !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .rightside-btn:hover i,
+[data-theme="dark"] .rightside-btn:hover svg {
+  color: #fff !important;
+}
+
+/* --- 问题5：网页底部 网站名称+所有文字硬编码 --- */
+[data-theme="dark"] .footer-info .footer-site-name {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .footer-info .footer-tagline {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .footer-nav a {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .footer-nav a:hover {
+  color: #5fa9ff !important;
+}
+[data-theme="dark"] .footer-social .social-icon {
+  color: #c9d1d9 !important;
+  background: rgba(95, 169, 255, 0.14) !important;
+}
+[data-theme="dark"] .footer-social .social-icon:hover {
+  color: #fff !important;
+  background: #5fa9ff !important;
+}
+[data-theme="dark"] .footer-extra,
+[data-theme="dark"] .footer-bottom,
+[data-theme="dark"] .footer-bottom p {
+  color: #8b949e !important;
+}
+
+/* --- 问题6：首页全屏Banner 压暗蒙层（硬编码） --- */
+[data-theme="dark"] #page-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(13, 17, 23, 0.7) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+[data-theme="dark"] #page-header #site-info,
+[data-theme="dark"] #page-header #site-title,
+[data-theme="dark"] #page-header #site-subtitle {
+  position: relative;
+  z-index: 3;
+}
+[data-theme="dark"] #page-header.full_page #site-info #site-title {
+  color: #ffffff !important;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] #page-header.full_page #site-info #site-subtitle {
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ------ 24. 防止首屏闪屏（暗色优先） ------ */
 html.not-loaded body { transition: none !important; }
 
-/* ------ 24. 打印样式 ------ */
+/* ------ 25. 打印样式 ------ */
 @media print {
   #nav, #footer, #rightside, #aside-content, .mobile-sidebar, #page-header { display: none !important; }
   body { background: #fff !important; color: #000 !important; }
