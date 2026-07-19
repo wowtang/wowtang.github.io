@@ -577,19 +577,36 @@
 <div class="card-widget card-webinfo">
   <div class="item-headline"><i class="fa-solid fa-chart-pie"></i><span>网站统计</span></div>
   <div class="webinfo">
-    <div class="webinfo-item"><span class="webinfo-label">文章</span><span class="webinfo-value">11</span></div>
-    <div class="webinfo-item"><span class="webinfo-label">标签</span><span class="webinfo-value">4</span></div>
-    <div class="webinfo-item"><span class="webinfo-label">分类</span><span class="webinfo-value">0</span></div>
-    <div class="webinfo-item"><span class="webinfo-label">运行</span><span class="webinfo-value" id="webinfo-runtime" data-since="2024-11-29">--</span><span class="webinfo-unit">天</span></div>
-    <div class="webinfo-item" id="webinfo-busuanzi" hidden>
-      <span class="webinfo-label">访客</span><span class="webinfo-value" id="busuanzi_value_site_uv">--</span>
+    <div class="webinfo-item">
+      <span class="webinfo-label">文章</span>
+      <span class="webinfo-value">11</span>
     </div>
-    <div class="webinfo-item" id="webinfo-busuanzi-pv" hidden>
-      <span class="webinfo-label">浏览</span><span class="webinfo-value" id="busuanzi_value_site_pv">--</span>
+    <div class="webinfo-item">
+      <span class="webinfo-label">标签</span>
+      <span class="webinfo-value">4</span>
+    </div>
+    <div class="webinfo-item">
+      <span class="webinfo-label">分类</span>
+      <span class="webinfo-value">0</span>
+    </div>
+    <div class="webinfo-item">
+      <span class="webinfo-label">运行</span>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span class="webinfo-value" id="webinfo-runtime" data-since="2024-11-29">--</span>
+        <span class="webinfo-unit">天</span>
+      </div>
+    </div>
+    <!-- cc新版ID，移除hidden -->
+    <div class="webinfo-item">
+      <span class="webinfo-label">访客</span>
+      <span class="webinfo-value" id="busuanzi_site_uv">--</span>
+    </div>
+    <div class="webinfo-item">
+      <span class="webinfo-label">浏览</span>
+      <span class="webinfo-value" id="busuanzi_site_pv">--</span>
     </div>
   </div>
-</div>
-</div>
+</div></div>
     <div data-widget="toc" data-order="2">
       <div id="toc-aside" class="toc-aside card-widget" hidden>
         <div class="item-headline"><i class="fa-solid fa-list"></i><span>目录</span></div>
@@ -827,8 +844,31 @@
     })();
   </script>
   <script src="/scripts/main.js" defer></script>
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
+  <script src="https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
+{# 站点运行天数计算 #}
+<script>
+(function(){
+  const runtimeEl = document.getElementById('webinfo-runtime');
+  if(runtimeEl){
+    const start = new Date(runtimeEl.dataset.since);
+    const now = new Date();
+    const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+    runtimeEl.innerText = diff >= 0 ? diff : 0;
+  }
+})();
+{# 加载超时兜底 #}
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    const uv = document.getElementById('busuanzi_site_uv').textContent;
+    const pv = document.getElementById('busuanzi_site_pv').textContent;
+    if(uv === '--' || pv === '--'){
+      document.getElementById('busuanzi_site_uv').innerText = '加载失败';
+      document.getElementById('busuanzi_site_pv').innerText = '加载失败';
+    }
+  }, 3000);
+})
+</script>
   
   
 <script>console.log("\n%c ✦ Gridea Pro v1.2.2 %c · Theme: liushen v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
