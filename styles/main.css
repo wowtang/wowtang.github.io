@@ -1488,3 +1488,26 @@ html.not-loaded body { transition: none !important; }
   body { background: #fff !important; color: #000 !important; }
   #content-inner.layout { display: block; padding: 0; max-width: none; }
 }
+
+/* ------ 26. 最新文章数量精确截断（配合widget-recent.html的show-N class，CSS2.1全浏览器支持） ------ */
+/* 模板层多渲染3x冗余以兼容隐藏文章过滤；CSS层精确保留用户设置的前N篇可见文章 */
+.card-recent-post.show-1  .aside-list > .aside-list-item:nth-of-type(n+2)  { display: none !important; }
+.card-recent-post.show-2  .aside-list > .aside-list-item:nth-of-type(n+3)  { display: none !important; }
+.card-recent-post.show-3  .aside-list > .aside-list-item:nth-of-type(n+4)  { display: none !important; }
+.card-recent-post.show-4  .aside-list > .aside-list-item:nth-of-type(n+5)  { display: none !important; }
+.card-recent-post.show-5  .aside-list > .aside-list-item:nth-of-type(n+6)  { display: none !important; }
+.card-recent-post.show-6  .aside-list > .aside-list-item:nth-of-type(n+7)  { display: none !important; }
+.card-recent-post.show-7  .aside-list > .aside-list-item:nth-of-type(n+8)  { display: none !important; }
+.card-recent-post.show-8  .aside-list > .aside-list-item:nth-of-type(n+9)  { display: none !important; }
+.card-recent-post.show-9  .aside-list > .aside-list-item:nth-of-type(n+10) { display: none !important; }
+.card-recent-post.show-10 .aside-list > .aside-list-item:nth-of-type(n+11) { display: none !important; }
+.card-recent-post.show-11 .aside-list > .aside-list-item:nth-of-type(n+12) { display: none !important; }
+.card-recent-post.show-12 .aside-list > .aside-list-item:nth-of-type(n+13) { display: none !important; }
+.card-recent-post.show-13 .aside-list > .aside-list-item:nth-of-type(n+14) { display: none !important; }
+.card-recent-post.show-14 .aside-list > .aside-list-item:nth-of-type(n+15) { display: none !important; }
+.card-recent-post.show-15 .aside-list > .aside-list-item:nth-of-type(n+16) { display: none !important; }
+.card-recent-post.show-16 .aside-list > .aside-list-item:nth-of-type(n+17) { display: none !important; }
+.card-recent-post.show-17 .aside-list > .aside-list-item:nth-of-type(n+18) { display: none !important; }
+.card-recent-post.show-18 .aside-list > .aside-list-item:nth-of-type(n+19) { display: none !important; }
+.card-recent-post.show-19 .aside-list > .aside-list-item:nth-of-type(n+20) { display: none !important; }
+.card-recent-post.show-20 .aside-list > .aside-list-item:nth-of-type(n+21) { display: none !important; }
