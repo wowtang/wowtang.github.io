@@ -666,6 +666,60 @@
       <a href="/about/">关于</a>
     </div>
     
+    <div class="footer-extra">今日总访问量 <span id="busuanzi_today_pv">加载中...</span> 次 |
+	    今日总访客数 <span id="busuanzi_today_uv">加载中...</span> 人<br>
+            本站总访问量 <span id="busuanzi_site_pv">加载中...</span> 次 | 
+	    本站总访客数 <span id="busuanzi_site_uv">加载中...</span> 人 | 
+	    本页总阅读量 <span id="busuanzi_page_pv">加载中...</span> 次<br>
+本站在风雨中安全运行：<span id="sitetime" style="color:#096"></span>
+<script>
+function siteTime() {
+    // 获取当前时间
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth();
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+
+    // 网站上线时间，注意月份参数从0开始（0代表1月）
+    var launchDate = new Date(2024, 11, 29, 14, 15, 00);
+
+    // 时间差值（毫秒数）
+    var diff = today - launchDate;
+
+    // 以下分别计算年、天、小时、分钟、秒
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+
+    // 考虑闰年情况来计算准确的年数
+    var diffYears = Math.floor(diff / years);
+    var remainingDiff = diff - diffYears * years;
+    var leapYearsCount = Math.floor(diffYears / 4) - Math.floor(diffYears / 100) + Math.floor(diffYears / 400);
+    remainingDiff += leapYearsCount * days;
+
+    var diffDays = Math.floor(remainingDiff / days);
+    remainingDiff -= diffDays * days;
+
+    var diffHours = Math.floor(remainingDiff / hours);
+    remainingDiff -= diffHours * hours;
+
+    var diffMinutes = Math.floor(remainingDiff / minutes);
+    remainingDiff -= diffMinutes * minutes;
+
+    var diffSeconds = Math.floor(remainingDiff / seconds);
+
+    document.getElementById("sitetime").innerHTML = "" + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+}
+// 使用setInterval实现每秒更新时间显示，达到实时变动效果
+setInterval(siteTime, 1000);
+siteTime();
+</script></div>
+    
   </div>
   <div class="footer-bottom">
     <p class="footer-copyright">© 2024 - {YEAR} · Sunrise.</p>
