@@ -1511,3 +1511,17 @@ html.not-loaded body { transition: none !important; }
 .card-recent-post.show-18 .aside-list > .aside-list-item:nth-of-type(n+19) { display: none !important; }
 .card-recent-post.show-19 .aside-list > .aside-list-item:nth-of-type(n+20) { display: none !important; }
 .card-recent-post.show-20 .aside-list > .aside-list-item:nth-of-type(n+21) { display: none !important; }
+
+/* ------ 27. 最新文章「暂无文章」提示显隐兜底（CSS2.1 全浏览器支持，彻底绕开模板层 for 内变量作用域不一致） ------ */
+/*
+ *  原理：兄弟选择器 .aside-list-item ~ .aside-empty 只命中 "前面存在任意一篇文章条目（.aside-list-item）"
+ *        的「暂无文章」提示（.aside-empty），此时隐藏它；
+ *        只有完全没有任何文章时（posts列表为空 OR 全部文章被 hideInList 过滤），
+ *        DOM 中才不会有任何 .aside-list-item，兄弟选择器自然不命中，
+ *        .aside-empty 才会正常显示。
+ *  优势：不依赖任何模板层的 has_shown / _shown 变量，从根源规避 Jinja/Nunjucks/Swig/Liquid
+ *        各引擎 for 内变量作用域不一致导致的「文章和暂无文章同时出现」BUG。
+ */
+.card-recent-post .aside-list > .aside-list-item ~ .aside-empty {
+  display: none !important;
+}
