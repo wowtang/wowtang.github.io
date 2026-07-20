@@ -439,60 +439,102 @@
   }
   initPostNav();
 
-  /* ------ 14. 闪念热力图 ------ */
+  /* ------ 14. 闪念热力图（完全照搬 chatgpt 主题实现：嵌套 grid + 动态周数，方块不溢出） ------ */
   function initHeatmap() {
     if (!CFG.heatmapEnable) return;
     var grid = $('#heatmap-grid');
-    var monthsBar = $('#heatmap-months');
+    var monthsRow = $('#heatmap-months');
     if (!grid) return;
 
-    // 收集 memo 日期
+    // 收集 memo 日期（优先 data-date-iso，回退 data-date，最后回退 memo-date 元素文本）
+    var items = $$('.memo-item');
     var counts = {};
-    $$('.memo-item').forEach(function (m) {
-      var d = m.dataset.date || '';
-      if (d) {
-        var key = d.substring(0, 10);
-        counts[key] = (counts[key] || 0) + 1;
+    items.forEach(function (item) {
+      var raw = item.getAttribute('data-date-iso') || item.getAttribute('data-date') || '';
+      if (!raw) {
+        var t = item.querySelector('time.memo-date');
+        if (t) raw = t.textContent || '';
       }
+      if (!raw) return;
+      var d = new Date(raw);
+      if (isNaN(d.getTime())) {
+        var match = String(raw).match(/(\d{4})[-\/年.](\d{1,2})[-\/月.](\d{1,2})/);
+        if (match) d = new Date(parseInt(match[1], 10), parseInt(match[2], 10) - 1, parseInt(match[3], 10));
+      }
+      if (isNaN(d.getTime())) return;
+      var y = d.getFullYear();
+      var mo = String(d.getMonth() + 1).padStart(2, '0');
+      var da = String(d.getDate()).padStart(2, '0');
+      var key = y + '-' + mo + '-' + da;
+      counts[key] = (counts[key] || 0) + 1;
     });
 
-    var today = new Date();
-    var startDay = new Date(today);
-    startDay.setDate(today.getDate() - 7 * 53);
-    // 调整到周一
-    while (startDay.getDay() !== 1) startDay.setDate(startDay.getDate() - 1);
+    var MONTHS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    var GAP = 3;
+    var CELL_MIN = 7; // 照搬 chatgpt：格子最小可读宽度
 
-    var frag = document.createDocumentFragment();
-    var d = new Date(startDay);
-    var monthLabels = [];
-    var lastMonth = -1;
-    var weekIdx = 0;
-    while (d <= today) {
-      var key = d.toISOString().substring(0, 10);
-      var n = counts[key] || 0;
-      var lvl = 0;
-      if (n >= 5) lvl = 4;
-      else if (n >= 3) lvl = 3;
-      else if (n >= 2) lvl = 2;
-      else if (n >= 1) lvl = 1;
-      var cell = document.createElement('span');
-      cell.className = 'heatmap-cell level-' + lvl;
-      cell.title = key + ' · ' + n + ' 条闪念';
-      frag.appendChild(cell);
-      // 每周第一天记一次月份
-      if (d.getDay() === 1) {
-        if (d.getMonth() !== lastMonth) {
-          monthLabels.push({ idx: weekIdx, label: (d.getMonth() + 1) + '月' });
-          lastMonth = d.getMonth();
+    function render() {
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // ---------- 照搬 chatgpt：容器能放下几周就显示最近几周，上限 53、下限 4 ----------
+      var avail = grid.clientWidth || 0;
+      var fitWeeks = Math.floor((avail + GAP) / (CELL_MIN + GAP));
+      var totalWeeks = Math.max(4, Math.min(53, fitWeeks));
+      // ---------- 照搬 chatgpt：总天数、起始日期对齐（对齐到周日） ----------
+      var totalDays = (totalWeeks - 1) * 7 + today.getDay() + 1;
+      var startDate = new Date(today);
+      startDate.setDate(startDate.getDate() - totalDays + 1);
+      startDate.setDate(startDate.getDate() - startDate.getDay()); // 对齐到周日
+
+      // ---------- 照搬 chatgpt：两列 grid 模板完全一致 ----------
+      grid.style.gridTemplateColumns = 'repeat(' + totalWeeks + ', minmax(0, 1fr))';
+      monthsRow.style.gridTemplateColumns = 'repeat(' + totalWeeks + ', minmax(0, 1fr))';
+
+      var gridHtml = '';
+      var monthHtml = '';
+      var lastMonth = -1;
+
+      // ---------- 照搬 chatgpt：外层按「周」循环，每一列用 <span class="heatmap-week"> 包裹 7 个 cell ----------
+      for (var w = 0; w < totalWeeks; w++) {
+        var colHtml = '';
+        var firstOfWeek = new Date(startDate);
+        firstOfWeek.setDate(firstOfWeek.getDate() + w * 7);
+        if (firstOfWeek <= today && firstOfWeek.getMonth() !== lastMonth) {
+          monthHtml += '<span class="heatmap-month">' + MONTHS[firstOfWeek.getMonth()] + '</span>';
+          lastMonth = firstOfWeek.getMonth();
+        } else {
+          monthHtml += '<span></span>';
         }
-        weekIdx++;
+        for (var d = 0; d < 7; d++) {
+          var cellDate = new Date(startDate);
+          cellDate.setDate(cellDate.getDate() + w * 7 + d);
+          var y = cellDate.getFullYear();
+          var mo = String(cellDate.getMonth() + 1).padStart(2, '0');
+          var da = String(cellDate.getDate()).padStart(2, '0');
+          var key = y + '-' + mo + '-' + da;
+          var count = counts[key] || 0;
+          var level = count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4;
+          if (cellDate > today) {
+            colHtml += '<i class="heatmap-cell" data-level="-1"></i>';
+          } else {
+            colHtml += '<i class="heatmap-cell" data-level="' + level + '" title="' + key + '：' + count + ' 条闪念"></i>';
+          }
+        }
+        gridHtml += '<span class="heatmap-week">' + colHtml + '</span>';
       }
-      d.setDate(d.getDate() + 1);
+
+      grid.innerHTML = gridHtml;
+      monthsRow.innerHTML = monthHtml;
     }
-    grid.appendChild(frag);
-    if (monthsBar) {
-      monthsBar.innerHTML = monthLabels.map(function (m) { return '<span style="grid-column:' + (m.idx + 1) + '">' + m.label + '</span>'; }).join('');
-    }
+    render();
+
+    // ---------- 照搬 chatgpt：resize 防抖 ----------
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(render, 150);
+    });
   }
   initHeatmap();
 
