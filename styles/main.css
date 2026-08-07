@@ -258,6 +258,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 #page-site-info { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
 #page-site-info #site-title { font-size: clamp(28px, 4vw, 44px); margin-bottom: 8px; }
 #page-site-info #page-subtitle { color: #fff; opacity: 0.92; font-size: 15px; margin: 0; }
+.page-tag #page-site-info #site-title::before { content: "#"; }
 
 /* SVG 波浪 */
 .waves-area {
