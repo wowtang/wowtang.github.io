@@ -579,4 +579,109 @@
     el.innerHTML = el.innerHTML.replace(/\{YEAR\}/g, new Date().getFullYear());
   });
 
+  /* ------ 19. 外链跳转风险提示（模态框） ------ */
+  function initLinkOut() {
+    if (!CFG.linkOutEnable) return;
+    var siteDomain = window.location.hostname;
+    var modal = null;
+    var targetUrl = null;
+    
+    // 解析白名单（支持换行符和逗号分隔）
+    var whitelist = [];
+    if (CFG.linkOutWhitelist) {
+      whitelist = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function(d) { return d.trim().toLowerCase(); }).filter(Boolean);
+    }
+    
+    // 检查域名是否在白名单中
+    function isWhitelisted(hostname) {
+      hostname = hostname.toLowerCase();
+      for (var i = 0; i < whitelist.length; i++) {
+        var domain = whitelist[i];
+        // 支持子域名匹配：github.com 匹配 xxx.github.com
+        if (hostname === domain || hostname.endsWith('.' + domain)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    function createModal() {
+      modal = document.createElement('div');
+      modal.className = 'link-out-overlay';
+      modal.innerHTML = 
+        '<div class="link-out-modal">' +
+          '<div class="link-out-icon">' +
+            '<i class="fa-solid fa-triangle-exclamation"></i>' +
+          '</div>' +
+          '<h1 class="link-out-title">即将离开' + escapeHtml(CFG.siteName || '本站') + '</h1>' +
+          '<p class="link-out-desc">您即将离开' + escapeHtml(CFG.siteName || '本站') + '，请注意您的账号和财产安全。</p>' +
+          '<div class="link-out-url">' +
+            '<span class="url-label">目标地址：</span>' +
+            '<span class="url-value" id="link-out-url-value"></span>' +
+          '</div>' +
+          '<div class="link-out-actions">' +
+            '<button class="btn btn-cancel" id="link-out-cancel">返回</button>' +
+            '<button class="btn btn-confirm" id="link-out-confirm">访问</button>' +
+          '</div>' +
+        '</div>';
+      
+      document.body.appendChild(modal);
+      
+      modal.querySelector('#link-out-cancel').addEventListener('click', closeModal);
+      modal.querySelector('#link-out-confirm').addEventListener('click', function() {
+        if (targetUrl) {
+          window.open(targetUrl, '_blank', 'noopener');
+          closeModal();
+        }
+      });
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', function onEsc(e) {
+        if (e.key === 'Escape') {
+          closeModal();
+          document.removeEventListener('keydown', onEsc);
+        }
+      });
+    }
+    
+    function openModal(url) {
+      targetUrl = url;
+      if (!modal) createModal();
+      modal.querySelector('#link-out-url-value').textContent = url;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        targetUrl = null;
+      }
+    }
+    
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+      var href = a.href;
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+      
+      try {
+        var url = new URL(href);
+        if (url.hostname && url.hostname !== siteDomain) {
+          // 检查白名单
+          if (isWhitelisted(url.hostname)) {
+            return; // 白名单域名，不提示
+          }
+          e.preventDefault();
+          openModal(href);
+        }
+      } catch (err) {
+        // 不是有效 URL，可能是相对路径，忽略
+      }
+    });
+  }
+  initLinkOut();
+
 })();
