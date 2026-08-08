@@ -294,11 +294,20 @@
         <i class="fa-solid fa-link"></i>
         <span>友情链接 · 14 个</span>
       </div>
-      
-      <a href="https://wowtang.top/post/link_sq" target="_blank" rel="noopener" class="flink-apply-btn">
-        <i class="fa-solid fa-paper-plane"></i>
-        <span>友链申请</span>
-      </a>
+      <div class="flink-headline-actions">
+        
+        <a href="https://wowtang.top/post/link_sq" target="_blank" rel="noopener" class="flink-apply-btn">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>友链申请</span>
+        </a>
+        
+        
+        <a href="javascript:;" class="flink-apply-btn" id="friend-feed-toggle">
+          <i class="fa-solid fa-rss"></i>
+          <span>朋友动态</span>
+        </a>
+        
+      </div>
     </div>
     <div class="flink-list">
       
@@ -627,6 +636,204 @@
         
       
     </div>
+    
+    
+    <div class="friend-feed-wrap" id="friend-feed-wrap" hidden>
+      <div class="friend-feed-loading" id="friend-feed-loading">正在抓取朋友动态…</div>
+      <div class="friend-feed-list" id="friend-feed-list"></div>
+    </div>
+    
+    <ul id="friend-feed-links-data" style="display:none">
+      
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://www.zzzzhi.com" data-name="祈星海" data-avatar="https://bu.dusays.com/2024/06/20/6674436e8be23.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://blog.fyz666.xyz/" data-name="逸风亭" data-avatar="https://s2.loli.net/2025/04/12/KqFxMtPRpu5bjTy.webp"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://ssshooter.com" data-name="UsubeniFantasy" data-avatar="https://ssshooter.com/logo.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://blog.talen.top" data-name="爱吃猫的鱼" data-avatar="https://image.talen.top/20251229184705_wgsva7g9.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://ilimeng.cn/" data-name="离梦博客" data-avatar="https://ilimeng.cn/SLiMan.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://twbk.cn/" data-name="叹惋博客" data-avatar="https://twbk.cn/wp-content/uploads/2025/10/logo.png?orientation=landscape&amp;width=512&amp;height=512"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://whitebear.im" data-name="I&#39;m WhiteBear" data-avatar="https://whitebear.im/usr/uploads/2024/11/4186247099.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://myblog.icu" data-name="JiuLiuBLOG" data-avatar="https://api.myblog.icu/api/images/66d8abaee825b7d74238c6bc8a58f4a5?size=sm"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://blog.002.hk" data-name="晓蓝" data-avatar="https://file.devhub.eu.org/file/fmrmokRG.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://hehuang.site" data-name="合荒小站" data-avatar="https://hehuang.site/img/avatar.jpg"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://jingyuan-zheng.github.io/" data-name="小景" data-avatar="https://jingyuan-zheng.github.io/img/avatar.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://xice.cx/" data-name="Chongxiの咖啡屋" data-avatar="https://xice.cx/images/chongxi-avatar.webp"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://mojue88.com" data-name="云墨观窗" data-avatar="https://mojue88.com/favicon.png"></li>
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        <li data-url="https://xiaoxi.ac.cn" data-name="小曦的园子" data-avatar="https://img.xiaoxi.ac.cn/logo.png"></li>
+          
+        
+      
+    </ul>
+    
+    <span id="friend-feed-rss-config" style="display:none">https://api.myblog.icu/api/public/rss
+https://api.myblog.icu/api/public/rss</span>
+    
   </div>
 
   
@@ -657,14 +864,19 @@
 }
 .flink-apply-btn:hover i { transform: translate(2px, -2px) rotate(-8deg); }
 [data-theme="dark"] .flink-apply-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e6edf3 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] .flink-apply-btn i { color: #e6edf3 !important; }
+[data-theme="dark"] .flink-apply-btn:hover {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff !important;
-  box-shadow: 0 4px 14px rgba(95, 169, 255, 0.25);
-}
-[data-theme="dark"] .flink-apply-btn:hover {
-  color: #fff !important;
+  border-color: transparent;
   box-shadow: 0 6px 20px rgba(95, 169, 255, 0.42);
 }
+[data-theme="dark"] .flink-apply-btn:hover i { color: #fff !important; }
 [data-theme="dark"] .flink-name {
   color: #e6edf3 !important;
 }
@@ -678,7 +890,167 @@
 [data-theme="dark"] .flink-item:hover .flink-name {
   color: #5fa9ff;
 }
+
+/* 朋友动态 */
+.flink-headline-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.friend-feed-wrap { padding: 8px 0; }
+.friend-feed-loading { text-align: center; color: var(--text-meta); padding: 24px; font-size: 13px; }
+.friend-feed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.friend-feed-item {
+  display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.5); color: var(--text);
+  transition: background .2s, transform .2s;
+}
+.friend-feed-item:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
+.friend-feed-item:hover .friend-feed-title { color: #fff; }
+.friend-feed-avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
+.friend-feed-meta { min-width: 0; flex: 1; }
+.friend-feed-title { margin: 0 0 4px; font-size: 15px; font-weight: 700; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.friend-feed-info { font-size: 12px; opacity: 0.75; margin-bottom: 4px; }
+.friend-feed-desc { margin: 0; font-size: 12px; opacity: 0.7; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+[data-theme="dark"] .friend-feed-item { background: rgba(255, 255, 255, 0.06); color: #c9d1d9; }
+[data-theme="dark"] .friend-feed-item:hover { background: rgba(95, 169, 255, 0.1); color: #c9d1d9; }
+[data-theme="dark"] .friend-feed-title { color: #e6edf3; }
+[data-theme="dark"] .friend-feed-info { color: #8b949e; }
+[data-theme="dark"] .friend-feed-desc { color: #8b949e; }
+[data-theme="dark"] .friend-feed-item:hover .friend-feed-title { color: #5fa9ff; }
 </style>
+
+<script>
+(function () {
+  var toggle = document.getElementById('friend-feed-toggle');
+  var wrap = document.getElementById('friend-feed-wrap');
+  if (!toggle || !wrap) return;
+
+  // 从隐藏 DOM 节点读取配置
+  var rssConfigEl = document.getElementById('friend-feed-rss-config');
+  var rssRaw = rssConfigEl ? rssConfigEl.textContent.trim() : '';
+  var feeds = rssRaw.split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean);
+
+  // 从隐藏 ul 读取友链数据，构造 域名 → {name, avatar} 映射
+  var domainMap = {};
+  var domainList = []; // [{host, name, avatar}] 用于后缀匹配
+  var dataList = document.getElementById('friend-feed-links-data');
+  if (dataList) {
+    var items = dataList.querySelectorAll('li');
+    for (var i = 0; i < items.length; i++) {
+      var url = items[i].getAttribute('data-url');
+      var name = items[i].getAttribute('data-name');
+      var avatar = items[i].getAttribute('data-avatar');
+      try {
+        var u = new URL(url);
+        var host = u.hostname.toLowerCase();
+        domainMap[host] = { name: name, avatar: avatar };
+        // 去掉 www. 前缀也存一份
+        var noWww = host.replace(/^www\./, '');
+        if (noWww !== host) domainMap[noWww] = { name: name, avatar: avatar };
+        domainList.push({ host: host, noWww: noWww, name: name, avatar: avatar });
+      } catch (e) {}
+    }
+  }
+
+  function extractDomain(u) { try { return new URL(u).hostname.toLowerCase(); } catch (e) { return ''; } }
+
+  // 模糊匹配：支持 www 前缀差异 + 后缀匹配（如 blog.example.com 匹配 example.com）
+  function matchFriend(feedLink, rssUrl) {
+    var candidates = [];
+    if (feedLink) candidates.push(feedLink);
+    if (rssUrl) candidates.push(rssUrl);
+    for (var i = 0; i < candidates.length; i++) {
+      var host = extractDomain(candidates[i]);
+      if (!host) continue;
+      var noWww = host.replace(/^www\./, '');
+      // 精确匹配（含 www 变体）
+      if (domainMap[host]) return domainMap[host];
+      if (domainMap[noWww]) return domainMap[noWww];
+      // 后缀匹配：feed 域名以友链域名为后缀（如 feed blog.a.com 匹配友链 a.com）
+      for (var j = 0; j < domainList.length; j++) {
+        var d = domainList[j];
+        if (host === d.host || host === d.noWww) return { name: d.name, avatar: d.avatar };
+        if (host.endsWith('.' + d.noWww)) return { name: d.name, avatar: d.avatar };
+      }
+    }
+    return null;
+  }
+  function stripHtml(s) { return String(s).replace(/<[^>]+>/g, ''); }
+  function fmtDate(d) {
+    try { var t = new Date(d); if (isNaN(t)) return d; return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2); } catch (e) { return d; }
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  var listEl = document.getElementById('friend-feed-list');
+  var loadingEl = document.getElementById('friend-feed-loading');
+  var flinkList = document.querySelector('.flink-list');
+  var loaded = false;
+
+  toggle.addEventListener('click', function () {
+    if (!wrap.hasAttribute('hidden')) {
+      wrap.setAttribute('hidden', '');
+      if (flinkList) flinkList.style.display = '';
+      toggle.querySelector('span').textContent = '朋友动态';
+      toggle.querySelector('i').className = 'fa-solid fa-rss';
+    } else {
+      if (flinkList) flinkList.style.display = 'none';
+      wrap.removeAttribute('hidden');
+      toggle.querySelector('span').textContent = '返回友链';
+      toggle.querySelector('i').className = 'fa-solid fa-arrow-left';
+      if (!loaded) { loaded = true; loadFeeds(); }
+    }
+  });
+
+  function loadFeeds() {
+    if (feeds.length === 0) {
+      loadingEl.textContent = '尚未配置朋友 RSS（请在主题配置「友链动态 RSS」填写，每行一个）';
+      return;
+    }
+    loadingEl.textContent = '正在抓取朋友动态…（共 ' + feeds.length + ' 个源）';
+    var all = [];
+    var done = 0;
+    feeds.forEach(function (rss) {
+      fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rss))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.status === 'ok') {
+            var friend = matchFriend((data.feed && data.feed.link) || '', rss) || {};
+            (data.items || []).slice(0, 5).forEach(function (it) {
+              all.push({
+                title: it.title || '(无标题)',
+                link: it.link || '',
+                pubDate: it.pubDate || '',
+                desc: stripHtml(it.description || '').slice(0, 140),
+                author: friend.name || (data.feed && data.feed.title) || extractDomain((data.feed && data.feed.link) || rss),
+                avatar: friend.avatar || (data.feed && data.feed.image) || '/media/images/default-avatar.svg'
+              });
+            });
+          }
+        })
+        .catch(function () {})
+        .then(function () { done++; if (done === feeds.length) render(); });
+    });
+
+    function render() {
+      all.sort(function (a, b) { return new Date(b.pubDate) - new Date(a.pubDate); });
+      all = all.slice(0, 60);
+      loadingEl.style.display = 'none';
+      if (all.length === 0) {
+        loadingEl.style.display = '';
+        loadingEl.textContent = '暂无朋友动态（RSS 抓取失败或为空）';
+        return;
+      }
+      listEl.innerHTML = all.map(function (it) {
+        return '<a class="friend-feed-item" href="' + esc(it.link) + '" target="_blank" rel="noopener">' +
+          '<img class="friend-feed-avatar" src="' + esc(it.avatar) + '" onerror="this.onerror=null;this.src=\'/media/images/default-avatar.svg\';" alt="' + esc(it.author) + '">' +
+          '<div class="friend-feed-meta">' +
+            '<h4 class="friend-feed-title">' + esc(it.title) + '</h4>' +
+            '<div class="friend-feed-info"><span>' + esc(it.author) + '</span> · <span>' + fmtDate(it.pubDate) + '</span></div>' +
+            (it.desc ? '<p class="friend-feed-desc">' + esc(it.desc) + '</p>' : '') +
+          '</div>' +
+        '</a>';
+      }).join('');
+    }
+  }
+})();
+</script>
 
       </div>
       

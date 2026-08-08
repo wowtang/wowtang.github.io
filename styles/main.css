@@ -61,7 +61,7 @@
 
 /* ------ 2. Reset & Base ------ */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
 body {
   margin: 0;
   font-family: var(--body-font);
@@ -427,6 +427,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
   line-height: 1.5; margin-bottom: 10px;
 }
 .article-title:hover { color: var(--primary); }
+.recent-post-item:hover .article-title { color: #fff !important; }
 .article-title .sticky { color: var(--hover); margin-right: 4px; transform: rotate(45deg); display: inline-block; }
 .article-meta-wrap { font-size: 12px; color: var(--text-meta); margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .article-meta-wrap i { margin-right: 4px; }
@@ -1151,6 +1152,9 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 }
 [data-theme="dark"] .article-title:hover {
   color: #5fa9ff !important;
+}
+[data-theme="dark"] .recent-post-item:hover .article-title {
+  color: #fff !important;
 }
 [data-theme="dark"] .recent-post-info > .content {
   color: #c9d1d9 !important;
