@@ -296,7 +296,7 @@
       </div>
       <div class="flink-headline-actions">
         
-        <a href="https://wowtang.top/post/link_sq" target="_blank" rel="noopener" class="flink-apply-btn">
+        <a href="javascript:;" class="flink-apply-btn" id="friend-apply-toggle">
           <i class="fa-solid fa-paper-plane"></i>
           <span>友链申请</span>
         </a>
@@ -637,6 +637,11 @@
       
     </div>
     
+    <div class="friend-apply-wrap" id="friend-apply-wrap" hidden>
+      <div class="friend-apply-content article-container post-content" id="friend-apply-content">
+        <div class="friend-feed-loading">正在加载…</div>
+      </div>
+    </div>
     
     <div class="friend-feed-wrap" id="friend-feed-wrap" hidden>
       <div class="friend-feed-loading" id="friend-feed-loading">正在抓取朋友动态…</div>
@@ -894,6 +899,28 @@ https://jingyuan-zheng.github.io/zh/index.xml</span>
 
 /* 朋友动态 */
 .flink-headline-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* 友链申请 */
+.friend-apply-wrap { padding: 8px 0; }
+.apply-site-info { display: flex; gap: 16px; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.apply-site-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.apply-site-meta h3 { margin: 0 0 4px; font-size: 18px; }
+.apply-site-desc { margin: 0; font-size: 13px; color: var(--text-meta); }
+.apply-info-table { margin-bottom: 20px; }
+.apply-info-row { display: flex; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 14px; }
+.apply-info-label { width: 80px; flex-shrink: 0; color: var(--text-meta); font-weight: 600; }
+.apply-info-value { flex: 1; word-break: break-all; color: var(--text); }
+.apply-notice h3 { font-size: 16px; margin: 0 0 10px; }
+.apply-notice p { font-size: 14px; line-height: 1.8; margin: 0 0 8px; }
+.apply-notice ul { font-size: 14px; line-height: 1.8; padding-left: 20px; }
+[data-theme="dark"] .apply-site-info { border-bottom-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .apply-info-row { border-bottom-color: rgba(255,255,255,0.06); }
+[data-theme="dark"] .apply-site-meta h3 { color: #e6edf3; }
+[data-theme="dark"] .apply-site-desc { color: #8b949e; }
+[data-theme="dark"] .apply-info-label { color: #8b949e; }
+[data-theme="dark"] .apply-info-value { color: #c9d1d9; }
+[data-theme="dark"] .apply-notice h3 { color: #e6edf3; }
+[data-theme="dark"] .apply-notice p, [data-theme="dark"] .apply-notice ul { color: #c9d1d9; }
 .friend-feed-wrap { padding: 8px 0; }
 .friend-feed-loading { text-align: center; color: var(--text-meta); padding: 24px; font-size: 13px; }
 .friend-feed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
@@ -919,9 +946,8 @@ https://jingyuan-zheng.github.io/zh/index.xml</span>
 
 <script>
 (function () {
-  var toggle = document.getElementById('friend-feed-toggle');
-  var wrap = document.getElementById('friend-feed-wrap');
-  if (!toggle || !wrap) return;
+  var applyToggle = document.getElementById('friend-apply-toggle');
+  if (!applyToggle) return;
 
   // 从隐藏 DOM 节点读取配置
   var rssConfigEl = document.getElementById('friend-feed-rss-config');
@@ -982,24 +1008,69 @@ https://jingyuan-zheng.github.io/zh/index.xml</span>
   var listEl = document.getElementById('friend-feed-list');
   var loadingEl = document.getElementById('friend-feed-loading');
   var flinkList = document.querySelector('.flink-list');
+  var feedToggle = document.getElementById('friend-feed-toggle');
+  var feedWrap = document.getElementById('friend-feed-wrap');
+  var applyWrap = document.getElementById('friend-apply-wrap');
   var loaded = false;
+  var currentPanel = 'list'; // list / feed / apply
 
-  // 页面加载后预加载 RSS 数据，点击时直接展示
-  loadFeeds();
+  // 页面加载后预加载 RSS 数据，点击时直接展示（仅当朋友动态启用时）
+  if (feedWrap) loadFeeds();
 
-  toggle.addEventListener('click', function () {
-    if (!wrap.hasAttribute('hidden')) {
-      wrap.setAttribute('hidden', '');
-      if (flinkList) flinkList.style.display = '';
-      toggle.querySelector('span').textContent = '朋友动态';
-      toggle.querySelector('i').className = 'fa-solid fa-rss';
-    } else {
-      if (flinkList) flinkList.style.display = 'none';
-      wrap.removeAttribute('hidden');
-      toggle.querySelector('span').textContent = '返回友链';
-      toggle.querySelector('i').className = 'fa-solid fa-arrow-left';
+  // 统一面板切换
+  function showPanel(name) {
+    currentPanel = name;
+    // 友链列表
+    if (flinkList) flinkList.style.display = (name === 'list') ? '' : 'none';
+    // 朋友动态
+    if (feedWrap) { if (name === 'feed') feedWrap.removeAttribute('hidden'); else feedWrap.setAttribute('hidden', ''); }
+    // 友链申请
+    if (applyWrap) { if (name === 'apply') applyWrap.removeAttribute('hidden'); else applyWrap.setAttribute('hidden', ''); }
+    // 按钮状态
+    if (feedToggle) {
+      var isFeed = (name === 'feed');
+      feedToggle.querySelector('span').textContent = isFeed ? '返回友链' : '朋友动态';
+      feedToggle.querySelector('i').className = isFeed ? 'fa-solid fa-arrow-left' : 'fa-solid fa-rss';
     }
-  });
+    if (applyToggle) {
+      var isApply = (name === 'apply');
+      applyToggle.querySelector('span').textContent = isApply ? '返回友链' : '友链申请';
+      applyToggle.querySelector('i').className = isApply ? 'fa-solid fa-arrow-left' : 'fa-solid fa-paper-plane';
+    }
+  }
+
+  if (feedToggle) {
+    feedToggle.addEventListener('click', function () {
+      showPanel(currentPanel === 'feed' ? 'list' : 'feed');
+    });
+  }
+  if (applyToggle) {
+    applyToggle.addEventListener('click', function () {
+      showPanel(currentPanel === 'apply' ? 'list' : 'apply');
+    });
+  }
+
+  // 预加载友链申请页面内容（从 /post/link_sq/ 提取正文）
+  loadApplyContent();
+
+  function loadApplyContent() {
+    var applyContent = document.getElementById('friend-apply-content');
+    if (!applyContent) return;
+    fetch('/post/link_sq/')
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var article = doc.querySelector('#article-container');
+        if (article && article.innerHTML.trim()) {
+          applyContent.innerHTML = article.innerHTML;
+        } else {
+          applyContent.innerHTML = '<h3>友链申请</h3><p>暂无友链申请说明。请先创建 link_sq 页面。</p>';
+        }
+      })
+      .catch(function () {
+        applyContent.innerHTML = '<h3>友链申请</h3><p>欢迎互换友链！请先添加本站至你的友链列表，然后通过侧栏社交图标联系站长。</p>';
+      });
+  }
 
   function loadFeeds() {
     if (loaded) return;
