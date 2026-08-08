@@ -983,6 +983,9 @@ https://xiaoxi.ac.cn/rss.xml</span>
   var flinkList = document.querySelector('.flink-list');
   var loaded = false;
 
+  // 页面加载后预加载 RSS 数据，点击时直接展示
+  loadFeeds();
+
   toggle.addEventListener('click', function () {
     if (!wrap.hasAttribute('hidden')) {
       wrap.setAttribute('hidden', '');
@@ -994,16 +997,16 @@ https://xiaoxi.ac.cn/rss.xml</span>
       wrap.removeAttribute('hidden');
       toggle.querySelector('span').textContent = '返回友链';
       toggle.querySelector('i').className = 'fa-solid fa-arrow-left';
-      if (!loaded) { loaded = true; loadFeeds(); }
     }
   });
 
   function loadFeeds() {
+    if (loaded) return;
+    loaded = true;
     if (feeds.length === 0) {
       loadingEl.textContent = '尚未配置朋友 RSS（请在主题配置「友链动态 RSS」填写，每行一个）';
       return;
     }
-    loadingEl.textContent = '正在抓取朋友动态…（共 ' + feeds.length + ' 个源）';
     var all = [];
     var done = 0;
     feeds.forEach(function (rss) {
