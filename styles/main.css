@@ -79,6 +79,35 @@ body {
 }
 [data-theme="dark"] body { background-image: var(--bg-image-dark); }
 
+/* ------ 自定义滚动条 ------ */
+/* Webkit (Chrome / Edge / Safari) */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(38, 121, 204, 0.3);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background .2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(38, 121, 204, 0.55);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner { background: transparent; }
+/* Firefox */
+* { scrollbar-width: thin; scrollbar-color: rgba(38, 121, 204, 0.3) transparent; }
+/* 暗色模式 */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(95, 169, 255, 0.3);
+  background-clip: padding-box;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(95, 169, 255, 0.55);
+  background-clip: padding-box;
+}
+[data-theme="dark"] * { scrollbar-color: rgba(95, 169, 255, 0.3) transparent; }
+
 img { max-width: 100%; height: auto; vertical-align: middle; }
 a { color: var(--link); text-decoration: none; transition: color .2s ease; }
 a:hover { color: var(--hover); }
@@ -1036,7 +1065,14 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 [data-theme="dark"] .rightside-btn {
   background: var(--card-bg-solid);
 }
+[data-theme="dark"] .error-msg {
+  color: #fff !important;
+}
+[data-theme="dark"] .mobile-site-name {
+  color: #fff !important;
+}
 [data-theme="dark"] .error-actions a {
+  color: #fff !important;
   background: var(--card-bg-solid);
 }
 [data-theme="dark"] .error-actions a:hover {
