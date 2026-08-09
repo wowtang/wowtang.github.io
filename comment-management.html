@@ -233,15 +233,38 @@
     [data-theme="dark"] .custom-input { background: rgba(255, 255, 255, 0.05); }
     [data-theme="dark"] .custom-input:focus { background: rgba(255, 255, 255, 0.08); }
     .custom-login-options {
-      display: flex; gap: 24px; margin-bottom: 20px;
+      display: flex; justify-content: center; gap: 24px; margin-bottom: 22px;
     }
     .custom-checkbox {
-      display: flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; gap: 8px;
       font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none;
+      transition: color 0.2s; position: relative;
     }
+    .custom-checkbox:hover { color: var(--text); }
     .custom-checkbox input {
-      width: 15px; height: 15px; cursor: pointer; accent-color: var(--primary);
+      position: absolute; opacity: 0; width: 0; height: 0; margin: 0;
     }
+    .custom-checkbox .checkmark {
+      width: 18px; height: 18px; border: 2px solid var(--card-border);
+      border-radius: 5px; background: rgba(255, 255, 255, 0.5);
+      transition: all 0.2s; flex-shrink: 0; display: grid; place-items: center;
+    }
+    .custom-checkbox:hover .checkmark { border-color: var(--primary); }
+    .custom-checkbox input:checked ~ .checkmark {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(38, 121, 204, 0.25);
+    }
+    .custom-checkbox .checkmark::after {
+      content: ""; width: 5px; height: 9px;
+      border: solid #fff; border-width: 0 2px 2px 0;
+      transform: rotate(45deg) scale(0); transition: transform 0.18s;
+      margin-top: -2px;
+    }
+    .custom-checkbox input:checked ~ .checkmark::after {
+      transform: rotate(45deg) scale(1);
+    }
+    [data-theme="dark"] .custom-checkbox .checkmark { background: rgba(255, 255, 255, 0.05); }
     .custom-login-btn {
       width: 100%; padding: 12px; border: none; border-radius: var(--radius-sm);
       background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -370,7 +393,8 @@
     #twikoo.body-single-config .tk-admin-config-group[open] > .tk-admin-config-item:first-of-type { border-top: none; }
 
     /* === 概览页模式：隐藏 Twikoo 全部内容 === */
-    body.config-overview-mode #tcomment { display: none !important; }
+    body.config-overview-mode #tcomment,
+    body.config-overview-mode #twikoo { display: none !important; }
 
     .sidebar-overlay {
       display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
@@ -384,17 +408,8 @@
     #twikoo .tk-panel-title { display: none !important; }
     #twikoo .tk-tabs { display: none !important; }
 
-    /* === Twikoo 页脚：显示但替换内容为 Sunrise's blog === */
-    #twikoo .tk-footer {
-      display: flex !important; justify-content: center; padding: 16px 0 4px;
-      font-size: 0.76rem; color: var(--text-muted); opacity: 0.7;
-    }
-    #twikoo .tk-footer a { display: none !important; }
-    #twikoo .tk-footer::after {
-      content: "Powered by Sunrise's blog"; display: block;
-    }
-    #twikoo .tk-footer { font-size: 0 !important; }
-    #twikoo .tk-footer::after { font-size: 0.76rem; }
+    /* === Twikoo 页脚：隐藏 === */
+    #twikoo .tk-footer { display: none !important; }
 
     /* === 重建布局：全屏遮罩改为正常内联布局 === */
     #twikoo .tk-admin-container {
@@ -680,8 +695,8 @@
                   <input type="password" id="loginPassword" class="custom-input" placeholder="密码" autocomplete="current-password">
                 </div>
                 <div class="custom-login-options">
-                  <label class="custom-checkbox"><input type="checkbox" id="rememberPwd"> <span>记住密码</span></label>
-                  <label class="custom-checkbox"><input type="checkbox" id="autoLoginChk"> <span>自动登录</span></label>
+                  <label class="custom-checkbox"><input type="checkbox" id="rememberPwd"><span class="checkmark"></span><span>记住密码</span></label>
+                  <label class="custom-checkbox"><input type="checkbox" id="autoLoginChk"><span class="checkmark"></span><span>自动登录</span></label>
                 </div>
                 <button class="custom-login-btn" id="customLoginBtn">登录</button>
                 <div id="autoLoginHint"></div>
