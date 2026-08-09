@@ -392,12 +392,24 @@
     <span>评论</span>
   </div>
   <div id="tcomment"></div>
-  <script src="https://registry.npmmirror.com/twikoo/1.7.15/files/dist/twikoo.min.js"></script>
   <script>
-    twikoo.init({
-      envId: 'https://twikoo.vercel.wowtang.top/',
-      el: '#tcomment'
-    });
+    (function () {
+      function initTwikoo() {
+        if (typeof twikoo === 'undefined') {
+          setTimeout(initTwikoo, 100);
+          return;
+        }
+        twikoo.init({
+          envId: 'https://twikoo.vercel.wowtang.top/',
+          el: '#tcomment'
+        });
+      }
+      var s = document.createElement('script');
+      s.src = 'https://registry.npmmirror.com/twikoo/1.7.15/files/dist/twikoo.min.js';
+      s.onload = initTwikoo;
+      s.onerror = initTwikoo;
+      document.body.appendChild(s);
+    })();
   </script>
 </section>
 
