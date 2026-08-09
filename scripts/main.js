@@ -614,9 +614,9 @@
             '<i class="fa-solid fa-triangle-exclamation"></i>' +
           '</div>' +
           '<h1 class="link-out-title">即将离开' + escapeHtml(CFG.siteName || '本站') + '</h1>' +
-          '<p class="link-out-desc">您即将离开' + escapeHtml(CFG.siteName || '本站') + '，请注意您的账号和财产安全。</p>' +
+          '<p class="link-out-desc">您即将离开' + escapeHtml(CFG.siteName || '本站') + '，目标地址不受我们控制，请注意您的账号和财产安全。</p>' +
           '<div class="link-out-url">' +
-            '<span class="url-label">目标地址：</span>' +
+            '<span class="url-label">⚠️目标地址：</span>' +
             '<span class="url-value" id="link-out-url-value"></span>' +
           '</div>' +
           '<div class="link-out-actions">' +
