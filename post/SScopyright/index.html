@@ -641,32 +641,7 @@ All original content is licensed under the <a href="https://creativecommons.org/
     <i class="fa-solid fa-comments"></i>
     <span>评论</span>
   </div>
-  <div id="tcomment"></div>
-  <script data-cfasync="false">
-    (function() {
-      function initTwikoo() {
-        if (typeof twikoo !== 'undefined') {
-          twikoo.init({
-            envId: 'https://twikoo.vercel.wowtang.top/',
-            el: '#tcomment'
-          });
-        } else {
-          setTimeout(initTwikoo, 100);
-        }
-      }
-      var s = document.createElement('script');
-      s.src = 'https://registry.npmmirror.com/twikoo/1.7.15/files/dist/twikoo.min.js';
-      s.setAttribute('data-cfasync', 'false');
-      s.onload = initTwikoo;
-      s.onerror = function() {
-        setTimeout(initTwikoo, 200);
-      };
-      document.head.appendChild(s);
-      window.addEventListener('load', function() {
-        setTimeout(initTwikoo, 300);
-      });
-    })();
-  </script>
+  <div id="tcomment" data-env-id="https://twikoo.vercel.wowtang.top/"></div>
 </section>
 
   
@@ -1242,7 +1217,7 @@ siteTime();
       catch (e) { window.LIUSHEN_CONFIG = {}; }
     })();
   </script>
-  <script src="/scripts/main.js" defer></script>
+  <script data-cfasync="false" src="/scripts/main.js" defer></script>
   
   <script src="https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
 <script>
