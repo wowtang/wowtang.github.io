@@ -684,31 +684,4 @@
   }
   initLinkOut();
 
-  /* ------ Twikoo 评论初始化（兼容 Cloudflare Rocket Loader）------ */
-  function initTwikoo() {
-    var el = $('#tcomment');
-    if (!el) return;
-    var envId = el.getAttribute('data-env-id');
-    if (!envId) return;
-
-    function tryInit(retries) {
-      if (typeof twikoo !== 'undefined') {
-        twikoo.init({ envId: envId, el: '#tcomment' });
-      } else if (retries > 0) {
-        setTimeout(function () { tryInit(retries - 1); }, 100);
-      }
-    }
-
-    if (typeof twikoo !== 'undefined') {
-      twikoo.init({ envId: envId, el: '#tcomment' });
-    } else {
-      var s = document.createElement('script');
-      s.src = 'https://registry.npmmirror.com/twikoo/1.7.15/files/dist/twikoo.min.js';
-      s.onload = function () { tryInit(10); };
-      s.onerror = function () { setTimeout(function () { tryInit(10); }, 200); };
-      document.head.appendChild(s);
-    }
-  }
-  initTwikoo();
-
 })();

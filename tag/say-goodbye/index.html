@@ -89,7 +89,7 @@
     display: none !important;
 }</style>
 
-  <script data-cfasync="false">
+  <script>
     (function(){
       var pref="auto";
       try{var saved=localStorage.getItem('liushen-theme');if(saved)pref=saved;}catch(e){}
@@ -532,7 +532,7 @@
   </div>
 </div></div>
   </div>
-  <script data-cfasync="false">
+  <script>
     (function(){
       var wrap = document.getElementById('card-widget-wrap');
       if (!wrap) return;
@@ -749,13 +749,13 @@ siteTime();
   "navMenuJson": "[]"
 }
   </script>
-  <script data-cfasync="false">
+  <script>
     (function(){
       try { window.LIUSHEN_CONFIG = JSON.parse(document.getElementById('liushen-config-data').textContent); }
       catch (e) { window.LIUSHEN_CONFIG = {}; }
     })();
   </script>
-  <script data-cfasync="false" src="/scripts/main.js" defer></script>
+  <script src="/scripts/main.js" defer></script>
   
   <script src="https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
 <script>
@@ -780,7 +780,7 @@ window.addEventListener('load', ()=>{
   }, 3000);
 })
 </script>
-  <script data-cfasync="false">function loadDailySentence(){
+  <script>function loadDailySentence(){
   const dom = document.getElementById("daily_sentence");
   if(!dom) return;
   dom.textContent = "每日哲思加载中……";
