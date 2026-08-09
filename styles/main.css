@@ -583,6 +583,23 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 #gridea-comments { min-height: 80px; }
 .comment-loading { color: var(--text-meta); font-size: 13px; text-align: center; padding: 18px; }
 
+/* Twikoo 评论头像修复：解决头像图片因 vertical-align + line-height 导致的向下偏移裁剪问题 */
+.tk-avatar,
+.tk-head {
+  overflow: hidden;
+  line-height: 0;
+}
+.tk-avatar img,
+.tk-head img {
+  display: block;
+  vertical-align: top;
+}
+
+/* 隐藏 Twikoo 版权标识 */
+.tk-footer {
+  display: none !important;
+}
+
 /* TOC aside */
 .toc-aside { position: sticky; top: calc(var(--nav-height) + 24px); }
 .toc-list { list-style: none; padding: 0; margin: 0; max-height: 60vh; overflow-y: auto; }

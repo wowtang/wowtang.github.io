@@ -371,6 +371,34 @@
     <i class="fa-solid fa-comments"></i>
     <span>评论</span>
   </div>
+  <style>
+  .tk-login-title {
+    position: relative;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+  .tk-login-title::after {
+    content: "Sunrise's blog 评论管理";
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: visible;
+    white-space: nowrap;
+  }
+  .tk-panel-title > div {
+    position: relative;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+  .tk-panel-title > div::after {
+    content: "Sunrise's blog 评论管理面板";
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: visible;
+    white-space: nowrap;
+  }
+  </style>
   <div id="tcomment"></div>
   <script>
   (function() {
