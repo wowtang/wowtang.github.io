@@ -148,11 +148,6 @@
     }
 
     /* === 二级菜单 === */
-    .nav-expandable .nav-arrow {
-      margin-left: auto; font-size: 0.7rem; color: var(--text-muted);
-      transition: transform 0.2s ease;
-    }
-    .nav-expandable.expanded .nav-arrow { transform: rotate(90deg); }
     .nav-submenu {
       max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
       margin-left: 18px;
@@ -178,6 +173,89 @@
     /* 登录前禁用二级菜单 */
     body:not(.logged-in) .nav-sub-item {
       opacity: 0.4; cursor: not-allowed; pointer-events: none;
+    }
+    /* 登出按钮：仅登录后显示 */
+    body:not(.logged-in) .nav-item[data-action="logout"] { display: none; }
+    /* 登录前隐藏登出按钮，登录后隐藏返回按钮（避免混淆） */
+    body.logged-in .nav-item[data-action="home"] { display: none; }
+
+    /* ==================== 自定义登录表单 ==================== */
+    /* 隐藏 Twikoo 原版登录表单 */
+    #twikoo .tk-login { display: none !important; }
+    /* 登录后隐藏自定义表单 */
+    body.logged-in .custom-login { display: none; }
+
+    .custom-login { width: 100%; max-width: 400px; margin: 0 auto; }
+    .custom-login-card {
+      padding: 40px 36px 32px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); box-shadow: var(--shadow-md);
+    }
+    .custom-login-icon {
+      width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 18px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid; place-items: center; color: #fff; font-size: 1.4rem;
+      box-shadow: 0 6px 20px rgba(38, 121, 204, 0.3);
+    }
+    .custom-login-title {
+      font-size: 1.2rem; font-weight: 700; text-align: center; color: var(--text);
+      margin-bottom: 6px;
+    }
+    .custom-login-subtitle {
+      font-size: 0.84rem; text-align: center; color: var(--text-muted); margin-bottom: 22px;
+    }
+    .custom-login-error {
+      display: none; padding: 10px 14px; margin-bottom: 16px;
+      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: var(--radius-sm); color: #ef4444; font-size: 0.82rem;
+      text-align: center;
+    }
+    [data-theme="dark"] .custom-login-error {
+      background: rgba(239, 68, 68, 0.15); color: #f87171;
+    }
+    .custom-login-error.show { display: block; }
+    .custom-input-group { position: relative; margin-bottom: 16px; }
+    .custom-input-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); font-size: 0.9rem; pointer-events: none; z-index: 1;
+    }
+    .custom-input {
+      width: 100%; padding: 12px 14px 12px 42px;
+      border: 1px solid var(--card-border); border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.5); color: var(--text);
+      font-size: 0.88rem; transition: all 0.2s; outline: none;
+    }
+    .custom-input::placeholder { color: var(--text-muted); }
+    .custom-input:focus {
+      border-color: var(--primary); background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 0 3px rgba(38, 121, 204, 0.1);
+    }
+    [data-theme="dark"] .custom-input { background: rgba(255, 255, 255, 0.05); }
+    [data-theme="dark"] .custom-input:focus { background: rgba(255, 255, 255, 0.08); }
+    .custom-login-options {
+      display: flex; gap: 24px; margin-bottom: 20px;
+    }
+    .custom-checkbox {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none;
+    }
+    .custom-checkbox input {
+      width: 15px; height: 15px; cursor: pointer; accent-color: var(--primary);
+    }
+    .custom-login-btn {
+      width: 100%; padding: 12px; border: none; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .custom-login-btn:hover {
+      transform: translateY(-1px); box-shadow: 0 6px 20px rgba(38, 121, 204, 0.3);
+    }
+    .custom-login-btn:active { transform: translateY(0); }
+    .custom-login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    #autoLoginHint {
+      text-align: center; font-size: 0.78rem; color: var(--text-muted);
+      margin-top: 12px; opacity: 0.7;
     }
 
     .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--divider); flex-shrink: 0; }
@@ -498,7 +576,6 @@
           </div>
           <div class="nav-item nav-expandable" data-tab="config">
             <i class="fa-solid fa-sliders"></i><span>配置中心</span>
-            <i class="fa-solid fa-chevron-right nav-arrow"></i>
           </div>
           <div class="nav-submenu">
             <div class="nav-sub-item" data-config="通用">
@@ -539,6 +616,9 @@
           </div>
           <div class="nav-item" data-action="home">
             <i class="fa-solid fa-arrow-right-from-bracket"></i><span>返回博客</span>
+          </div>
+          <div class="nav-item" data-action="logout">
+            <i class="fa-solid fa-power-off"></i><span>退出登录</span>
           </div>
         </div>
       </nav>
@@ -584,6 +664,29 @@
             <p id="pageDesc">请输入管理密码登录评论管理后台，登录后可通过左侧导航管理评论与配置。</p>
           </div>
           <div class="workspace">
+            <!-- 自定义登录表单 -->
+            <div class="custom-login" id="customLogin">
+              <div class="custom-login-card">
+                <div class="custom-login-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+                <h2 class="custom-login-title">Sunrise's blog 评论管理</h2>
+                <p class="custom-login-subtitle">请输入您的账号和密码</p>
+                <div class="custom-login-error" id="loginError"></div>
+                <div class="custom-input-group">
+                  <i class="fa-solid fa-user custom-input-icon"></i>
+                  <input type="text" id="loginAccount" class="custom-input" placeholder="账号" autocomplete="username">
+                </div>
+                <div class="custom-input-group">
+                  <i class="fa-solid fa-lock custom-input-icon"></i>
+                  <input type="password" id="loginPassword" class="custom-input" placeholder="密码" autocomplete="current-password">
+                </div>
+                <div class="custom-login-options">
+                  <label class="custom-checkbox"><input type="checkbox" id="rememberPwd"> <span>记住密码</span></label>
+                  <label class="custom-checkbox"><input type="checkbox" id="autoLoginChk"> <span>自动登录</span></label>
+                </div>
+                <button class="custom-login-btn" id="customLoginBtn">登录</button>
+                <div id="autoLoginHint"></div>
+              </div>
+            </div>
             <!-- 配置中心概览页 -->
             <div class="config-overview" id="configOverview" style="display:none;">
               <div class="config-card" data-config="通用">
@@ -732,33 +835,6 @@
     if (sc) sc.scrollTop = 0;
   }
 
-  // 安全防护：切到配置管理并展开「反垃圾」分组
-  function switchSecurity() {
-    switchTo('config');
-    var tries = 0;
-    var timer = setInterval(function() {
-      tries++;
-      var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
-      var done = false;
-      groups.forEach(function(g) {
-        var t = g.querySelector('.tk-admin-config-group-title');
-        if (t && t.textContent.indexOf('反垃圾') > -1) {
-          g.setAttribute('open', '');
-          g.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          done = true;
-        }
-      });
-      if (done || tries > 8) clearInterval(timer);
-    }, 200);
-    // 侧边栏高亮安全防护
-    document.querySelectorAll('.nav-item[data-tab]').forEach(function(n) { n.classList.remove('active'); });
-    var nav = document.querySelector('.nav-item[data-tab="security"]');
-    if (nav) nav.classList.add('active');
-    document.getElementById('pageTitle').innerHTML = '<i class="fa-solid fa-shield-halved"></i> 安全防护';
-    document.getElementById('pageDesc').textContent = '反垃圾评论与人机验证配置（位于配置中心内）。';
-    document.getElementById('crumbCurrent').textContent = '安全防护';
-  }
-
   // 配置分组映射：侧边栏二级菜单 → Twikoo 实际分组标题（支持一对多）
   var CONFIG_MAP = {
     '通用':    ['通用'],
@@ -870,6 +946,7 @@
       var tab = item.dataset.tab;
       if (action === 'theme') { toggleTheme(); return; }
       if (action === 'home') { window.location.href = '/'; return; }
+      if (action === 'logout') { logout(); return; }
       // 功能项需要登录后才可操作
       if (!document.body.classList.contains('logged-in')) return;
       // 可展开项：切换子菜单
@@ -919,6 +996,182 @@
       var groupName = card.dataset.config;
       if (groupName) switchToConfigGroup(groupName);
     });
+  });
+
+  /* ==================== 自定义登录 / 自动登录 / 退出登录 ==================== */
+  var FIXED_ACCOUNT = 'Sunrise0218';
+  var _loginInProgress = false;
+
+  // 退出登录：清除 Twikoo 令牌并刷新页面（保留记住的密码）
+  function logout() {
+    try {
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        // 清除 Twikoo 登录令牌，但保留记住的密码、自动登录设置和主题
+        if (key && key !== 'twikoo-admin-pwd' && key !== 'twikoo-auto-login' && key !== 'liushen-theme' &&
+            (key.toLowerCase().indexOf('twikoo') > -1 || key.toLowerCase().indexOf('tk-') === 0)) {
+          keys.push(key);
+        }
+      }
+      keys.forEach(function(k) { localStorage.removeItem(k); });
+      // 标记刚退出登录，防止刷新后自动登录
+      sessionStorage.setItem('twikoo-just-logged-out', '1');
+    } catch(e) {}
+    window.location.reload();
+  }
+
+  // 显示/隐藏登录错误提示
+  function showLoginError(msg) {
+    var err = document.getElementById('loginError');
+    if (err) { err.textContent = msg; err.classList.add('show'); }
+  }
+  function hideLoginError() {
+    var err = document.getElementById('loginError');
+    if (err) err.classList.remove('show');
+  }
+
+  // 预填保存的凭据（记住密码时）
+  function prefillSavedCredentials() {
+    var savedPwd = null;
+    try { savedPwd = localStorage.getItem('twikoo-admin-pwd'); } catch(e) {}
+    if (savedPwd) {
+      var pwdInput = document.getElementById('loginPassword');
+      if (pwdInput) pwdInput.value = savedPwd;
+      var remember = document.getElementById('rememberPwd');
+      if (remember) remember.checked = true;
+    }
+    var autoLogin = false;
+    try { autoLogin = localStorage.getItem('twikoo-auto-login') === '1'; } catch(e) {}
+    if (autoLogin) {
+      var autoChk = document.getElementById('autoLoginChk');
+      if (autoChk) autoChk.checked = true;
+    }
+  }
+
+  // 自定义登录处理：本地校验账号 → 填入 Twikoo 隐藏表单 → 触发登录
+  function handleCustomLogin() {
+    if (_loginInProgress) return;
+    hideLoginError();
+
+    var accountInput = document.getElementById('loginAccount');
+    var pwdInput = document.getElementById('loginPassword');
+    var account = accountInput ? accountInput.value.trim() : '';
+    var password = pwdInput ? pwdInput.value : '';
+
+    if (!account) { showLoginError('请输入账号'); accountInput.focus(); return; }
+    if (account !== FIXED_ACCOUNT) { showLoginError('账号错误'); accountInput.focus(); return; }
+    if (!password) { showLoginError('请输入密码'); pwdInput.focus(); return; }
+
+    // 查找隐藏的 Twikoo 登录表单
+    var twikooPwd = document.querySelector('#twikoo .tk-login input[type="password"]');
+    var twikooBtn = document.querySelector('#twikoo .tk-login .el-button');
+    if (!twikooPwd || !twikooBtn) {
+      showLoginError('登录系统尚未就绪，请稍后重试');
+      return;
+    }
+
+    _loginInProgress = true;
+    var loginBtn = document.getElementById('customLoginBtn');
+    loginBtn.disabled = true;
+    loginBtn.textContent = '登录中…';
+
+    // 保存偏好设置
+    var remember = document.getElementById('rememberPwd').checked;
+    var autoLogin = document.getElementById('autoLoginChk').checked;
+    if (remember || autoLogin) {
+      try { localStorage.setItem('twikoo-admin-pwd', password); } catch(e) {}
+    } else {
+      try { localStorage.removeItem('twikoo-admin-pwd'); } catch(e) {}
+    }
+    if (autoLogin) {
+      try { localStorage.setItem('twikoo-auto-login', '1'); } catch(e) {}
+    } else {
+      try { localStorage.removeItem('twikoo-auto-login'); } catch(e) {}
+    }
+
+    // 填入 Twikoo 隐藏表单并触发登录
+    twikooPwd.value = password;
+    twikooPwd.dispatchEvent(new Event('input', { bubbles: true }));
+    twikooBtn.click();
+
+    // 3 秒后检查登录结果
+    setTimeout(function() {
+      if (!document.body.classList.contains('logged-in')) {
+        // 登录失败
+        showLoginError('密码错误，请重试');
+        loginBtn.disabled = false;
+        loginBtn.textContent = '登录';
+        _loginInProgress = false;
+        // 清除保存的错误密码
+        try {
+          localStorage.removeItem('twikoo-admin-pwd');
+          localStorage.removeItem('twikoo-auto-login');
+        } catch(e) {}
+        var rChk = document.getElementById('rememberPwd');
+        var aChk = document.getElementById('autoLoginChk');
+        if (rChk) rChk.checked = false;
+        if (aChk) aChk.checked = false;
+        if (pwdInput) { pwdInput.value = ''; pwdInput.focus(); }
+      } else {
+        // 登录成功，重置按钮状态
+        loginBtn.disabled = false;
+        loginBtn.textContent = '登录';
+        _loginInProgress = false;
+      }
+    }, 3000);
+  }
+
+  // 自动登录：检测自动登录标记并自动填入提交
+  function tryAutoLogin() {
+    // 如果用户刚退出登录，跳过自动登录
+    try {
+      if (sessionStorage.getItem('twikoo-just-logged-out') === '1') {
+        sessionStorage.removeItem('twikoo-just-logged-out');
+        return;
+      }
+    } catch(e) {}
+
+    var autoLogin = false;
+    try { autoLogin = localStorage.getItem('twikoo-auto-login') === '1'; } catch(e) {}
+    if (!autoLogin) return;
+
+    var savedPwd = null;
+    try { savedPwd = localStorage.getItem('twikoo-admin-pwd'); } catch(e) {}
+    if (!savedPwd) return;
+
+    var tries = 0;
+    var timer = setInterval(function() {
+      tries++;
+      var accountInput = document.getElementById('loginAccount');
+      var pwdInput = document.getElementById('loginPassword');
+      if (accountInput && pwdInput && accountInput.offsetParent !== null && !_loginInProgress) {
+        // 填入自定义表单并触发登录
+        accountInput.value = FIXED_ACCOUNT;
+        pwdInput.value = savedPwd;
+        var hint = document.getElementById('autoLoginHint');
+        if (hint) hint.textContent = '正在自动登录…';
+        clearInterval(timer);
+        handleCustomLogin();
+      }
+      if (tries > 30) clearInterval(timer);
+    }, 300);
+  }
+
+  // 绑定自定义表单事件
+  document.getElementById('customLoginBtn').addEventListener('click', handleCustomLogin);
+  document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleCustomLogin();
+  });
+  document.getElementById('loginAccount').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleCustomLogin();
+  });
+  // 自动登录勾选时联动记住密码
+  document.getElementById('autoLoginChk').addEventListener('change', function() {
+    if (this.checked) document.getElementById('rememberPwd').checked = true;
+  });
+  document.getElementById('rememberPwd').addEventListener('change', function() {
+    if (!this.checked) document.getElementById('autoLoginChk').checked = false;
   });
 
   /* ==================== 登录状态监听 ==================== */
@@ -994,8 +1247,14 @@
     document.body.appendChild(script);
   })();
 
-  /* ==================== 状态监听启动 + 自动聚焦密码框 ==================== */
+  /* ==================== 状态监听启动 + 自动登录 + 自动聚焦 ==================== */
   (function() {
+    // 预填保存的凭据（记住密码时）
+    prefillSavedCredentials();
+
+    // 尝试自动登录（如果已设置自动登录）
+    tryAutoLogin();
+
     // 监听 Twikoo 容器变化，感知登录/登出与 tab 渲染
     function startObserver() {
       var target = document.querySelector('#twikoo') || document.querySelector('#tcomment') || document.body;
@@ -1005,7 +1264,7 @@
     startObserver();
     setInterval(checkLoginState, 1000); // 兜底轮询
 
-    // 替换 Twikoo 登录标题为 Sunrise's blog
+    // 替换 Twikoo 登录标题（隐藏表单中，不影响自定义表单）
     setInterval(function() {
       var title = document.querySelector('#twikoo .tk-login-title');
       if (title && title.textContent.indexOf('Twikoo') > -1) {
@@ -1013,10 +1272,13 @@
       }
     }, 500);
 
-    // 自动聚焦密码输入框（登录前）
+    // 自动聚焦账号输入框（登录前且非登录中时）
     var focusTimer = setInterval(function() {
-      var pwd = document.querySelector('#twikoo .tk-login input[type="password"]');
-      if (pwd && pwd.offsetParent !== null) { pwd.focus(); }
+      if (_loginInProgress) { clearInterval(focusTimer); return; }
+      var accountInput = document.getElementById('loginAccount');
+      if (accountInput && accountInput.offsetParent !== null && !accountInput.value) {
+        accountInput.focus();
+      }
     }, 600);
     setTimeout(function() { clearInterval(focusTimer); }, 20000);
   })();
