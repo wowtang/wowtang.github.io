@@ -526,15 +526,39 @@
     }
     #twikoo .tk-admin-config-group[open] .tk-admin-config-group-title::before { transform: rotate(180deg); }
     #twikoo .tk-admin-config-item {
-      display: flex; align-items: flex-start; gap: 14px; padding: 10px 16px;
-      border-top: 1px solid var(--divider);
+      display: flex; flex-direction: column; gap: 5px;
+      padding: 14px 16px; border-top: 1px solid var(--divider);
     }
     #twikoo .tk-admin-config-item:first-of-type { border-top: none; }
-    #twikoo .tk-admin-config-title { font-size: 0.85rem; font-weight: 600; min-width: 150px; flex-shrink: 0; padding-top: 6px; }
-    #twikoo .tk-admin-config-desc { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 6px; }
-    #twikoo .tk-admin-config-input { flex: 1; min-width: 200px; }
-    #twikoo .tk-admin-config-actions { padding: 4px 0; }
+    /* 中文短标题（JS 动态插入） */
+    #twikoo .tk-config-short-title {
+      order: 1; font-size: 0.88rem; font-weight: 600; color: var(--text);
+    }
+    /* 输入框区域 */
+    #twikoo .tk-admin-config-input { order: 2; min-width: 0; width: 100%; }
+    /* 详细说明 */
+    #twikoo .tk-admin-config-desc {
+      order: 3; font-size: 0.76rem; color: var(--text-muted);
+      line-height: 1.5; margin-bottom: 0;
+    }
+    /* 英文变量名徽章 */
+    #twikoo .tk-admin-config-title {
+      order: 4; font-size: 0.7rem; font-weight: 500;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      color: var(--primary); background: var(--accent-soft);
+      padding: 2px 8px; border-radius: 4px; align-self: flex-start;
+      min-width: 0; border: 1px solid rgba(38, 121, 204, 0.15);
+    }
+    [data-theme="dark"] #twikoo .tk-admin-config-title {
+      border-color: rgba(95, 169, 255, 0.2);
+    }
+    /* 空div隐藏 */
+    #twikoo .tk-admin-config-item > div:empty { display: none; }
+    /* 保存/重置按钮 */
+    #twikoo .tk-admin-config-actions { order: 5; padding: 4px 0; }
     #twikoo .tk-admin-config-actions .el-button--primary { width: 100%; }
+    /* Element UI 输入框圆角统一 */
+    #twikoo .tk-admin-config-input .el-input__inner { border-radius: var(--radius-sm); }
 
     /* === 导入 / 导出区 === */
     #twikoo .tk-admin-import, #twikoo .tk-admin-export {
@@ -561,8 +585,6 @@
       .topbar-user .uname { display: none; }
       .topbar-user { padding: 4px; }
       .content-scroll { padding: 18px 16px; }
-      #twikoo .tk-admin-config-item { flex-direction: column; gap: 6px; }
-      #twikoo .tk-admin-config-title { min-width: 0; }
       .breadcrumb .crumb:not(.current):not(.root) { display: none; }
     }
   </style>
@@ -882,6 +904,39 @@
     // 保存/重置按钮也要跟随显示
     var actions = document.querySelector('#twikoo .tk-admin-config-actions');
     if (actions) actions.style.display = '';
+    // 重组配置项 DOM
+    restructureConfigItems();
+  }
+
+  // 重组配置项：中文短标题 → 输入框 → 详细说明 → 英文变量名
+  function restructureConfigItems() {
+    var items = document.querySelectorAll('#twikoo .tk-admin-config-item:not([data-restructured])');
+    items.forEach(function(item) {
+      var titleEl = item.querySelector('.tk-admin-config-title');
+      var descEl = item.querySelector('.tk-admin-config-desc');
+      var descText = descEl ? descEl.textContent.trim() : '';
+      var varName = titleEl ? titleEl.textContent.trim() : '';
+
+      // 从描述中提取短标题（第一个分隔符之前的部分）
+      var shortTitle = descText;
+      var separators = ['，', '。', '；', '：', ',', '.', ';', ':', '\n', '（', '('];
+      for (var s = 0; s < separators.length; s++) {
+        var idx = descText.indexOf(separators[s]);
+        if (idx > 1) { shortTitle = descText.substring(0, idx).trim(); break; }
+      }
+      // 如果短标题太短，使用完整描述（截断到 30 字符）
+      if (shortTitle.length < 2) shortTitle = descText.length > 30 ? descText.substring(0, 30) + '…' : descText;
+      // 如果描述为空，用英文变量名做标题
+      if (!shortTitle) shortTitle = varName;
+
+      // 创建短标题元素并插入到最前面
+      var shortTitleDiv = document.createElement('div');
+      shortTitleDiv.className = 'tk-config-short-title';
+      shortTitleDiv.textContent = shortTitle;
+      item.insertBefore(shortTitleDiv, item.firstChild);
+
+      item.setAttribute('data-restructured', '1');
+    });
   }
 
   // 显示配置中心概览页（点击「配置中心」父级时）
@@ -1278,6 +1333,9 @@
     }
     startObserver();
     setInterval(checkLoginState, 1000); // 兜底轮询
+
+    // 定期重组配置项 DOM（Twikoo 可能延迟渲染）
+    setInterval(function() { restructureConfigItems(); }, 500);
 
     // 替换 Twikoo 登录标题（隐藏表单中，不影响自定义表单）
     setInterval(function() {
