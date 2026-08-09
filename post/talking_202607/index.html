@@ -95,7 +95,7 @@
     display: none !important;
 }</style>
 
-  <script>
+  <script data-cfasync="false">
     (function(){
       var pref="auto";
       try{var saved=localStorage.getItem('liushen-theme');if(saved)pref=saved;}catch(e){}
@@ -627,7 +627,7 @@
       </div>
     </div>
   </div>
-  <script>
+  <script data-cfasync="false">
     (function(){
       var wrap = document.getElementById('card-widget-wrap');
       if (!wrap) return;
@@ -933,7 +933,7 @@ siteTime();
   "navMenuJson": "[]"
 }
   </script>
-  <script>
+  <script data-cfasync="false">
     (function(){
       try { window.LIUSHEN_CONFIG = JSON.parse(document.getElementById('liushen-config-data').textContent); }
       catch (e) { window.LIUSHEN_CONFIG = {}; }
@@ -964,7 +964,7 @@ window.addEventListener('load', ()=>{
   }, 3000);
 })
 </script>
-  <script>function loadDailySentence(){
+  <script data-cfasync="false">function loadDailySentence(){
   const dom = document.getElementById("daily_sentence");
   if(!dom) return;
   dom.textContent = "每日哲思加载中……";
