@@ -642,12 +642,27 @@ All original content is licensed under the <a href="https://creativecommons.org/
     <span>评论</span>
   </div>
   <div id="tcomment"></div>
-  <script src="https://registry.npmmirror.com/twikoo/1.7.15/files/dist/twikoo.min.js"></script>
   <script>
-    twikoo.init({
-      envId: 'https://twikoo.vercel.wowtang.top/',
-      el: '#tcomment'
-    });
+  (function() {
+    function initTwikoo() {
+      if (!window.twikoo) return;
+      window.twikoo.init({
+        envId: 'https://twikoo.vercel.wowtang.top/',
+        el: '#tcomment',
+        lang: 'zh-CN',
+        path: window.location.pathname
+      });
+    }
+    if (window.twikoo) {
+      initTwikoo();
+      return;
+    }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js';
+    script.async = true;
+    script.onload = initTwikoo;
+    document.body.appendChild(script);
+  })();
   </script>
 </section>
 
