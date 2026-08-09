@@ -583,11 +583,6 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 #gridea-comments { min-height: 80px; }
 .comment-loading { color: var(--text-meta); font-size: 13px; text-align: center; padding: 18px; }
 
-/* Twikoo 回复头像修复：全局 line-height/vertical-align 导致顶部被裁 */
-.tk-replies, .tk-reply, .tk-avatar { overflow: visible !important; }
-.tk-avatar { width: 36px; height: 36px; flex-shrink: 0; }
-.tk-avatar img { vertical-align: top; line-height: 1; display: block; width: 100%; height: 100%; border-radius: 5px; }
-
 /* TOC aside */
 .toc-aside { position: sticky; top: calc(var(--nav-height) + 24px); }
 .toc-list { list-style: none; padding: 0; margin: 0; max-height: 60vh; overflow-y: auto; }
