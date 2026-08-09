@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Sunrise's blog · 评论管理后台</title>
+  <link rel="stylesheet" href="https://cdn.jsdmirror.com/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
+  <style>
+    /* ==================== 主题变量 ==================== */
+    :root {
+      --primary: #2679cc;
+      --primary-hover: #1a6ab8;
+      --accent: #00c4b6;
+      --accent-soft: rgba(0, 196, 182, 0.12);
+      --text: #1f2d3d;
+      --text-secondary: #5a6478;
+      --text-muted: #8a94a6;
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4ebf5 100%);
+      --sidebar-bg: rgba(255, 255, 255, 0.78);
+      --sidebar-glow: linear-gradient(180deg, rgba(255, 215, 228, 0.55) 0%, rgba(200, 241, 255, 0.55) 100%);
+      --topbar-bg: rgba(255, 255, 255, 0.68);
+      --card-bg: rgba(255, 255, 255, 0.72);
+      --card-border: rgba(0, 0, 0, 0.06);
+      --divider: rgba(0, 0, 0, 0.06);
+      --nav-active-bg: linear-gradient(135deg, rgba(38, 121, 204, 0.14), rgba(0, 196, 182, 0.12));
+      --nav-active-text: #2679cc;
+      --nav-hover-bg: rgba(38, 121, 204, 0.06);
+      --shadow-sm: 0 2px 8px rgba(38, 121, 204, 0.05);
+      --shadow-md: 0 6px 24px rgba(38, 121, 204, 0.08);
+      --shadow-sidebar: 2px 0 24px rgba(38, 121, 204, 0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --sidebar-width: 248px;
+      --topbar-height: 60px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="dark"] {
+      --primary: #5fa9ff;
+      --primary-hover: #4a99f0;
+      --accent: #2dd4bf;
+      --accent-soft: rgba(45, 212, 191, 0.14);
+      --text: #e6edf3;
+      --text-secondary: #a8b3c7;
+      --text-muted: #6b7488;
+      --bg-gradient: linear-gradient(135deg, #161b2e 0%, #0f1626 100%);
+      --sidebar-bg: rgba(20, 26, 44, 0.82);
+      --sidebar-glow: linear-gradient(180deg, rgba(255, 107, 158, 0.12) 0%, rgba(95, 169, 255, 0.10) 100%);
+      --topbar-bg: rgba(20, 26, 44, 0.68);
+      --card-bg: rgba(30, 36, 56, 0.72);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --divider: rgba(255, 255, 255, 0.07);
+      --nav-active-bg: linear-gradient(135deg, rgba(95, 169, 255, 0.20), rgba(45, 212, 191, 0.14));
+      --nav-active-text: #5fa9ff;
+      --nav-hover-bg: rgba(95, 169, 255, 0.08);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.35);
+      --shadow-sidebar: 2px 0 24px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ==================== 重置 ==================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      line-height: 1.6;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--accent-soft); }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.28); border-radius: 8px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(128, 128, 128, 0.45); }
+
+    /* ==================== 整体布局 ==================== */
+    .app-layout { display: flex; height: 100vh; width: 100%; overflow: hidden; }
+
+    /* ==================== 侧边栏 ==================== */
+    .sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-sidebar);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 40;
+      transition: transform var(--transition);
+      border-right: 1px solid var(--divider);
+    }
+    .sidebar::before {
+      content: ""; position: absolute; inset: 0;
+      background: var(--sidebar-glow); opacity: 0.5;
+      pointer-events: none; z-index: -1;
+    }
+    .sidebar-brand {
+      height: var(--topbar-height);
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 20px; border-bottom: 1px solid var(--divider); flex-shrink: 0;
+    }
+    .brand-logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid; place-items: center; color: #fff; font-size: 1.05rem;
+      box-shadow: 0 4px 12px rgba(38, 121, 204, 0.3); flex-shrink: 0;
+    }
+    .brand-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+    .brand-text .title { font-size: 0.95rem; font-weight: 700; color: var(--text); white-space: nowrap; }
+    .brand-text .subtitle { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 16px 12px; }
+    .nav-group { margin-bottom: 20px; }
+    .nav-group-label {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted); padding: 0 12px 8px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      color: var(--text-secondary); font-size: 0.875rem; font-weight: 500;
+      cursor: pointer; transition: all 0.18s ease; margin-bottom: 3px;
+      position: relative; user-select: none;
+    }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.95rem; flex-shrink: 0; }
+    .nav-item:hover { background: var(--nav-hover-bg); color: var(--text); }
+    .nav-item.active {
+      background: var(--nav-active-bg); color: var(--nav-active-text); font-weight: 600;
+    }
+    .nav-item.active::before {
+      content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 18px; border-radius: 0 3px 3px 0;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+    /* 登录前禁用功能导航 */
+    body:not(.logged-in) .nav-item[data-tab] {
+      opacity: 0.4; cursor: not-allowed; pointer-events: none;
+    }
+    body:not(.logged-in) .nav-item[data-tab] .badge { display: none; }
+    body:not(.logged-in) .nav-submenu { display: none !important; }
+    .nav-item .badge {
+      margin-left: auto; background: var(--accent-soft); color: var(--accent);
+      font-size: 0.68rem; font-weight: 600; padding: 2px 7px; border-radius: 20px;
+    }
+
+    /* === 二级菜单 === */
+    .nav-expandable .nav-arrow {
+      margin-left: auto; font-size: 0.7rem; color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+    .nav-expandable.expanded .nav-arrow { transform: rotate(90deg); }
+    .nav-submenu {
+      max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
+      margin-left: 18px;
+    }
+    .nav-submenu.open { max-height: 320px; }
+    .nav-sub-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 12px; border-radius: var(--radius-sm);
+      color: var(--text-muted); font-size: 0.8125rem; font-weight: 500;
+      cursor: pointer; transition: all 0.18s ease; margin-bottom: 2px;
+      position: relative; user-select: none;
+    }
+    .nav-sub-item i { width: 16px; text-align: center; font-size: 0.82rem; flex-shrink: 0; }
+    .nav-sub-item:hover { background: var(--nav-hover-bg); color: var(--text-secondary); }
+    .nav-sub-item.active {
+      background: var(--nav-active-bg); color: var(--nav-active-text); font-weight: 600;
+    }
+    .nav-sub-item.active::before {
+      content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 14px; border-radius: 0 3px 3px 0;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+    /* 登录前禁用二级菜单 */
+    body:not(.logged-in) .nav-sub-item {
+      opacity: 0.4; cursor: not-allowed; pointer-events: none;
+    }
+
+    .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--divider); flex-shrink: 0; }
+    .status-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; background: var(--card-bg);
+      border: 1px solid var(--card-border); border-radius: var(--radius-sm);
+    }
+    .status-dot {
+      width: 9px; height: 9px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18); flex-shrink: 0; animation: pulse 2s infinite;
+    }
+    .status-dot.offline { background: #9ca3af; box-shadow: 0 0 0 4px rgba(156,163,175,0.18); animation: none; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
+    .status-card .info { min-width: 0; line-height: 1.3; }
+    .status-card .info .s-label { font-size: 0.7rem; color: var(--text-muted); }
+    .status-card .info .s-value { font-size: 0.8rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+    /* ==================== 主区域 ==================== */
+    .main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    .topbar {
+      height: var(--topbar-height); flex-shrink: 0;
+      background: var(--topbar-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--divider);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; gap: 16px; z-index: 30;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .menu-toggle {
+      display: none; width: 38px; height: 38px; border-radius: var(--radius-sm);
+      border: 1px solid var(--divider); background: var(--card-bg); color: var(--text);
+      cursor: pointer; font-size: 1rem; align-items: center; justify-content: center;
+    }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; min-width: 0; }
+    .breadcrumb .crumb { color: var(--text-muted); white-space: nowrap; }
+    .breadcrumb .crumb.current { color: var(--text); font-weight: 600; }
+    .breadcrumb .sep { color: var(--text-muted); font-size: 0.7rem; }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .icon-btn {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      border: 1px solid var(--divider); background: var(--card-bg); color: var(--text-secondary);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; transition: all 0.18s ease;
+    }
+    .icon-btn:hover { color: var(--primary); border-color: var(--primary); background: var(--nav-hover-bg); }
+    .topbar-user {
+      display: flex; align-items: center; gap: 9px;
+      padding: 5px 12px 5px 5px; border-radius: 30px;
+      background: var(--card-bg); border: 1px solid var(--divider);
+    }
+    .topbar-user .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid; place-items: center; color: #fff; font-size: 0.8rem; font-weight: 700;
+    }
+    .topbar-user .uname { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+    .content-scroll { flex: 1; overflow-y: auto; padding: 26px 28px; }
+    .content-inner { max-width: 1080px; margin: 0 auto; }
+
+    .page-head { margin-bottom: 20px; }
+    .page-head h1 {
+      font-size: 1.45rem; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 10px; margin-bottom: 5px;
+    }
+    .page-head h1 i { color: var(--primary); font-size: 1.25rem; }
+    .page-head p { font-size: 0.875rem; color: var(--text-secondary); }
+
+    .workspace { min-height: 400px; }
+    /* 登录前：让 Twikoo 容器垂直居中 */
+    body:not(.logged-in) .workspace {
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - var(--topbar-height) - 140px);
+    }
+    body:not(.logged-in) #tcomment { width: 100%; }
+    body:not(.logged-in) #configOverview { display: none !important; }
+
+    /* === 配置中心概览页 === */
+    .config-overview {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .config-card {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 20px; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .config-card:hover {
+      box-shadow: var(--shadow-md); border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .config-card-icon {
+      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(38,121,204,0.12), rgba(0,196,182,0.10));
+      display: grid; place-items: center; color: var(--primary); font-size: 1.1rem;
+    }
+    [data-theme="dark"] .config-card-icon {
+      background: linear-gradient(135deg, rgba(95,169,255,0.16), rgba(45,212,191,0.12));
+    }
+    .config-card-body { flex: 1; min-width: 0; }
+    .config-card-title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .config-card-desc { font-size: 0.78rem; color: var(--text-muted); }
+    .config-card-arrow { color: var(--text-muted); font-size: 0.8rem; flex-shrink: 0; }
+    .config-card:hover .config-card-arrow { color: var(--primary); }
+
+    /* === 单组配置视图：隐藏 Twikoo 分组标题与箭头 === */
+    #twikoo.body-single-config .tk-admin-config-group > .tk-admin-config-group-title { display: none !important; }
+    #twikoo.body-single-config .tk-admin-config-group { border: none !important; background: transparent !important; box-shadow: none !important; }
+    #twikoo.body-single-config .tk-admin-config-group[open] > .tk-admin-config-item:first-of-type { border-top: none; }
+
+    /* === 概览页模式：隐藏 Twikoo 全部内容 === */
+    body.config-overview-mode #tcomment { display: none !important; }
+
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px); z-index: 39; opacity: 0; transition: opacity var(--transition);
+    }
+    .sidebar-overlay.show { display: block; opacity: 1; }
+
+    /* ==================== Twikoo: 隐藏评论区/页脚/自带标题与tab条 ==================== */
+    #twikoo .tk-comments { display: none !important; }
+    /* 用侧边栏 + 顶栏替代 Twikoo 自带的标题和 tab 导航 */
+    #twikoo .tk-panel-title { display: none !important; }
+    #twikoo .tk-tabs { display: none !important; }
+
+    /* === Twikoo 页脚：显示但替换内容为 Sunrise's blog === */
+    #twikoo .tk-footer {
+      display: flex !important; justify-content: center; padding: 16px 0 4px;
+      font-size: 0.76rem; color: var(--text-muted); opacity: 0.7;
+    }
+    #twikoo .tk-footer a { display: none !important; }
+    #twikoo .tk-footer::after {
+      content: "Powered by Sunrise's blog"; display: block;
+    }
+    #twikoo .tk-footer { font-size: 0 !important; }
+    #twikoo .tk-footer::after { font-size: 0.76rem; }
+
+    /* === 重建布局：全屏遮罩改为正常内联布局 === */
+    #twikoo .tk-admin-container {
+      position: static !important; width: 100% !important; height: auto !important;
+      overflow: visible !important; pointer-events: auto !important;
+    }
+    #twikoo .tk-admin {
+      position: static !important; left: 0 !important; width: auto !important; height: auto !important;
+      visibility: visible !important; overflow: visible !important; pointer-events: auto !important;
+      background: transparent !important; backdrop-filter: none !important;
+      color: inherit !important; transition: none !important; display: block !important;
+    }
+    #twikoo .tk-admin-close { display: none !important; }
+    #twikoo .tk-admin .el-loading-mask { display: none !important; }
+    #twikoo .tk-panel { padding: 0 !important; background: transparent !important; border: none !important; color: var(--text) !important; }
+
+    /* === 登录卡片美化 === */
+    #twikoo .tk-login {
+      max-width: 400px; margin: 0 auto; padding: 36px 34px 30px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); box-shadow: var(--shadow-md); color: var(--text);
+    }
+    /* 移除 Twikoo 登录组件可能的多余间距与空元素 */
+    #twikoo .tk-login > * { margin-top: 0; }
+    #twikoo .tk-login .tk-login-content { display: flex; flex-direction: column; gap: 0; }
+    #twikoo .tk-login br { display: none; }
+    #twikoo .tk-login .el-form-item { margin-bottom: 16px; }
+    #twikoo .tk-login .el-form-item:last-child { margin-bottom: 0; }
+    #twikoo .tk-login-title {
+      font-size: 1.15rem; font-weight: 600; text-align: center; margin: 0 0 20px 0 !important; color: var(--text);
+    }
+    #twikoo .tk-login .tk-password { margin-bottom: 16px; }
+    #twikoo .tk-login .el-input-group__prepend {
+      background: rgba(38, 121, 204, 0.08); border-color: rgba(38, 121, 204, 0.2); color: var(--primary);
+    }
+    #twikoo .tk-login .el-input__inner {
+      border-color: rgba(38, 121, 204, 0.2); color: var(--text); background: rgba(255,255,255,0.6);
+    }
+    [data-theme="dark"] #twikoo .tk-login .el-input__inner {
+      background: rgba(255,255,255,0.05); border-color: rgba(95,169,255,0.2); color: var(--text);
+    }
+    #twikoo .tk-login .el-input__inner:focus { border-color: var(--primary); }
+    #twikoo .tk-login .el-button {
+      background: var(--primary); border-color: var(--primary); color: #fff;
+      border-radius: var(--radius-sm); transition: all 0.2s; width: 100%;
+    }
+    #twikoo .tk-login .el-button:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+
+    /* === 通用：Element UI 控件配色 === */
+    #twikoo .tk-panel .el-button--primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    #twikoo .tk-panel .el-button--primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    #twikoo .tk-panel .el-button--text { color: var(--primary); }
+    #twikoo .tk-panel .el-input__inner,
+    #twikoo .tk-panel .el-textarea__inner {
+      color: var(--text) !important; background: var(--card-bg) !important; border-color: var(--card-border) !important;
+    }
+    #twikoo .tk-panel .el-input__inner:focus,
+    #twikoo .tk-panel .el-textarea__inner:focus { border-color: var(--primary) !important; }
+    #twikoo .tk-panel,
+    #twikoo .tk-panel .tk-admin-config-title,
+    #twikoo .tk-panel .tk-admin-config-desc { color: var(--text) !important; }
+    #twikoo .tk-panel .tk-admin-config-select,
+    #twikoo .tk-panel .tk-admin-comment-filter-type {
+      color: var(--text) !important; background: var(--card-bg) !important; border-color: var(--card-border) !important;
+    }
+    #twikoo .tk-panel .tk-admin-comment-filter-type option { color: var(--text) !important; background: var(--bg) !important; }
+    #twikoo .tk-panel .tk-admin-warn {
+      background: rgba(255, 247, 208, 0.5) !important; border-left-color: #e7c000 !important; color: #6b5700 !important;
+      border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 16px;
+    }
+    [data-theme="dark"] #twikoo .tk-panel .tk-admin-warn { background: rgba(255,247,208,0.12) !important; color: #ffe27a !important; }
+
+    /* === 评论管理区 === */
+    #twikoo .tk-admin-comment { display: flex; flex-direction: column; gap: 14px; }
+    #twikoo .tk-admin-comment-filter {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow-sm);
+    }
+    #twikoo .tk-admin-comment-filter-keyword { flex: 1; min-width: 200px; }
+    #twikoo .tk-admin-comment-filter-type { width: auto; min-width: 110px; }
+    #twikoo .tk-admin-comment-list { display: flex; flex-direction: column; gap: 10px; }
+    #twikoo .tk-admin-comment-item {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease;
+    }
+    #twikoo .tk-admin-comment-item:hover { box-shadow: var(--shadow-md); }
+    #twikoo .tk-admin-comment-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px; }
+    #twikoo .tk-admin-comment-meta .tk-avatar img, #twikoo .tk-admin-comment-meta .tk-avatar-img { width: 30px; height: 30px; border-radius: 50%; }
+    #twikoo .tk-admin-comment-meta a { color: var(--primary); }
+    #twikoo .tk-admin-comment-meta .tk-time { color: var(--text-muted); font-size: 0.78rem; }
+    #twikoo .tk-content { padding: 4px 0 8px; color: var(--text); }
+    #twikoo .tk-admin-actions { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; border-top: 1px solid var(--divider); }
+    #twikoo .tk-pagination { margin-top: 6px; }
+
+    /* === 配置管理区 === */
+    #twikoo .tk-admin-config { display: flex; flex-direction: column; gap: 12px; }
+    #twikoo .tk-admin-config-groups { display: flex; flex-direction: column; gap: 10px; }
+    #twikoo .tk-admin-config-group {
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      background: var(--card-bg); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    #twikoo .tk-admin-config-group[open] { box-shadow: var(--shadow-md); }
+    #twikoo .tk-admin-config-group-title {
+      cursor: pointer; padding: 13px 16px; font-weight: 600; font-size: 0.92rem; color: var(--text);
+      list-style: none; display: flex; align-items: center; gap: 9px; user-select: none;
+    }
+    #twikoo .tk-admin-config-group-title::-webkit-details-marker,
+    #twikoo .tk-admin-config-group-title::marker { display: none; }
+    #twikoo .tk-admin-config-group-title::before {
+      content: "\f078"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+      font-size: 0.65rem; color: var(--primary); transition: transform 0.2s; margin-right: 2px;
+    }
+    #twikoo .tk-admin-config-group[open] .tk-admin-config-group-title::before { transform: rotate(180deg); }
+    #twikoo .tk-admin-config-item {
+      display: flex; align-items: flex-start; gap: 14px; padding: 10px 16px;
+      border-top: 1px solid var(--divider);
+    }
+    #twikoo .tk-admin-config-item:first-of-type { border-top: none; }
+    #twikoo .tk-admin-config-title { font-size: 0.85rem; font-weight: 600; min-width: 150px; flex-shrink: 0; padding-top: 6px; }
+    #twikoo .tk-admin-config-desc { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 6px; }
+    #twikoo .tk-admin-config-input { flex: 1; min-width: 200px; }
+    #twikoo .tk-admin-config-actions { padding: 4px 0; }
+    #twikoo .tk-admin-config-actions .el-button--primary { width: 100%; }
+
+    /* === 导入 / 导出区 === */
+    #twikoo .tk-admin-import, #twikoo .tk-admin-export {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow-sm);
+    }
+    #twikoo .tk-admin-import-label, #twikoo .tk-admin-export > .el-button { margin-top: 4px; }
+    #twikoo .tk-admin-import-label { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; display: block; }
+    #twikoo .tk-admin-import select {
+      color: var(--text); background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm); padding: 7px 10px; margin-bottom: 14px; font-size: 0.85rem;
+    }
+    #twikoo .tk-admin-export .el-button { margin-right: 8px; margin-bottom: 8px; }
+
+    /* 头像对齐修复 */
+    #twikoo .tk-avatar, #twikoo .tk-head { line-height: 0; }
+    #twikoo .tk-avatar img, #twikoo .tk-head img { display: block; }
+
+    /* ==================== 响应式 ==================== */
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .menu-toggle { display: flex; }
+      .topbar-user .uname { display: none; }
+      .topbar-user { padding: 4px; }
+      .content-scroll { padding: 18px 16px; }
+      #twikoo .tk-admin-config-item { flex-direction: column; gap: 6px; }
+      #twikoo .tk-admin-config-title { min-width: 0; }
+      .breadcrumb .crumb:not(.current):not(.root) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============ 侧边栏 ============ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo"><i class="fa-solid fa-feather-pointed"></i></div>
+        <div class="brand-text">
+          <span class="title">Sunrise's blog</span>
+          <span class="subtitle">评论管理后台</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <div class="nav-group-label">主功能</div>
+          <div class="nav-item active" data-tab="comments">
+            <i class="fa-solid fa-comments"></i><span>评论管理</span>
+            <span class="badge">核心</span>
+          </div>
+          <div class="nav-item nav-expandable" data-tab="config">
+            <i class="fa-solid fa-sliders"></i><span>配置中心</span>
+            <i class="fa-solid fa-chevron-right nav-arrow"></i>
+          </div>
+          <div class="nav-submenu">
+            <div class="nav-sub-item" data-config="通用">
+              <i class="fa-solid fa-gear"></i><span>通用</span>
+            </div>
+            <div class="nav-sub-item" data-config="插件">
+              <i class="fa-solid fa-puzzle-piece"></i><span>插件</span>
+            </div>
+            <div class="nav-sub-item" data-config="隐私">
+              <i class="fa-solid fa-user-shield"></i><span>隐私</span>
+            </div>
+            <div class="nav-sub-item" data-config="反垃圾">
+              <i class="fa-solid fa-shield-halved"></i><span>反垃圾</span>
+            </div>
+            <div class="nav-sub-item" data-config="人机验证">
+              <i class="fa-solid fa-robot"></i><span>人机验证</span>
+            </div>
+            <div class="nav-sub-item" data-config="通知">
+              <i class="fa-solid fa-bell"></i><span>通知</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">数据管理</div>
+          <div class="nav-item" data-tab="import">
+            <i class="fa-solid fa-file-import"></i><span>数据导入</span>
+          </div>
+          <div class="nav-item" data-tab="export">
+            <i class="fa-solid fa-file-export"></i><span>数据导出</span>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">系统</div>
+          <div class="nav-item" data-action="theme">
+            <i class="fa-solid fa-moon"></i><span>切换主题</span>
+          </div>
+          <div class="nav-item" data-action="home">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i><span>返回博客</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-card">
+          <span class="status-dot" id="statusDot"></span>
+          <div class="info">
+            <div class="s-label" id="statusLabel">引擎状态</div>
+            <div class="s-value" id="statusValue">Twikoo · 待登录</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="菜单"><i class="fa-solid fa-bars"></i></button>
+          <div class="breadcrumb">
+            <span class="crumb root"><i class="fa-solid fa-house"></i></span>
+            <span class="sep"><i class="fa-solid fa-chevron-right"></i></span>
+            <span class="crumb">管理后台</span>
+            <span class="sep"><i class="fa-solid fa-chevron-right"></i></span>
+            <span class="crumb current" id="crumbCurrent">管理员登录</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" id="themeBtn" title="切换主题" aria-label="切换主题"><i class="fa-solid fa-moon"></i></button>
+          <button class="icon-btn" onclick="window.location.href='/'" title="返回博客" aria-label="返回博客"><i class="fa-solid fa-house"></i></button>
+          <div class="topbar-user">
+            <div class="avatar">S</div>
+            <span class="uname">Sunrise</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-scroll">
+        <div class="content-inner">
+          <div class="page-head">
+            <h1 id="pageTitle"><i class="fa-solid fa-lock"></i> 管理员登录</h1>
+            <p id="pageDesc">请输入管理密码登录评论管理后台，登录后可通过左侧导航管理评论与配置。</p>
+          </div>
+          <div class="workspace">
+            <!-- 配置中心概览页 -->
+            <div class="config-overview" id="configOverview" style="display:none;">
+              <div class="config-card" data-config="通用">
+                <div class="config-card-icon"><i class="fa-solid fa-gear"></i></div>
+                <div class="config-card-body">
+                  <div class="config-card-title">通用</div>
+                  <div class="config-card-desc">站点名称、地址、博主信息等基础配置</div>
+                </div>
+                <i class="fa-solid fa-chevron-right config-card-arrow"></i>
+              </div>
+              <div class="config-card" data-config="插件">
+                <div class="config-card-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+                <div class="config-card-body">
+                  <div class="config-card-title">插件</div>
+                  <div class="config-card-desc">评论插件的启用与参数配置</div>
+                </div>
+                <i class="fa-solid fa-chevron-right config-card-arrow"></i>
+              </div>
+              <div class="config-card" data-config="隐私">
+                <div class="config-card-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <div class="config-card-body">
+                  <div class="config-card-title">隐私</div>
+                  <div class="config-card-desc">隐私保护与数据合规配置</div>
+                </div>
+                <i class="fa-solid fa-chevron-right config-card-arrow"></i>
+              </div>
+              <div class="config-card" data-config="反垃圾">
+                <div class="config-card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="config-card-body">
+                  <div class="config-card-title">反垃圾</div>
+                  <div class="config-card-desc">Akismet、腾讯云内容安全、频率限制等</div>
+                </div>
+                <i class="fa-solid fa-chevron-right config-card-arrow"></i>
+              </div>
+              <div class="config-card" data-config="人机验证">
+                <div class="config-card-icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="config-card-body">
+                  <div class="config-card-title">人机验证</div>
+                  <div class="config-card-desc">验证码与人机验证服务配置</div>
+                </div>
+                <i class="fa-solid fa-chevron-right config-card-arrow"></i>
+              </div>
+              <div class="config-card" data-config="通知">
+                <div class="config-card-icon"><i class="fa-solid fa-bell"></i></div>
+                <div class="config-card-body">
+                  <div class="config-card-title">通知</div>
+                  <div class="config-card-desc">即时通知、邮件通知及发送测试</div>
+                </div>
+                <i class="fa-solid fa-chevron-right config-card-arrow"></i>
+              </div>
+            </div>
+            <div id="tcomment"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+  /* ==================== 主题初始化（避免闪烁） ==================== */
+  (function() {
+    var pref = 'auto';
+    try { var saved = localStorage.getItem('liushen-theme'); if (saved) pref = saved; } catch (e) {}
+    var resolved = pref;
+    if (pref === 'auto') { var h = new Date().getHours(); resolved = (h >= 6 && h < 18) ? 'light' : 'dark'; }
+    document.documentElement.setAttribute('data-theme', resolved);
+    document.documentElement.dataset.themePref = pref;
+  })();
+
+  function applyThemeIcon() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var ico = document.querySelector('#themeBtn i');
+    var navIco = document.querySelector('.nav-item[data-action="theme"] i');
+    var cls = cur === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    if (ico) ico.className = cls;
+    if (navIco) navIco.className = cls;
+  }
+  function toggleTheme() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('liushen-theme', next); } catch (e) {}
+    applyThemeIcon();
+  }
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  applyThemeIcon();
+
+  /* ==================== 移动端侧边栏抽屉 ==================== */
+  (function() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var toggle = document.getElementById('menuToggle');
+    function open() { sidebar.classList.add('open'); overlay.classList.add('show'); }
+    function close() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+    toggle.addEventListener('click', function() { sidebar.classList.contains('open') ? close() : open(); });
+    overlay.addEventListener('click', close);
+  })();
+
+  /* ==================== 侧边栏 ⇄ Twikoo Tab 联动 ==================== */
+  // Twikoo 四个一级 tab 顺序：0评论管理 1配置管理 2导入 3导出
+  var TAB_META = {
+    comments: { idx: 0, icon: 'fa-comments',          title: '评论管理', desc: '审核、回复、隐藏、置顶或删除全站评论。', crumb: '评论管理' },
+    config:   { idx: 1, icon: 'fa-sliders',           title: '配置中心', desc: '管理通用、插件、隐私、反垃圾、人机验证、通知等配置项。', crumb: '配置中心' },
+    import:   { idx: 2, icon: 'fa-file-import',       title: '数据导入', desc: '从 Valine、Disqus、Artalk 等评论系统导入数据。', crumb: '数据导入' },
+    export:   { idx: 3, icon: 'fa-file-export',       title: '数据导出', desc: '将全部评论或访问量导出为 JSON 备份文件。', crumb: '数据导出' }
+  };
+
+  function clickTwikooTab(idx) {
+    var tabs = document.querySelectorAll('#twikoo .tk-tab');
+    if (tabs[idx]) { tabs[idx].click(); return true; }
+    return false;
+  }
+
+  function setNavActive(tab) {
+    document.querySelectorAll('.nav-item[data-tab]').forEach(function(n) { n.classList.remove('active'); });
+    var nav = document.querySelector('.nav-item[data-tab="' + tab + '"]');
+    if (nav) nav.classList.add('active');
+  }
+
+  function updateHead(meta) {
+    document.getElementById('pageTitle').innerHTML = '<i class="fa-solid ' + meta.icon + '"></i> ' + meta.title;
+    document.getElementById('pageDesc').textContent = meta.desc;
+    document.getElementById('crumbCurrent').textContent = meta.crumb;
+  }
+
+  // 切换到指定模块（点击 Twikoo 对应 tab）
+  function switchTo(tab) {
+    var meta = TAB_META[tab];
+    if (!meta) return;
+    if (!clickTwikooTab(meta.idx)) return; // tab 还没渲染，忽略
+    setNavActive(tab);
+    updateHead(meta);
+    // 切换到非配置项时清除二级菜单高亮、隐藏概览页
+    if (tab !== 'config') {
+      document.querySelectorAll('.nav-sub-item').forEach(function(n) { n.classList.remove('active'); });
+      var overview = document.getElementById('configOverview');
+      if (overview) overview.style.display = 'none';
+      var tcomment = document.getElementById('tcomment');
+      if (tcomment) tcomment.style.display = '';
+      var twikoo = document.getElementById('twikoo');
+      if (twikoo) twikoo.classList.remove('body-single-config');
+    }
+    // 滚动内容区到顶部
+    var sc = document.querySelector('.content-scroll');
+    if (sc) sc.scrollTop = 0;
+  }
+
+  // 安全防护：切到配置管理并展开「反垃圾」分组
+  function switchSecurity() {
+    switchTo('config');
+    var tries = 0;
+    var timer = setInterval(function() {
+      tries++;
+      var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
+      var done = false;
+      groups.forEach(function(g) {
+        var t = g.querySelector('.tk-admin-config-group-title');
+        if (t && t.textContent.indexOf('反垃圾') > -1) {
+          g.setAttribute('open', '');
+          g.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          done = true;
+        }
+      });
+      if (done || tries > 8) clearInterval(timer);
+    }, 200);
+    // 侧边栏高亮安全防护
+    document.querySelectorAll('.nav-item[data-tab]').forEach(function(n) { n.classList.remove('active'); });
+    var nav = document.querySelector('.nav-item[data-tab="security"]');
+    if (nav) nav.classList.add('active');
+    document.getElementById('pageTitle').innerHTML = '<i class="fa-solid fa-shield-halved"></i> 安全防护';
+    document.getElementById('pageDesc').textContent = '反垃圾评论与人机验证配置（位于配置中心内）。';
+    document.getElementById('crumbCurrent').textContent = '安全防护';
+  }
+
+  // 配置分组映射：侧边栏二级菜单 → Twikoo 实际分组标题（支持一对多）
+  var CONFIG_MAP = {
+    '通用':    ['通用'],
+    '插件':    ['插件'],
+    '隐私':    ['隐私'],
+    '反垃圾':  ['反垃圾'],
+    '人机验证':['人机验证'],
+    '通知':    ['即时通知', '邮件通知', '邮件通知测试']
+  };
+  var CONFIG_META = {
+    '通用':    { icon: 'fa-gear',         desc: '管理站点基本信息与通用配置项。' },
+    '插件':    { icon: 'fa-puzzle-piece', desc: '管理评论插件的启用与参数配置。' },
+    '隐私':    { icon: 'fa-user-shield',  desc: '管理隐私保护与数据合规配置。' },
+    '反垃圾':  { icon: 'fa-shield-halved',desc: '反垃圾评论与过滤配置。' },
+    '人机验证':{ icon: 'fa-robot',        desc: '人机验证（验证码）配置。' },
+    '通知':    { icon: 'fa-bell',         desc: '即时通知、邮件通知及测试。' }
+  };
+
+  // 过滤配置分组：只显示匹配的，隐藏其余
+  function filterConfigGroups(groupName) {
+    var matchList = CONFIG_MAP[groupName] || [];
+    var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
+    groups.forEach(function(g) {
+      var titleEl = g.querySelector('.tk-admin-config-group-title');
+      var title = titleEl ? titleEl.textContent.trim() : '';
+      var shouldShow = matchList.some(function(m) { return title.indexOf(m) > -1; });
+      g.style.display = shouldShow ? '' : 'none';
+      if (shouldShow) g.setAttribute('open', '');
+    });
+    // 保存/重置按钮也要跟随显示
+    var actions = document.querySelector('#twikoo .tk-admin-config-actions');
+    if (actions) actions.style.display = '';
+  }
+
+  // 显示配置中心概览页（点击「配置中心」父级时）
+  function showConfigOverview() {
+    document.body.classList.add('config-overview-mode');
+    var overview = document.getElementById('configOverview');
+    if (overview) overview.style.display = '';
+    // 移除单组模式标记
+    var twikoo = document.getElementById('twikoo');
+    if (twikoo) twikoo.classList.remove('body-single-config');
+  }
+
+  // 隐藏配置中心概览页，显示 Twikoo 配置内容
+  function hideConfigOverview() {
+    document.body.classList.remove('config-overview-mode');
+    var overview = document.getElementById('configOverview');
+    if (overview) overview.style.display = 'none';
+  }
+
+  function switchToConfigGroup(groupName) {
+    switchTo('config');
+    // 隐藏概览页，显示 Twikoo 配置内容
+    hideConfigOverview();
+    // 标记单组模式（隐藏分组标题与箭头）
+    var twikoo = document.getElementById('twikoo');
+    if (twikoo) twikoo.classList.add('body-single-config');
+    // 立即尝试过滤（如果分组已渲染）
+    var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
+    if (groups.length > 0) {
+      filterConfigGroups(groupName);
+      var matchList = CONFIG_MAP[groupName] || [];
+      for (var i = 0; i < groups.length; i++) {
+        var t = groups[i].querySelector('.tk-admin-config-group-title');
+        if (t && matchList.some(function(m) { return t.textContent.indexOf(m) > -1; })) {
+          groups[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+          break;
+        }
+      }
+    } else {
+      // 分组尚未渲染，等待 Twikoo 加载
+      var tries = 0;
+      var timer = setInterval(function() {
+        tries++;
+        var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
+        if (groups.length > 0) {
+          filterConfigGroups(groupName);
+          var matchList = CONFIG_MAP[groupName] || [];
+          for (var i = 0; i < groups.length; i++) {
+            var t = groups[i].querySelector('.tk-admin-config-group-title');
+            if (t && matchList.some(function(m) { return t.textContent.indexOf(m) > -1; })) {
+              groups[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+              break;
+            }
+          }
+          clearInterval(timer);
+        }
+        if (tries > 8) clearInterval(timer);
+      }, 200);
+    }
+    // 更新二级菜单高亮
+    document.querySelectorAll('.nav-sub-item').forEach(function(n) { n.classList.remove('active'); });
+    var sub = document.querySelector('.nav-sub-item[data-config="' + groupName + '"]');
+    if (sub) sub.classList.add('active');
+    // 更新头部
+    var meta = CONFIG_META[groupName];
+    if (meta) {
+      document.getElementById('pageTitle').innerHTML = '<i class="fa-solid ' + meta.icon + '"></i> ' + groupName;
+      document.getElementById('pageDesc').textContent = meta.desc;
+      document.getElementById('crumbCurrent').textContent = groupName;
+    }
+  }
+
+  // 绑定侧边栏点击
+  document.querySelectorAll('.nav-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var action = item.dataset.action;
+      var tab = item.dataset.tab;
+      if (action === 'theme') { toggleTheme(); return; }
+      if (action === 'home') { window.location.href = '/'; return; }
+      // 功能项需要登录后才可操作
+      if (!document.body.classList.contains('logged-in')) return;
+      // 可展开项：切换子菜单
+      if (item.classList.contains('nav-expandable')) {
+        item.classList.toggle('expanded');
+        var submenu = item.nextElementSibling;
+        if (submenu && submenu.classList.contains('nav-submenu')) {
+          submenu.classList.toggle('open');
+        }
+        // 点击配置中心：显示概览页
+        if (tab === 'config') {
+          switchTo('config');
+          showConfigOverview();
+          // 清除二级菜单高亮
+          document.querySelectorAll('.nav-sub-item').forEach(function(n) { n.classList.remove('active'); });
+        }
+        return;
+      }
+      if (tab) { switchTo(tab); }
+      // 移动端收起
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+      }
+    });
+  });
+
+  // 绑定二级菜单点击
+  document.querySelectorAll('.nav-sub-item').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (!document.body.classList.contains('logged-in')) return;
+      var groupName = item.dataset.config;
+      if (groupName) switchToConfigGroup(groupName);
+      // 移动端收起
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+      }
+    });
+  });
+
+  // 绑定配置概览卡片点击
+  document.querySelectorAll('.config-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (!document.body.classList.contains('logged-in')) return;
+      var groupName = card.dataset.config;
+      if (groupName) switchToConfigGroup(groupName);
+    });
+  });
+
+  /* ==================== 登录状态监听 ==================== */
+  var _inited = false;
+  function checkLoginState() {
+    var panel = document.querySelector('#twikoo .tk-panel');
+    var login = document.querySelector('#twikoo .tk-login');
+    // 已登录：panel 存在且可见，login 不存在或隐藏
+    var loggedIn = false;
+    if (panel) {
+      var ps = getComputedStyle(panel);
+      loggedIn = (ps.display !== 'none' && ps.visibility !== 'hidden');
+    }
+    // 退回到登录页：login 重新可见
+    if (login) {
+      var ls = getComputedStyle(login);
+      if (ls.display !== 'none' && ls.visibility !== 'hidden') loggedIn = false;
+    }
+
+    document.body.classList.toggle('logged-in', loggedIn);
+
+    var dot = document.getElementById('statusDot');
+    var label = document.getElementById('statusLabel');
+    var value = document.getElementById('statusValue');
+    if (loggedIn) {
+      dot.classList.remove('offline');
+      label.textContent = '引擎状态';
+      value.textContent = 'Twikoo · 已登录';
+      // 首次登录成功：默认进入评论管理
+      if (!_inited) {
+        _inited = true;
+        // 等待 tab 渲染后切换
+        var t = setInterval(function() {
+          if (document.querySelectorAll('#twikoo .tk-tab').length >= 4) {
+            clearInterval(t);
+            switchTo('comments');
+          }
+        }, 200);
+        setTimeout(function() { clearInterval(t); }, 6000);
+      }
+    } else {
+      dot.classList.add('offline');
+      label.textContent = '引擎状态';
+      value.textContent = 'Twikoo · 待登录';
+      _inited = false;
+      // 退回登录页时还原头部
+      document.getElementById('pageTitle').innerHTML = '<i class="fa-solid fa-lock"></i> 管理员登录';
+      document.getElementById('pageDesc').textContent = '请输入管理密码登录评论管理后台，登录后可通过左侧导航管理评论与配置。';
+      document.getElementById('crumbCurrent').textContent = '管理员登录';
+      document.querySelectorAll('.nav-item[data-tab]').forEach(function(n) { n.classList.remove('active'); });
+      document.querySelectorAll('.nav-sub-item').forEach(function(n) { n.classList.remove('active'); });
+      var cm = document.querySelector('.nav-item[data-tab="comments"]');
+      if (cm) cm.classList.add('active');
+    }
+  }
+
+  /* ==================== Twikoo 初始化 ==================== */
+  (function() {
+    function initTwikoo() {
+      if (!window.twikoo) return;
+      window.twikoo.init({
+        envId: 'https://twikoo.vercel.wowtang.top/',
+        el: '#tcomment',
+        lang: 'zh-CN',
+        path: window.location.pathname
+      });
+    }
+    if (window.twikoo) { initTwikoo(); return; }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdmirror.com/npm/twikoo@1/dist/twikoo.all.min.js';
+    script.async = true;
+    script.onload = initTwikoo;
+    document.body.appendChild(script);
+  })();
+
+  /* ==================== 状态监听启动 + 自动聚焦密码框 ==================== */
+  (function() {
+    // 监听 Twikoo 容器变化，感知登录/登出与 tab 渲染
+    function startObserver() {
+      var target = document.querySelector('#twikoo') || document.querySelector('#tcomment') || document.body;
+      var ob = new MutationObserver(function() { checkLoginState(); });
+      ob.observe(target, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    }
+    startObserver();
+    setInterval(checkLoginState, 1000); // 兜底轮询
+
+    // 替换 Twikoo 登录标题为 Sunrise's blog
+    setInterval(function() {
+      var title = document.querySelector('#twikoo .tk-login-title');
+      if (title && title.textContent.indexOf('Twikoo') > -1) {
+        title.textContent = "Sunrise's blog 评论管理";
+      }
+    }, 500);
+
+    // 自动聚焦密码输入框（登录前）
+    var focusTimer = setInterval(function() {
+      var pwd = document.querySelector('#twikoo .tk-login input[type="password"]');
+      if (pwd && pwd.offsetParent !== null) { pwd.focus(); }
+    }, 600);
+    setTimeout(function() { clearInterval(focusTimer); }, 20000);
+  })();
+  </script>
+</body>
+</html>
