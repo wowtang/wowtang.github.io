@@ -385,20 +385,13 @@
     <i class="fa-solid fa-comments"></i>
     <span>评论</span>
   </div>
-  <div id="vcomments"></div>
-  <link rel="stylesheet" href="https://unpkg.com/valine@1/dist/Valine.min.css">
-  <script src="https://unpkg.com/valine@1/dist/Valine.min.js"></script>
+  <div id="tcomment"></div>
+  <script src="https://registry.npmmirror.com/twikoo/1.7.15/files/dist/twikoo.min.js"></script>
   <script>
-    new Valine({
-      el: '#vcomments',
-      appId: 'MePSpEqjVBz1fVJ3oCSCh9nD-gzGzoHsz',
-      appKey: 'MTdEH54BKQjTs3zbXi2q8gks',
-      serverURLs: 'https://mepspeqj.lc-cn-n1-shared.com',
-      avatar: 'mp',
-      placeholder: '说点什么吧…（发送评论即代表您同意了「SS版权声明」 与 「CC BY-NC-SA 4.0」许可协议，详情请访问https://wowtang.top/post/SScopyright/与https://creativecommons.org/licenses/by-nc-nd/4.0/，如您不同意相关条款，请勿发送评论）'
+    twikoo.init({
+      envId: 'https://twikoo.vercel.wowtang.top/',
+      el: '#tcomment'
     });
-    var linkInput = document.querySelector('#vcomments .vlink');
-    if (linkInput) linkInput.placeholder = '网址(https://)';
   </script>
 </section>
 
