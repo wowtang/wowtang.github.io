@@ -593,7 +593,8 @@
     #twikoo .tk-admin-comment-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px; }
     #twikoo .tk-admin-comment-meta .tk-avatar img, #twikoo .tk-admin-comment-meta .tk-avatar-img { width: 30px; height: 30px; border-radius: 50%; }
     #twikoo .tk-admin-comment-meta a { color: var(--primary); }
-    #twikoo .tk-admin-comment-meta .tk-time { color: var(--text-muted); font-size: 0.78rem; }
+    #twikoo .tk-admin-comment-meta .tk-time { color: var(--text-muted); font-size: 0.78rem; cursor: pointer; transition: color 0.15s; }
+    #twikoo .tk-admin-comment-meta .tk-time:hover { color: var(--primary); }
     #twikoo .tk-admin-comment-meta .tk-ip { color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.72rem; }
     #twikoo .tk-content { padding: 4px 0 8px; color: var(--text); }
     #twikoo .tk-admin-actions { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; border-top: 1px solid var(--divider); margin-bottom: 0 !important; }
@@ -693,6 +694,80 @@
       .topbar-user { padding: 4px; }
       .content-scroll { padding: 18px 16px; }
       .breadcrumb .crumb:not(.current):not(.root) { display: none; }
+    }
+
+    /* === 评论详情弹窗 === */
+    .detail-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .detail-overlay.active { display: flex; opacity: 1; }
+    .detail-modal {
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+      width: 90%; max-width: 620px; max-height: 82vh;
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+    }
+    [data-theme="dark"] .detail-modal { background: rgba(24, 28, 44, 0.98); }
+    .detail-overlay.active .detail-modal { transform: scale(1); }
+    .detail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--divider);
+    }
+    .detail-header h3 {
+      font-size: 1rem; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .detail-header h3 i { color: var(--primary); }
+    .detail-close {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 1.15rem; padding: 4px 8px;
+      border-radius: 6px; transition: all 0.15s;
+    }
+    .detail-close:hover { color: var(--text); background: var(--divider); }
+    .detail-body {
+      padding: 20px; overflow-y: auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px;
+    }
+    .detail-field { display: flex; flex-direction: column; gap: 3px; }
+    .detail-field.full { grid-column: 1 / -1; }
+    .detail-label {
+      font-size: 0.72rem; color: var(--text-muted); font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .detail-value {
+      font-size: 0.85rem; color: var(--text); word-break: break-all;
+    }
+    .detail-value.mono {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.78rem;
+    }
+    .detail-value.content {
+      background: var(--divider); padding: 8px 12px;
+      border-radius: var(--radius-sm); line-height: 1.6;
+    }
+    .detail-value a { color: var(--primary); }
+    .detail-badge {
+      display: inline-block; padding: 2px 10px; border-radius: 4px;
+      font-size: 0.75rem; font-weight: 500; width: fit-content;
+    }
+    .detail-badge.yes { background: var(--accent-soft); color: var(--accent); }
+    .detail-badge.no { background: var(--divider); color: var(--text-muted); }
+    .detail-section-title {
+      grid-column: 1 / -1; font-size: 0.8rem; font-weight: 600;
+      color: var(--primary); margin-top: 4px; padding-bottom: 4px;
+      border-bottom: 1px solid var(--divider);
     }
   </style>
 </head>
@@ -894,6 +969,17 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- 评论详情弹窗 -->
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-modal">
+      <div class="detail-header">
+        <h3><i class="fa-solid fa-circle-info"></i> 评论详情</h3>
+        <button class="detail-close" id="detailClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
+    </div>
   </div>
 
   <script>
@@ -1526,6 +1612,191 @@
       } catch(e) {}
     }
     setInterval(injectCommentIPs, 500);
+
+    // 点击时间切换相对时间 / 绝对时间（YYYY-MM-DD HH:MM:SS）
+    function setupTimeToggle() {
+      // 从 Vue 数据注入 data-created 到时间 span
+      try {
+        var twikooEl = document.querySelector('.twikoo');
+        if (twikooEl && twikooEl.__vue__) {
+          var v = twikooEl.__vue__;
+          if (v.$children[2] && v.$children[2].$children[0]) {
+            var adminComp = v.$children[2].$children[0];
+            var comments = adminComp.comments;
+            if (comments && comments.length) {
+              var domItems = document.querySelectorAll('#twikoo .tk-admin-comment-item');
+              for (var i = 0; i < domItems.length && i < comments.length; i++) {
+                var timeSpan = domItems[i].querySelector('.tk-time');
+                if (timeSpan && comments[i].created) {
+                  timeSpan.setAttribute('data-created', comments[i].created);
+                }
+              }
+            }
+          }
+        }
+      } catch(e) {}
+
+      // 设置事件委托（仅一次）
+      var container = document.getElementById('twikoo');
+      if (!container) return;
+      if (container.getAttribute('data-time-toggle') === '1') return;
+      container.setAttribute('data-time-toggle', '1');
+
+      container.addEventListener('click', function(e) {
+        var target = e.target;
+        if (!target || !target.closest) return;
+        var timeSpan = target.closest('.tk-time');
+        if (!timeSpan) return;
+        if (!timeSpan.closest('.tk-admin-comment-item')) return;
+
+        var created = timeSpan.getAttribute('data-created');
+        if (!created) return;
+
+        var d = new Date(parseInt(created));
+        function pad(n) { return n < 10 ? '0' + n : '' + n; }
+        var absTime = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+          + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+
+        if (timeSpan.textContent.trim() === absTime) {
+          var rel = timeSpan.getAttribute('data-rel-time');
+          if (rel) timeSpan.textContent = rel;
+        } else {
+          timeSpan.setAttribute('data-rel-time', timeSpan.textContent.trim());
+          timeSpan.textContent = absTime;
+        }
+      });
+    }
+    setInterval(setupTimeToggle, 500);
+
+    // === 评论详情弹窗 ===
+    function formatTime(ts) {
+      if (!ts) return '-';
+      var d = new Date(ts);
+      function p(n) { return n < 10 ? '0' + n : '' + n; }
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate())
+        + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+
+    function injectDetailButtons() {
+      try {
+        var twikooEl = document.querySelector('.twikoo');
+        if (!twikooEl || !twikooEl.__vue__) return;
+        var v = twikooEl.__vue__;
+        if (!v.$children[2] || !v.$children[2].$children[0]) return;
+        var adminComp = v.$children[2].$children[0];
+        var comments = adminComp.comments;
+        if (!comments || !comments.length) return;
+
+        var domItems = document.querySelectorAll('#twikoo .tk-admin-comment-item');
+        for (var i = 0; i < domItems.length && i < comments.length; i++) {
+          var actions = domItems[i].querySelector('.tk-admin-actions');
+          if (!actions) continue;
+          var existing = actions.querySelector('.tk-detail-btn');
+          if (existing) {
+            existing.setAttribute('data-idx', i);
+            continue;
+          }
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'el-button el-button--text el-button--mini tk-detail-btn';
+          btn.setAttribute('data-idx', i);
+          btn.innerHTML = '<span>查看详情</span>';
+          actions.appendChild(btn);
+        }
+      } catch(e) {}
+    }
+
+    function showCommentDetail(idx) {
+      try {
+        var twikooEl = document.querySelector('.twikoo');
+        var v = twikooEl.__vue__;
+        var adminComp = v.$children[2].$children[0];
+        var comments = adminComp.comments;
+        if (!comments || idx >= comments.length) return;
+        var c = comments[idx];
+
+        var body = document.getElementById('detailBody');
+        function field(label, value, opts) {
+          opts = opts || {};
+          var cls = 'detail-field' + (opts.full ? ' full' : '');
+          var valCls = 'detail-value' + (opts.mono ? ' mono' : '') + (opts.content ? ' content' : '');
+          var html = '<div class="' + cls + '"><span class="detail-label">' + label + '</span>';
+          if (opts.badge) {
+            html += '<span class="detail-badge ' + (opts.badgeYes ? 'yes' : 'no') + '">' + value + '</span>';
+          } else if (opts.link && value && value !== '-') {
+            html += '<span class="' + valCls + '"><a href="' + value + '" target="_blank">' + value + '</a></span>';
+          } else {
+            html += '<span class="' + valCls + '">' + (value || '-') + '</span>';
+          }
+          html += '</div>';
+          return html;
+        }
+        function section(title) {
+          return '<div class="detail-section-title">' + title + '</div>';
+        }
+
+        var html = '';
+        html += section('用户信息');
+        html += field('昵称', c.nick);
+        html += field('邮箱', c.mail);
+        html += field('个人网站', c.link, { link: true });
+        html += field('用户标识 (UID)', c.uid, { mono: true });
+        html += field('邮箱 MD5', c.mailMd5, { mono: true, full: true });
+        html += field('是否站长', c.master ? '是' : '否', { badge: true, badgeYes: c.master });
+
+        html += section('网络信息');
+        html += field('IP 地址', c.ip, { mono: true });
+        html += field('IP 归属地', c.ipRegion);
+        html += field('User Agent', c.ua, { mono: true, full: true });
+
+        html += section('评论信息');
+        html += field('评论 ID', c._id, { mono: true, full: true });
+        html += field('评论内容', c.comment, { content: true, full: true });
+        html += field('评论页面', c.url, { mono: true, full: true });
+        html += field('页面地址', c.href, { link: true, full: true });
+        html += field('父评论 ID', c.pid || '-', { mono: true });
+        html += field('根评论 ID', c.rid || '-', { mono: true });
+        html += field('垃圾标记', c.isSpam ? '是' : '否', { badge: true, badgeYes: c.isSpam });
+
+        html += section('时间信息');
+        html += field('创建时间', formatTime(c.created));
+        html += field('更新时间', formatTime(c.updated));
+
+        body.innerHTML = html;
+        document.getElementById('detailOverlay').classList.add('active');
+      } catch(e) {}
+    }
+
+    function initDetailModal() {
+      var overlay = document.getElementById('detailOverlay');
+      if (!overlay || overlay.getAttribute('data-init') === '1') return;
+      overlay.setAttribute('data-init', '1');
+
+      document.getElementById('detailClose').addEventListener('click', function() {
+        overlay.classList.remove('active');
+      });
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) overlay.classList.remove('active');
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') overlay.classList.remove('active');
+      });
+      var tw = document.getElementById('twikoo');
+      if (tw) {
+        tw.addEventListener('click', function(e) {
+          var target = e.target;
+          if (!target || !target.closest) return;
+          var btn = target.closest('.tk-detail-btn');
+          if (!btn) return;
+          var idx = parseInt(btn.getAttribute('data-idx'));
+          if (isNaN(idx)) return;
+          showCommentDetail(idx);
+        });
+      }
+    }
+
+    setInterval(injectDetailButtons, 500);
+    setInterval(initDetailModal, 500);
   })();
   </script>
 </body>
