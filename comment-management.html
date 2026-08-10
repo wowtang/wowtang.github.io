@@ -183,10 +183,107 @@
     /* 隐藏 Twikoo 原版登录表单 */
     #twikoo .tk-login { display: none !important; }
     /* 登录后隐藏自定义表单 */
-    body.logged-in .custom-login { display: none; }
+    body.logged-in .custom-login { display: none !important; }
+    /* 登录框：固定浮动覆盖层，居中覆盖在所有内容之上 */
+    .custom-login {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-gradient);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    body.login-transitioning .custom-login {
+      opacity: 0; transform: scale(0.96); pointer-events: none;
+    }
+    /* 未登录时：将所有 Twikoo 容器移至屏幕外，保持 DOM 功能但视觉不可见 */
+    body:not(.logged-in) #tcomment,
+    body:not(.logged-in) #twikoo,
+    body:not(.logged-in) .tk-admin,
+    body:not(.logged-in) .tk-admin-container,
+    body:not(.logged-in) .tk-panel {
+      position: absolute !important;
+      left: -9999px !important;
+      top: 0 !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    /* 登录后：恢复 Twikoo 容器并淡入 */
+    body.logged-in #tcomment,
+    body.logged-in #twikoo,
+    body.logged-in .tk-admin,
+    body.logged-in .tk-admin-container,
+    body.logged-in .tk-panel {
+      position: static !important;
+      left: auto !important;
+      top: auto !important;
+      width: auto !important;
+      height: auto !important;
+      overflow: visible !important;
+      pointer-events: auto !important;
+    }
+    /* #tcomment 由动画控制 opacity，其余元素直接恢复 */
+    body.logged-in #twikoo,
+    body.logged-in .tk-admin,
+    body.logged-in .tk-admin-container,
+    body.logged-in .tk-panel {
+      opacity: 1 !important;
+    }
+    body.logged-in #tcomment { animation: adminFadeIn 0.4s ease backwards; }
+    body.logged-in #tcomment { width: 100% !important; }
+    @keyframes adminFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    .custom-login { width: 100%; max-width: 400px; margin: 0 auto; }
+    /* ==================== 登录过渡加载动画 ==================== */
+    .login-loader {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 500;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: var(--bg-gradient);
+    }
+    /* 加载动画内容延迟出现，等登录框淡出完成 */
+    .login-loader > * {
+      animation: loaderContentFadeIn 0.3s ease 0.5s backwards;
+    }
+    @keyframes loaderContentFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    body.login-transitioning .login-loader { display: flex; }
+    body.logged-in .login-loader { display: none !important; }
+    .loader-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid; place-items: center; color: #fff; font-size: 1.3rem;
+      box-shadow: 0 6px 20px rgba(38, 121, 204, 0.3);
+      animation: loaderIconPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes loaderIconPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.92); opacity: 0.75; }
+    }
+    .loader-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--divider);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: loaderSpin 0.7s linear infinite;
+    }
+    @keyframes loaderSpin { to { transform: rotate(360deg); } }
+    .loader-text {
+      font-size: 0.84rem; color: var(--text-muted); letter-spacing: 0.02em;
+    }
+
     .custom-login-card {
+      width: 100%; max-width: 400px;
       padding: 40px 36px 32px;
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: var(--radius); box-shadow: var(--shadow-md);
@@ -350,12 +447,7 @@
     .page-head p { font-size: 0.875rem; color: var(--text-secondary); }
 
     .workspace { min-height: 400px; }
-    /* 登录前：让 Twikoo 容器垂直居中 */
-    body:not(.logged-in) .workspace {
-      display: flex; align-items: center; justify-content: center;
-      min-height: calc(100vh - var(--topbar-height) - 140px);
-    }
-    body:not(.logged-in) #tcomment { width: 100%; }
+    body:not(.logged-in) .workspace { min-height: 0; }
     body:not(.logged-in) #configOverview { display: none !important; }
 
     /* === 配置中心概览页 === */
@@ -724,6 +816,12 @@
                 <div id="autoLoginHint"></div>
               </div>
             </div>
+            <!-- 登录过渡加载动画 -->
+            <div class="login-loader" id="loginLoader">
+              <div class="loader-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+              <div class="loader-spinner"></div>
+              <p class="loader-text">正在加载评论管理…</p>
+            </div>
             <!-- 配置中心概览页 -->
             <div class="config-overview" id="configOverview" style="display:none;">
               <div class="config-card" data-config="通用">
@@ -967,14 +1065,6 @@
     var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
     if (groups.length > 0) {
       filterConfigGroups(groupName);
-      var matchList = CONFIG_MAP[groupName] || [];
-      for (var i = 0; i < groups.length; i++) {
-        var t = groups[i].querySelector('.tk-admin-config-group-title');
-        if (t && matchList.some(function(m) { return t.textContent.indexOf(m) > -1; })) {
-          groups[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
-          break;
-        }
-      }
     } else {
       // 分组尚未渲染，等待 Twikoo 加载
       var tries = 0;
@@ -983,19 +1073,14 @@
         var groups = document.querySelectorAll('#twikoo .tk-admin-config-group');
         if (groups.length > 0) {
           filterConfigGroups(groupName);
-          var matchList = CONFIG_MAP[groupName] || [];
-          for (var i = 0; i < groups.length; i++) {
-            var t = groups[i].querySelector('.tk-admin-config-group-title');
-            if (t && matchList.some(function(m) { return t.textContent.indexOf(m) > -1; })) {
-              groups[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
-              break;
-            }
-          }
           clearInterval(timer);
         }
         if (tries > 8) clearInterval(timer);
       }, 200);
     }
+    // 内容区顶格（不滚动到分组）
+    var sc = document.querySelector('.content-scroll');
+    if (sc) sc.scrollTop = 0;
     // 更新二级菜单高亮
     document.querySelectorAll('.nav-sub-item').forEach(function(n) { n.classList.remove('active'); });
     var sub = document.querySelector('.nav-sub-item[data-config="' + groupName + '"]');
@@ -1165,7 +1250,7 @@
     twikooPwd.dispatchEvent(new Event('input', { bubbles: true }));
     twikooBtn.click();
 
-    // 3 秒后检查登录结果
+    // 6 秒后检查登录结果（需覆盖 2 秒过渡动画 + 检测延迟）
     setTimeout(function() {
       if (!document.body.classList.contains('logged-in')) {
         // 登录失败
@@ -1189,7 +1274,7 @@
         loginBtn.textContent = '登录';
         _loginInProgress = false;
       }
-    }, 3000);
+    }, 6000);
   }
 
   // 自动登录：检测自动登录标记并自动填入提交
@@ -1216,7 +1301,15 @@
       var accountInput = document.getElementById('loginAccount');
       var pwdInput = document.getElementById('loginPassword');
       if (accountInput && pwdInput && accountInput.offsetParent !== null && !_loginInProgress) {
-        // 填入自定义表单并触发登录
+        // 先检查 Twikoo 是否已就绪
+        var twikooPwd = document.querySelector('#twikoo .tk-login input[type="password"]');
+        var twikooBtn = document.querySelector('#twikoo .tk-login .el-button');
+        if (!twikooPwd || !twikooBtn) {
+          // Twikoo 尚未就绪，继续等待
+          if (tries > 30) clearInterval(timer);
+          return;
+        }
+        // Twikoo 已就绪，填入自定义表单并触发登录
         accountInput.value = FIXED_ACCOUNT;
         pwdInput.value = savedPwd;
         var hint = document.getElementById('autoLoginHint');
@@ -1246,6 +1339,8 @@
 
   /* ==================== 登录状态监听 ==================== */
   var _inited = false;
+  var _loginTransitioning = false;
+  var _loggedInTime = 0; // 记录登录完成时间，用于登出宽限期
   function checkLoginState() {
     var panel = document.querySelector('#twikoo .tk-panel');
     var login = document.querySelector('#twikoo .tk-login');
@@ -1261,31 +1356,53 @@
       if (ls.display !== 'none' && ls.visibility !== 'hidden') loggedIn = false;
     }
 
-    document.body.classList.toggle('logged-in', loggedIn);
-
     var dot = document.getElementById('statusDot');
     var label = document.getElementById('statusLabel');
     var value = document.getElementById('statusValue');
+
     if (loggedIn) {
-      dot.classList.remove('offline');
-      label.textContent = '引擎状态';
-      value.textContent = 'Twikoo · 已登录';
-      // 首次登录成功：默认进入评论管理
-      if (!_inited) {
-        _inited = true;
-        // 等待 tab 渲染后切换
-        var t = setInterval(function() {
-          if (document.querySelectorAll('#twikoo .tk-tab').length >= 4) {
-            clearInterval(t);
-            switchTo('comments');
-          }
-        }, 200);
-        setTimeout(function() { clearInterval(t); }, 6000);
+      // 已经登录或正在过渡：仅更新状态指示器，跳过重复处理
+      if (document.body.classList.contains('logged-in') || _loginTransitioning) {
+        if (dot) dot.classList.remove('offline');
+        if (value) value.textContent = 'Twikoo · 已登录';
+        return;
       }
+      // 开始登录过渡动画：先淡出登录框，再显示管理内容
+      _loginTransitioning = true;
+      document.body.classList.add('login-transitioning');
+      if (dot) dot.classList.remove('offline');
+      if (label) label.textContent = '引擎状态';
+      if (value) value.textContent = 'Twikoo · 已登录';
+      // 等待登录框淡出后再显示管理内容
+      setTimeout(function() {
+        document.body.classList.remove('login-transitioning');
+        document.body.classList.add('logged-in');
+        _loginTransitioning = false;
+        _loggedInTime = Date.now(); // 记录登录完成时间
+        // 首次登录成功：默认进入评论管理
+        if (!_inited) {
+          _inited = true;
+          // 等待 tab 渲染后切换
+          var t = setInterval(function() {
+            if (document.querySelectorAll('#twikoo .tk-tab').length >= 4) {
+              clearInterval(t);
+              switchTo('comments');
+            }
+          }, 200);
+          setTimeout(function() { clearInterval(t); }, 6000);
+        }
+      }, 2000);
     } else {
-      dot.classList.add('offline');
-      label.textContent = '引擎状态';
-      value.textContent = 'Twikoo · 待登录';
+      // 退出登录：过渡中和登录后5秒宽限期内不处理，防止 Twikoo DOM 抖动导致误判
+      if (_loginTransitioning) return;
+      if (_loggedInTime && Date.now() - _loggedInTime < 5000) return;
+      _loginTransitioning = false;
+      _loggedInTime = 0;
+      document.body.classList.remove('login-transitioning');
+      document.body.classList.remove('logged-in');
+      if (dot) dot.classList.add('offline');
+      if (label) label.textContent = '引擎状态';
+      if (value) value.textContent = 'Twikoo · 待登录';
       _inited = false;
       // 退回登录页时还原头部
       document.getElementById('pageTitle').innerHTML = '<i class="fa-solid fa-lock"></i> 管理员登录';
