@@ -653,6 +653,43 @@
       order: 9999;
     }
 
+    /* 级数徽章（时间后） */
+    #twikoo .tk-level-badge {
+      color: var(--primary, #3b82f6);
+      font-weight: 600;
+      font-size: 0.72rem;
+      margin-left: 4px;
+      border: 1px solid var(--card-border, #e0e0e0);
+      border-radius: 3px;
+      padding: 0 4px;
+      background: var(--card-bg, #fff);
+    }
+    /* 回复前缀（内容前） */
+    #twikoo .tk-reply-prefix {
+      color: var(--primary, #3b82f6);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    /* 前缀后紧跟的首个块级内容改为内联，保证"回复 @某人"与正文同行 */
+    #twikoo .tk-content .tk-reply-prefix + p,
+    #twikoo .tk-content .tk-reply-prefix + div,
+    #twikoo .tk-content .tk-reply-prefix + ul,
+    #twikoo .tk-content .tk-reply-prefix + ol,
+    #twikoo .tk-content .tk-reply-prefix + blockquote,
+    #twikoo .tk-content .tk-reply-prefix + h1,
+    #twikoo .tk-content .tk-reply-prefix + h2,
+    #twikoo .tk-content .tk-reply-prefix + h3,
+    #twikoo .tk-content .tk-reply-prefix + h4,
+    #twikoo .tk-content .tk-reply-prefix + h5,
+    #twikoo .tk-content .tk-reply-prefix + h6 {
+      display: inline;
+    }
+    /* 前缀后紧跟 pre 时保持原样但去除上方空白（代码块特殊处理） */
+    #twikoo .tk-content .tk-reply-prefix + pre {
+      display: inline-block;
+      vertical-align: baseline;
+    }
+
     /* === 多级评论缩进显示（不移动 DOM 元素，通过 data-depth 实现树形缩进）=== */
     #twikoo .tk-admin-comment-item[data-depth="1"] { margin-left: 44px !important; }
     #twikoo .tk-admin-comment-item[data-depth="2"] { margin-left: 82px !important; }
@@ -7681,6 +7718,17 @@ to {
             assignOrder(comments[i]._id, 0);
           }
         }
+        // 保存真实深度（用于级数徽章，不截断），再截断显示深度
+        var realDepthMap = {};
+        for (var i = 0; i < comments.length; i++) {
+          realDepthMap[comments[i]._id] = depthMap[comments[i]._id] || 0;
+        }
+        // 结构最多三级：超过三级（depth>=2 的更深层级）统一按三级（depth=2）同级展示
+        for (var i = 0; i < comments.length; i++) {
+          if (depthMap[comments[i]._id] > 2) {
+            depthMap[comments[i]._id] = 2;
+          }
+        }
 
         // === 第5步：对每个评论项设置 order/depth/hidden（不移动元素，仅改样式与属性）===
         var items = list.querySelectorAll(':scope > .tk-admin-comment-item');
@@ -7712,6 +7760,7 @@ to {
           if (!el) continue;
           el.style.order = String(orderMap[comments[ci2]._id] || 0);
           el.setAttribute('data-depth', depthMap[comments[ci2]._id] || 0);
+          el.setAttribute('data-real-depth', realDepthMap[comments[ci2]._id] || 0);
           var show = (!includeIds || !!includeIds[comments[ci2]._id]);
           el.setAttribute('data-hidden', show ? 'false' : 'true');
           if (show) visibleCount++;
@@ -7795,6 +7844,78 @@ to {
     }
     setInterval(injectCommentIPs, 500);
 
+    // 注入级数标记（时间后）与"回复 @昵称"前缀（内容前）
+    function injectLevelAndReplyPrefix() {
+      try {
+        var twikooEl = document.querySelector('.twikoo');
+        if (!twikooEl || !twikooEl.__vue__) return;
+        var v = twikooEl.__vue__;
+        if (!v.$children[2] || !v.$children[2].$children[0]) return;
+        var adminComp = v.$children[2].$children[0];
+        var comments = adminComp.comments;
+        if (!comments || !comments.length) return;
+
+        // 建立 id -> 数据 映射（用于查找被回复评论的作者昵称）
+        var byId = {};
+        for (var i = 0; i < comments.length; i++) {
+          byId[comments[i]._id] = comments[i];
+        }
+
+        for (var i = 0; i < comments.length; i++) {
+          var c = comments[i];
+          var item = document.querySelector('#twikoo .tk-admin-comment-item[data-comment-id="' + c._id + '"]');
+          if (!item) continue;
+
+          // --- 级数标记：显示真实级数（不封顶），在时间 span 后插入数字 ---
+          // 真实深度来自 data-real-depth（缩进位置最多三级，但级数按实际层级标）
+          var realDepth = parseInt(item.getAttribute('data-real-depth') || '0', 10);
+          var level = realDepth + 1; // 实际级数：1、2、3、4...
+          var timeSpan = item.querySelector('.tk-time');
+          if (timeSpan) {
+            // 将时间文本包进独立 span，避免与级数徽章冲突（时间切换只改文本 span）
+            var timeText = timeSpan.querySelector('.tk-time-text');
+            if (!timeText) {
+              timeText = document.createElement('span');
+              timeText.className = 'tk-time-text';
+              // 把现有的文本节点移入 timeText
+              Array.prototype.slice.call(timeSpan.childNodes).forEach(function(node) {
+                if (node.nodeType === 3) {
+                  timeText.appendChild(node);
+                }
+              });
+              // 移除已存在的旧徽章（避免重复）
+              var oldBadge = timeSpan.querySelector('.tk-level-badge');
+              if (oldBadge) oldBadge.remove();
+              timeSpan.insertBefore(timeText, timeSpan.firstChild);
+            }
+            var badge = timeSpan.querySelector('.tk-level-badge');
+            if (!badge) {
+              badge = document.createElement('span');
+              badge.className = 'tk-level-badge';
+              timeSpan.appendChild(badge);
+            }
+            badge.textContent = '' + level;
+          }
+
+          // --- 回复前缀：内容前加 "回复 @被回复人昵称" ---
+          if (c.pid && c.pid !== '-' && c.pid !== '' && byId[c.pid]) {
+            var parentNick = byId[c.pid].nick || '匿名';
+            var contentEl = item.querySelector('.tk-content');
+            if (contentEl) {
+              var prefix = contentEl.querySelector('.tk-reply-prefix');
+              if (!prefix) {
+                prefix = document.createElement('span');
+                prefix.className = 'tk-reply-prefix';
+                contentEl.insertBefore(prefix, contentEl.firstChild);
+              }
+              prefix.textContent = '回复 @' + parentNick + '：';
+            }
+          }
+        }
+      } catch(e) {}
+    }
+    setInterval(injectLevelAndReplyPrefix, 500);
+
     // 点击时间切换相对时间 / 绝对时间（YYYY-MM-DD HH:MM:SS）
     function setupTimeToggle() {
       // 从 Vue 数据注入 data-created 到时间 span
@@ -7845,12 +7966,14 @@ to {
         var absTime = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
           + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
 
-        if (timeSpan.textContent.trim() === absTime) {
-          var rel = timeSpan.getAttribute('data-rel-time');
-          if (rel) timeSpan.textContent = rel;
+        // 时间文本在 .tk-time-text 内（避免清掉级数徽章）；兼容无徽章的旧结构
+        var timeTextEl = timeSpan.querySelector('.tk-time-text') || timeSpan;
+        if (timeTextEl.textContent.trim() === absTime) {
+          var rel = timeTextEl.getAttribute('data-rel-time');
+          if (rel) timeTextEl.textContent = rel;
         } else {
-          timeSpan.setAttribute('data-rel-time', timeSpan.textContent.trim());
-          timeSpan.textContent = absTime;
+          timeTextEl.setAttribute('data-rel-time', timeTextEl.textContent.trim());
+          timeTextEl.textContent = absTime;
         }
       });
     }
