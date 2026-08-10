@@ -703,12 +703,18 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       z-index: 2000;
-      display: none;
+      display: flex;
       align-items: center; justify-content: center;
+      visibility: hidden;
       opacity: 0;
-      transition: opacity 0.25s ease;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
-    .detail-overlay.active { display: flex; opacity: 1; }
+    .detail-overlay.active {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
     .detail-modal {
       background: rgba(255, 255, 255, 0.98);
       border: 1px solid var(--card-border);
@@ -716,11 +722,15 @@
       box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
       width: 90%; max-width: 620px; max-height: 82vh;
       display: flex; flex-direction: column; overflow: hidden;
-      transform: scale(0.95);
-      transition: transform 0.25s ease;
+      transform: translateY(30px) scale(0.96);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease;
     }
     [data-theme="dark"] .detail-modal { background: rgba(24, 28, 44, 0.98); }
-    .detail-overlay.active .detail-modal { transform: scale(1); }
+    .detail-overlay.active .detail-modal {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
     .detail-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 20px; border-bottom: 1px solid var(--divider);
@@ -730,6 +740,23 @@
       display: flex; align-items: center; gap: 8px;
     }
     .detail-header h3 i { color: var(--primary); }
+    .detail-header-left {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .detail-copy-btn {
+      background: var(--accent-soft); border: 1px solid transparent;
+      color: var(--accent); cursor: pointer;
+      font-size: 0.78rem; padding: 4px 12px;
+      border-radius: 6px; transition: all 0.15s;
+      display: flex; align-items: center; gap: 5px;
+      white-space: nowrap;
+    }
+    .detail-copy-btn:hover {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .detail-copy-btn.copied {
+      background: #52c41a !important; color: #fff !important; border-color: #52c41a !important;
+    }
     .detail-close {
       background: none; border: none; color: var(--text-muted);
       cursor: pointer; font-size: 1.15rem; padding: 4px 8px;
@@ -975,7 +1002,10 @@
   <div class="detail-overlay" id="detailOverlay">
     <div class="detail-modal">
       <div class="detail-header">
-        <h3><i class="fa-solid fa-circle-info"></i> 评论详情</h3>
+        <div class="detail-header-left">
+          <h3><i class="fa-solid fa-circle-info"></i> 评论详情</h3>
+          <button class="detail-copy-btn" id="detailCopyBtn" title="一键复制全部信息"><i class="fa-solid fa-copy"></i> 复制信息</button>
+        </div>
         <button class="detail-close" id="detailClose"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="detail-body" id="detailBody"></div>
@@ -1763,7 +1793,9 @@
         html += field('更新时间', formatTime(c.updated));
 
         body.innerHTML = html;
-        document.getElementById('detailOverlay').classList.add('active');
+        var overlayEl = document.getElementById('detailOverlay');
+        overlayEl._currentComment = c;
+        overlayEl.classList.add('active');
       } catch(e) {}
     }
 
@@ -1775,9 +1807,94 @@
       document.getElementById('detailClose').addEventListener('click', function() {
         overlay.classList.remove('active');
       });
+
+      // 一键复制信息
+      document.getElementById('detailCopyBtn').addEventListener('click', function() {
+        var c = overlay._currentComment;
+        if (!c) return;
+        var lines = [];
+        lines.push('=== Sunrise\'s blog 评论详情 ===');
+        lines.push('');
+        lines.push('【用户信息】');
+        lines.push('昵称: ' + (c.nick || '-'));
+        lines.push('邮箱: ' + (c.mail || '-'));
+        lines.push('个人网站: ' + (c.link || '-'));
+        lines.push('用户标识 (UID): ' + (c.uid || '-'));
+        lines.push('邮箱 MD5: ' + (c.mailMd5 || '-'));
+        lines.push('是否站长: ' + (c.master ? '是' : '否'));
+        lines.push('');
+        lines.push('【网络信息】');
+        lines.push('IP 地址: ' + (c.ip || '-'));
+        lines.push('IP 归属地: ' + (c.ipRegion || '-'));
+        lines.push('User Agent: ' + (c.ua || '-'));
+        lines.push('');
+        lines.push('【评论信息】');
+        lines.push('评论 ID: ' + (c._id || '-'));
+        lines.push('评论内容: ' + (c.comment || '-'));
+        lines.push('评论页面: ' + (c.url || '-'));
+        lines.push('页面地址: ' + (c.href || '-'));
+        lines.push('父评论 ID: ' + (c.pid || '-'));
+        lines.push('根评论 ID: ' + (c.rid || '-'));
+        lines.push('垃圾标记: ' + (c.isSpam ? '是' : '否'));
+        lines.push('');
+        lines.push('【时间信息】');
+        lines.push('创建时间: ' + formatTime(c.created));
+        lines.push('更新时间: ' + formatTime(c.updated));
+        var text = lines.join('\n');
+
+        var btn = document.getElementById('detailCopyBtn');
+        var originalHTML = btn.innerHTML;
+        function showCopied() {
+          btn.classList.add('copied');
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
+          setTimeout(function() {
+            btn.classList.remove('copied');
+            btn.innerHTML = originalHTML;
+          }, 2000);
+        }
+        function fallbackCopy() {
+          var textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try { document.execCommand('copy'); showCopied(); } catch(e) {}
+          document.body.removeChild(textarea);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(showCopied).catch(fallbackCopy);
+        } else {
+          fallbackCopy();
+        }
+      });
+
+      // 跟踪 mousedown 起始位置，区分"点击关闭"和"框选文字拖出弹窗"
+      var mouseDownInsideModal = false;
+      var mouseDownX = 0, mouseDownY = 0;
+
+      overlay.addEventListener('mousedown', function(e) {
+        mouseDownInsideModal = !!(e.target.closest && e.target.closest('.detail-modal'));
+        mouseDownX = e.clientX;
+        mouseDownY = e.clientY;
+      });
+
       overlay.addEventListener('click', function(e) {
+        // 如果有选中的文字，说明用户在框选文本，不关闭
+        var sel = window.getSelection ? window.getSelection() : null;
+        if (sel && sel.toString().length > 0) return;
+        // 如果 mousedown 起始在弹窗内部，说明是框选拖动产生的 click，不关闭
+        if (mouseDownInsideModal) {
+          mouseDownInsideModal = false;
+          return;
+        }
+        // 如果鼠标移动距离较大（拖动），不关闭
+        var dx = Math.abs(e.clientX - mouseDownX);
+        var dy = Math.abs(e.clientY - mouseDownY);
+        if (dx > 5 || dy > 5) return;
         if (e.target === overlay) overlay.classList.remove('active');
       });
+
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') overlay.classList.remove('active');
       });
