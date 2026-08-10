@@ -594,9 +594,24 @@
     #twikoo .tk-admin-comment-meta .tk-avatar img, #twikoo .tk-admin-comment-meta .tk-avatar-img { width: 30px; height: 30px; border-radius: 50%; }
     #twikoo .tk-admin-comment-meta a { color: var(--primary); }
     #twikoo .tk-admin-comment-meta .tk-time { color: var(--text-muted); font-size: 0.78rem; }
+    #twikoo .tk-admin-comment-meta .tk-ip { color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.72rem; }
     #twikoo .tk-content { padding: 4px 0 8px; color: var(--text); }
-    #twikoo .tk-admin-actions { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; border-top: 1px solid var(--divider); }
+    #twikoo .tk-admin-actions { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; border-top: 1px solid var(--divider); margin-bottom: 0 !important; }
     #twikoo .tk-pagination { margin-top: 6px; }
+    /* 隐藏评论项中的回复输入框（由 Twikoo JS 点击回复时控制显隐） */
+    #twikoo .tk-admin-comment-item .el-textarea,
+    #twikoo .tk-admin-comment-item .el-input--textarea,
+    #twikoo .tk-admin-comment-item .tk-admin-comment-reply,
+    #twikoo .tk-admin-comment-item .tk-reply,
+    #twikoo .tk-admin-comment-item textarea {
+      display: none !important;
+    }
+    /* 清除评论列表底部多余间距 */
+    #twikoo .tk-admin-comment,
+    #twikoo .tk-admin-comment-list,
+    #twikoo .tk-pagination {
+      margin-bottom: 0 !important;
+    }
 
     /* === 配置管理区 === */
     #twikoo .tk-admin-config { display: flex; flex-direction: column; gap: 12px; }
@@ -1471,6 +1486,46 @@
       }
     }, 600);
     setTimeout(function() { clearInterval(focusTimer); }, 20000);
+
+    // 注入评论者 IP 地址到位置信息旁边
+    function injectCommentIPs() {
+      try {
+        var twikooEl = document.querySelector('.twikoo');
+        if (!twikooEl || !twikooEl.__vue__) return;
+        var v = twikooEl.__vue__;
+        if (!v.$children[2] || !v.$children[2].$children[0]) return;
+        var adminComp = v.$children[2].$children[0];
+        var comments = adminComp.comments;
+        if (!comments || !comments.length) return;
+
+        var domItems = document.querySelectorAll('#twikoo .tk-admin-comment-item');
+        for (var i = 0; i < domItems.length && i < comments.length; i++) {
+          var ip = comments[i].ip;
+          if (!ip) continue;
+
+          var meta = domItems[i].querySelector('.tk-admin-comment-meta');
+          if (!meta) continue;
+
+          // 找到位置 span（有 title 属性的 span，title 为 UA）
+          var spans = meta.querySelectorAll('span');
+          var locSpan = null;
+          for (var j = spans.length - 1; j >= 0; j--) {
+            if (spans[j].getAttribute('title')) { locSpan = spans[j]; break; }
+          }
+          if (!locSpan) continue;
+
+          // 检查是否已注入相同 IP
+          var existingIp = locSpan.querySelector('.tk-ip');
+          if (existingIp && existingIp.textContent === ip) continue;
+
+          var region = comments[i].ipRegion || '';
+          var ipHtml = ' · <span class="tk-ip">' + ip + '</span>';
+          var html = region ? region + ipHtml : '<span class="tk-ip">' + ip + '</span>';
+          locSpan.innerHTML = html;
+        }
+      } catch(e) {}
+    }
+    setInterval(injectCommentIPs, 500);
   })();
   </script>
 </body>
