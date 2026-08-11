@@ -6225,12 +6225,6 @@ to {
       { value: 'tomorrow', label: 'tomorrow' },
       { value: 'twilight', label: 'twilight' }
     ],
-    'HIGHLIGHT_PLUGIN': [
-      { value: 'none', label: 'none（不启用）' },
-      { value: 'showLanguage', label: 'showLanguage（显示语言）' },
-      { value: 'copyButton', label: 'copyButton（复制按钮）' },
-      { value: 'showLanguage,copyButton', label: 'showLanguage + copyButton' }
-    ],
     'SMTP_SERVICE': [
       { value: '', label: '自定义（不使用）' },
       { value: 'QQ', label: 'QQ（QQ 邮箱）' },
@@ -6289,6 +6283,11 @@ to {
       { value: 'mail', label: '邮箱' },
       { value: 'link', label: '网址' },
       { value: 'none', label: '无（全选填）' }
+    ],
+    'HIGHLIGHT_PLUGIN': [
+      { value: 'none', label: 'none（不启用）' },
+      { value: 'showLanguage', label: 'showLanguage（显示语言）' },
+      { value: 'copyButton', label: 'copyButton（复制按钮）' }
     ]
   };
 
@@ -6465,38 +6464,71 @@ to {
     });
   }
 
+  // 统一读取配置项的原始值：Vue 模型优先（el-select / el-input），DOM 值兜底
+  function readOriginalValue(input, nativeSelect) {
+    if (nativeSelect) {
+      return nativeSelect.value !== undefined && nativeSelect.value !== null ? String(nativeSelect.value) : '';
+    }
+    if (!input) return '';
+    var vueSelect = input.closest('.el-select');
+    if (vueSelect && vueSelect.__vue__) {
+      var sv = vueSelect.__vue__.value;
+      if (Array.isArray(sv)) return sv.join(',');
+      if (sv !== undefined && sv !== null) return String(sv);
+    }
+    var vueInput = input.closest('.el-input');
+    var iv = vueInput && vueInput.__vue__ ? vueInput.__vue__.value : undefined;
+    if (iv !== undefined && iv !== null) return String(iv);
+    return input.value !== undefined && input.value !== null ? String(input.value) : '';
+  }
+
+  // 轮询原始输入框，值变化（Twikoo 异步回填已保存配置）时回调刷新显示；
+  // 已加载到非空稳定值、用户已交互（回调返回 false）或 10 秒超时后自动停止
+  function startValueSync(input, nativeSelect, onSync) {
+    var lastValue = readOriginalValue(input, nativeSelect);
+    var stableCount = 0;
+    var stopped = false;
+    var timer = setInterval(function() {
+      if (stopped) { clearInterval(timer); return; }
+      var v = readOriginalValue(input, nativeSelect);
+      if (v === lastValue) {
+        stableCount++;
+        // 非空值连续 4 次（约 2 秒）稳定即视为加载完成
+        if (v && stableCount >= 4) {
+          stopped = true;
+          clearInterval(timer);
+        }
+        return;
+      }
+      // 值发生变化：异步数据已到达
+      lastValue = v;
+      stableCount = 0;
+      if (onSync(v) === false) {
+        stopped = true;
+        clearInterval(timer);
+      }
+    }, 500);
+    // 10 秒兜底停止，避免残留定时器
+    setTimeout(function() {
+      if (!stopped) {
+        stopped = true;
+        clearInterval(timer);
+      }
+    }, 10000);
+  }
+
   // 创建自定义可搜索下拉框（返回 true 表示数据已就绪）
   function createCustomSelect(inputWrapper, input, varName, options) {
     var elInput = inputWrapper.querySelector('.el-input');
     if (elInput) elInput.style.display = 'none';
 
-    // 从 Vue 组件模型读取实际数据
-    var currentValue = '';
-    var dataReady = false;
-    if (input) {
-      // 优先从 el-select 组件读取（多选时值在 el-select 上，而非内部 el-input）
-      var vueSelect = input.closest('.el-select');
-      var vueVal;
-      if (vueSelect && vueSelect.__vue__) {
-        vueVal = vueSelect.__vue__.value;
-        // 多选时 value 是数组，转为逗号分隔字符串
-        if (Array.isArray(vueVal)) {
-          vueVal = vueVal.join(',');
-        }
-      } else {
-        var vueInput = input.closest('.el-input');
-        vueVal = vueInput && vueInput.__vue__ ? vueInput.__vue__.value : undefined;
-      }
-      if (vueVal !== undefined && vueVal !== null && vueVal !== '') {
-        currentValue = String(vueVal);
-        dataReady = true;
-      } else if (input.value) {
-        currentValue = input.value;
-        dataReady = true;
-      }
+    // 从 Vue 组件模型读取实际数据（空值也正常构建，Twikoo 异步回填后由 startValueSync 刷新）
+    var currentValue = readOriginalValue(input);
+    var userTouched = false;
+    if (!input) {
+      if (elInput) elInput.style.display = '';
+      return false;
     }
-    // 数据尚未加载，跳过
-    if (!dataReady) return false;
 
     // 找到匹配的标签文本
     function getLabel(val) {
@@ -6563,6 +6595,7 @@ to {
 
     // 输入时实时过滤
     displayInput.addEventListener('input', function() {
+      userTouched = true;
       if (!selectDiv.classList.contains('open')) {
         selectDiv.classList.add('open');
       }
@@ -6606,6 +6639,7 @@ to {
     optionsContainer.addEventListener('click', function(e) {
       var opt = e.target.closest('.custom-select-option');
       if (!opt || opt.classList.contains('hidden')) return;
+      userTouched = true;
       e.stopPropagation();
       var val = opt.dataset.value;
       var label = opt.dataset.label;
@@ -6629,6 +6663,7 @@ to {
 
     // 箭头点击展开/收起
     arrow.addEventListener('click', function(e) {
+      userTouched = true;
       e.stopPropagation();
       var wasOpen = selectDiv.classList.contains('open');
       closeAllSelects();
@@ -6672,6 +6707,18 @@ to {
         input.dispatchEvent(new Event('change', { bubbles: true }));
       }
     }
+
+    // 值回填同步：Twikoo 异步加载已保存配置后，自动更新显示文本与选中高亮
+    startValueSync(input, null, function(val) {
+      if (userTouched) return false; // 用户已手动操作，停止自动同步
+      if (selectDiv.classList.contains('open') || document.activeElement === displayInput) return; // 交互中不覆盖
+      currentValue = val;
+      displayInput.value = getLabel(val);
+      var opts = optionsContainer.querySelectorAll('.custom-select-option');
+      for (var k = 0; k < opts.length; k++) {
+        opts[k].classList.toggle('selected', opts[k].dataset.value === val);
+      }
+    });
     return true;
   }
 
@@ -6697,6 +6744,7 @@ to {
     if (options.length === 0) return;
 
     var currentValue = nativeSelect.value || '';
+    var userTouched = false;
 
     // 隐藏原生 select 和 el-input
     nativeSelect.style.display = 'none';
@@ -6753,6 +6801,7 @@ to {
         optDiv.dataset.value = opt.value;
         optDiv.addEventListener('click', function(e) {
           e.stopPropagation();
+          userTouched = true;
           var val = this.dataset.value;
           currentValue = val;
           displayInput.value = getLabel(val);
@@ -6829,6 +6878,15 @@ to {
     });
 
     inputWrapper.appendChild(selectDiv);
+
+    // 值回填同步：原生 select 的选项/值也可能异步加载
+    startValueSync(null, nativeSelect, function(val) {
+      if (userTouched) return false;
+      if (selectDiv.classList.contains('open') || document.activeElement === displayInput) return;
+      currentValue = val;
+      displayInput.value = getLabel(val);
+      renderOptions('');
+    });
   }
 
   // 创建自定义多选标签组件（返回 true 表示数据已就绪）
@@ -6836,33 +6894,13 @@ to {
     var elInput = inputWrapper.querySelector('.el-input');
     if (elInput) elInput.style.display = 'none';
 
-    // 从 Vue 组件模型读取实际数据
-    var currentValue = '';
-    var dataReady = false;
-    if (input) {
-      // 优先从 el-select 组件读取（多选时值在 el-select 上，而非内部 el-input）
-      var vueSelect = input.closest('.el-select');
-      var vueVal;
-      if (vueSelect && vueSelect.__vue__) {
-        vueVal = vueSelect.__vue__.value;
-        // 多选时 value 是数组，转为逗号分隔字符串
-        if (Array.isArray(vueVal)) {
-          vueVal = vueVal.join(',');
-        }
-      } else {
-        var vueInput = input.closest('.el-input');
-        vueVal = vueInput && vueInput.__vue__ ? vueInput.__vue__.value : undefined;
-      }
-      if (vueVal !== undefined && vueVal !== null && vueVal !== '') {
-        currentValue = String(vueVal);
-        dataReady = true;
-      } else if (input.value) {
-        currentValue = input.value;
-        dataReady = true;
-      }
+    // 从 Vue 组件模型读取实际数据（空值也正常构建，Twikoo 异步回填后由 startValueSync 刷新）
+    var currentValue = readOriginalValue(input);
+    var userTouched = false;
+    if (!input) {
+      if (elInput) elInput.style.display = '';
+      return false;
     }
-    // 数据尚未加载，跳过
-    if (!dataReady) return false;
 
     var selectedValues = currentValue ? currentValue.split(',').map(function(v) { return v.trim(); }).filter(Boolean) : [];
 
@@ -6913,6 +6951,7 @@ to {
       tag.appendChild(labelSpan);
 
       tag.addEventListener('click', function() {
+        userTouched = true;
         var val = this.dataset.value;
         var idx = selectedValues.indexOf(val);
         if (idx > -1) {
@@ -6935,6 +6974,13 @@ to {
     }
 
     inputWrapper.appendChild(multiDiv);
+
+    // 值回填同步：Twikoo 异步加载已保存配置后，自动更新标签选中态
+    startValueSync(input, null, function(val) {
+      if (userTouched) return false;
+      selectedValues = val ? val.split(',').map(function(v) { return v.trim(); }).filter(Boolean) : [];
+      updateValue();
+    });
     return true;
   }
 
