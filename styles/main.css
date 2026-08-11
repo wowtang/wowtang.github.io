@@ -2044,3 +2044,81 @@ html.not-loaded body { transition: none !important; }
     display: none;
   }
 }
+
+/* ------ 30. 图片宫格布局样式 ------ */
+.image-grid-container {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 行容器：flex 横向排列，所有图片高度一致 */
+.image-grid-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* 单个网格项：宽度和高度由 JS 动态设置 */
+.image-grid-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.image-grid-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.image-grid-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 0;
+  box-shadow: none;
+  cursor: zoom-in;
+}
+
+/* ~ 标记图片：保持原始比例 */
+.image-grid-item.orig-ratio img {
+  object-fit: contain;
+}
+
+/* 暗色模式 */
+[data-theme="dark"] .image-grid-item {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .image-grid-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .image-grid-container {
+    gap: 6px;
+    margin: 16px 0;
+  }
+
+  .image-grid-row {
+    gap: 6px;
+  }
+
+  .image-grid-item {
+    border-radius: 8px;
+  }
+
+  .image-grid-item img {
+    border-radius: 8px;
+  }
+}

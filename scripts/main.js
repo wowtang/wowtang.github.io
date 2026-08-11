@@ -579,6 +579,445 @@
     el.innerHTML = el.innerHTML.replace(/\{YEAR\}/g, new Date().getFullYear());
   });
 
+  /* ------ 21. 文章图片宫格布局（基于 HTML 注释标记） ------ */
+  function initImageGrid() {
+    var article = $('.article-container.post-content');
+    if (!article) return;
+
+    // 扫描所有 HTML 注释节点
+    function findComments(root) {
+      var comments = [];
+      var walker = document.createTreeWalker(root, NodeFilter.SHOW_COMMENT, null);
+      var node;
+      while ((node = walker.nextNode())) {
+        comments.push(node);
+      }
+      return comments;
+    }
+
+    // 获取注释内容并解析
+    function parseDirective(text) {
+      text = text.trim();
+      // <!-- grid:3 --> => { type: 'grid', cols: 3 }
+      var gridMatch = text.match(/^grid[:：]\s*(\d+)/i);
+      if (gridMatch) return { type: 'grid', cols: parseInt(gridMatch[1], 10) };
+      // <!-- row:2 --> => { type: 'row', cols: 2 }
+      var rowMatch = text.match(/^row[:：]\s*(\d+)/i);
+      if (rowMatch) return { type: 'row', cols: parseInt(rowMatch[1], 10) };
+      // <!-- /grid --> => { type: 'end' }
+      if (/^\/?grid$/i.test(text)) return { type: 'end' };
+      return null;
+    }
+
+    // 找到所有 grid 块
+    function findGridBlocks() {
+      var comments = findComments(article);
+      var blocks = [];
+      var currentBlock = null;
+
+      comments.forEach(function (comment) {
+        var directive = parseDirective(comment.textContent);
+        if (!directive) return;
+
+        if (directive.type === 'grid') {
+          currentBlock = {
+            startMarker: comment,
+            rows: [],
+            currentRow: { cols: directive.cols, images: [] }
+          };
+        } else if (directive.type === 'row' && currentBlock) {
+          // 直接添加当前行到 rows（图片收集在 processGrids 中进行）
+          currentBlock.rows.push(currentBlock.currentRow);
+          currentBlock.currentRow = { cols: directive.cols, images: [] };
+        } else if (directive.type === 'end' && currentBlock) {
+          // 添加最后一行
+          currentBlock.rows.push(currentBlock.currentRow);
+          currentBlock.endMarker = comment;
+          blocks.push(currentBlock);
+          currentBlock = null;
+        }
+      });
+
+      return blocks;
+    }
+
+    // 收集两个节点之间的所有 <img> 标签（包括子元素中的）
+    function collectImagesBetween(startNode, endNode) {
+      var images = [];
+      var node = startNode.nextSibling;
+      // 收集范围：startNode 之后到 endNode 之前的所有节点
+      var rangeNodes = [];
+      
+      // 先收集范围内的所有节点
+      while (node) {
+        if (node === endNode) break;
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          rangeNodes.push(node);
+        }
+        node = node.nextSibling;
+      }
+      
+      // 从范围内的所有元素中提取 img
+      rangeNodes.forEach(function (el) {
+        // 排除评论头像
+        if (el.closest && (el.closest('.tk-avatar') || el.closest('.tk-head'))) return;
+        
+        if (el.tagName === 'IMG') {
+          images.push(el);
+        } else {
+          // 递归查找内部的 img
+          var imgs = el.querySelectorAll('img');
+          imgs.forEach(function (img) {
+            if (!img.closest('.tk-avatar') && !img.closest('.tk-head')) {
+              images.push(img);
+            }
+          });
+        }
+      });
+      
+      return images;
+    }
+
+    // 存储所有需要动态布局的行（用于 resize 时重新计算）
+    var allDynamicRows = [];
+    var resizeTimer = null;
+    var resizeObserver = null;
+
+    // 窗口大小变化时重新计算所有行（带节流）
+    function handleResize() {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (allDynamicRows.length > 0) {
+          var articleContainer = document.querySelector('.article-container.post-content');
+          var containerWidth = articleContainer ? articleContainer.clientWidth : 0;
+          if (containerWidth > 0) {
+            allDynamicRows.forEach(function (rowInfo) {
+              layoutRow(rowInfo.rowContainer, rowInfo.items, containerWidth);
+            });
+          }
+        }
+      }, 100); // 100ms 节流
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    // 使用 ResizeObserver 监听容器尺寸变化（更精确）
+    function setupResizeObserver() {
+      var articleContainer = document.querySelector('.article-container.post-content');
+      if (!articleContainer) return;
+      
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(function () {
+          handleResize();
+        });
+        resizeObserver.observe(articleContainer);
+      }
+    }
+
+    // 动态缩放算法：统一高度 + 等比例放大填满整行
+    function layoutRow(rowContainer, items, containerWidth) {
+      if (items.length === 0 || containerWidth <= 0) return;
+      
+      var gap = 8; // 与 CSS 保持一致
+      var numImages = items.length;
+      
+      // 1. 获取每张图片的宽高比
+      var aspectRatios = [];
+      var allLoaded = true;
+      var hasOrigRatio = false;
+      
+      items.forEach(function (itemInfo) {
+        var img = itemInfo.img;
+        var isOrigRatio = itemInfo.isOrigRatio;
+        
+        if (isOrigRatio) hasOrigRatio = true;
+        
+        if (img.complete && img.naturalWidth > 0) {
+          if (isOrigRatio) {
+            // ~ 图片：使用原始宽高比
+            aspectRatios.push(img.naturalWidth / img.naturalHeight);
+          } else {
+            // 普通图片：1:1
+            aspectRatios.push(1);
+          }
+        } else {
+          allLoaded = false;
+          aspectRatios.push(1); // 临时值
+        }
+      });
+      
+      // 如果还有图片未加载，延迟重试
+      if (!allLoaded) {
+        return false;
+      }
+      
+      // 特殊情况：单张无~图片，直接占满整行
+      if (numImages === 1 && !hasOrigRatio) {
+        var size = containerWidth;
+        var itemEls = rowContainer.querySelectorAll('.image-grid-item');
+        if (itemEls.length > 0) {
+          itemEls[0].style.width = size + 'px';
+          itemEls[0].style.height = size + 'px';
+        }
+        rowContainer.style.height = size + 'px';
+        return true;
+      }
+      
+      // 2. 假设基准高度 H
+      var H = 200; // 任意起始值
+      
+      // 3. 计算每张图片在基准高度下的宽度
+      var widths = aspectRatios.map(function (ar) { return H * ar; });
+      
+      // 4. 计算总宽度（包含 gap）
+      var totalWidth = widths.reduce(function (a, b) { return a + b; }, 0) + gap * (numImages - 1);
+      
+      // 5. 计算缩放系数
+      var scale = containerWidth / totalWidth;
+      
+      // 6. 应用缩放
+      var finalHeight = H * scale;
+      var minHeight = 60; // 最小高度限制
+      var maxHeight = 500; // 最大高度限制
+      
+      // 限制高度范围后重新计算
+      if (finalHeight < minHeight) {
+        finalHeight = minHeight;
+        scale = finalHeight / H;
+      }
+      if (finalHeight > maxHeight) {
+        finalHeight = maxHeight;
+        scale = finalHeight / H;
+      }
+      
+      // 7. 应用最终尺寸到每个容器
+      var itemEls = rowContainer.querySelectorAll('.image-grid-item');
+      itemEls.forEach(function (el, idx) {
+        if (idx < items.length) {
+          var finalWidth = widths[idx] * scale;
+          el.style.width = finalWidth + 'px';
+          el.style.height = finalHeight + 'px';
+        }
+      });
+      
+      // 设置行容器高度
+      rowContainer.style.height = finalHeight + 'px';
+      
+      return true;
+    }
+
+    // 处理需要动态缩放的行
+    function processDynamicRows(rowsToSync) {
+      var articleContainer = document.querySelector('.article-container.post-content');
+      var containerWidth = articleContainer ? articleContainer.clientWidth : 0;
+      
+      if (containerWidth === 0) {
+        // 容器还没准备好，延迟重试
+        setTimeout(function () { processDynamicRows(rowsToSync); }, 100);
+        return;
+      }
+      
+      rowsToSync.forEach(function (rowInfo) {
+        layoutRow(rowInfo.rowContainer, rowInfo.items, containerWidth);
+      });
+      
+      // 累加保存引用用于 resize（而不是覆盖）
+      rowsToSync.forEach(function (rowInfo) {
+        if (allDynamicRows.indexOf(rowInfo) === -1) {
+          allDynamicRows.push(rowInfo);
+        }
+      });
+      
+      // 设置容器尺寸监听
+      setupResizeObserver();
+    }
+
+    // 处理所有 grid 块
+    function processGrids() {
+      var blocks = findGridBlocks();
+      if (!blocks.length) return;
+
+      blocks.forEach(function (block, blockIdx) {
+        var startMarker = block.startMarker;
+        var endMarker = block.endMarker;
+        if (!endMarker) {
+          console.log('[ImageGrid] Block ' + blockIdx + ': no endMarker, skipping');
+          return;
+        }
+
+        // 收集 startMarker 到 endMarker 之间的所有图片
+        var allImages = collectImagesBetween(startMarker, endMarker);
+        console.log('[ImageGrid] Block ' + blockIdx + ': collected', allImages.length, 'images');
+        console.log('[ImageGrid] Block ' + blockIdx + ': rows config', block.rows.map(function(r){return r.cols + ' cols'}));
+
+        // 清空并重新分配图片到各行
+        block.rows.forEach(function (row) { row.images = []; });
+        var imgIndex = 0;
+
+        block.rows.forEach(function (row) {
+          for (var i = 0; i < row.cols && imgIndex < allImages.length; i++) {
+            row.images.push(allImages[imgIndex]);
+            imgIndex++;
+          }
+        });
+
+        // 如果还有剩余图片，自动补齐到最后一行
+        if (imgIndex < allImages.length && block.rows.length > 0) {
+          var lastRow = block.rows[block.rows.length - 1];
+          while (imgIndex < allImages.length) {
+            lastRow.images.push(allImages[imgIndex]);
+            imgIndex++;
+          }
+        }
+
+        console.log('[ImageGrid] Block ' + blockIdx + ': final row counts', block.rows.map(function(r){return r.images.length + ' images in ' + r.cols + ' cols'}));
+
+        // 创建网格容器
+        var gridContainer = document.createElement('div');
+        gridContainer.className = 'image-grid-container';
+
+        // 存储所有行的信息（用于动态缩放）
+        var rowsToSync = [];
+
+        block.rows.forEach(function (row) {
+          if (row.images.length === 0) return;
+          var rowContainer = document.createElement('div');
+          rowContainer.className = 'image-grid-row';
+
+          // 收集这一行的所有图片信息
+          var rowItems = [];
+          
+          row.images.forEach(function (img) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'image-grid-item';
+            
+            // 检测 alt 属性中的 ~ 标记
+            var altText = img.getAttribute('alt') || '';
+            var isOrigRatio = false;
+            
+            if (altText.indexOf('~') !== -1) {
+              isOrigRatio = true;
+              wrapper.classList.add('orig-ratio');
+              // 清除 alt 中的标记
+              img.setAttribute('alt', altText.replace(/~/g, '').trim());
+            }
+            
+            rowItems.push({ img: img, isOrigRatio: isOrigRatio });
+            
+            if (img.parentNode) {
+              img.parentNode.removeChild(img);
+            }
+            wrapper.appendChild(img);
+            rowContainer.appendChild(wrapper);
+          });
+
+          gridContainer.appendChild(rowContainer);
+          
+          // 记录行信息用于动态布局
+          rowsToSync.push({
+            rowContainer: rowContainer,
+            items: rowItems
+          });
+        });
+
+        // 图片加载完成后执行动态缩放
+        if (rowsToSync.length > 0) {
+          // 先插入 DOM，再计算尺寸
+          startMarker.parentNode.insertBefore(gridContainer, startMarker);
+          
+          // 等待图片加载完成
+          var allImages = [];
+          rowsToSync.forEach(function (rowInfo) {
+            rowInfo.items.forEach(function (item) {
+              allImages.push(item.img);
+            });
+          });
+          
+          var loadCheck = function () {
+            var allLoaded = allImages.every(function (img) { return img.complete; });
+            if (allLoaded) {
+              processDynamicRows(rowsToSync);
+            } else {
+              setTimeout(loadCheck, 100);
+            }
+          };
+          
+          // 开始检查
+          loadCheck();
+          
+          // 兜底：500ms 后强制执行
+          setTimeout(function () {
+            processDynamicRows(rowsToSync);
+          }, 500);
+        } else {
+          startMarker.parentNode.insertBefore(gridContainer, startMarker);
+        }
+
+        console.log('[ImageGrid] Block ' + blockIdx + ': gridContainer created with', gridContainer.children.length, 'rows');
+
+        // 收集需要删除的节点
+        var nodesToCheck = [];
+        var node = startMarker;
+        
+        while (node) {
+          nodesToCheck.push(node);
+          if (node === endMarker) break;
+          node = node.nextSibling;
+        }
+
+        // 先把 gridContainer 插入到 startMarker 位置
+        startMarker.parentNode.insertBefore(gridContainer, startMarker);
+        console.log('[ImageGrid] Block ' + blockIdx + ': gridContainer inserted');
+
+        // 然后删除原节点
+        nodesToCheck.forEach(function (n) {
+          if (n === gridContainer) return;
+          if (gridContainer.contains(n)) return;
+          if (n.nodeType === Node.ELEMENT_NODE && n !== gridContainer) {
+            if (n.parentNode) n.parentNode.removeChild(n);
+          } else if (n.nodeType === Node.COMMENT_NODE) {
+            if (n.parentNode) n.parentNode.removeChild(n);
+          } else if (n.nodeType === Node.TEXT_NODE) {
+            if (!n.textContent.trim() && n.parentNode) {
+              n.parentNode.removeChild(n);
+            }
+          }
+        });
+
+        console.log('[ImageGrid] Block ' + blockIdx + ': cleaned up, gridContainer exists:', !!document.querySelector('.image-grid-container'));
+      });
+    }
+
+    // 在 DOMContentLoaded 之前或之后执行
+    function startProcessing() {
+      console.log('[ImageGrid] Starting grid processing...');
+      var blocks = findGridBlocks();
+      console.log('[ImageGrid] Found blocks:', blocks.length);
+      if (blocks.length > 0) {
+        blocks.forEach(function (b, i) {
+          console.log('[ImageGrid] Block ' + i + ':', { rows: b.rows.length, cols: b.rows.map(function(r){return r.cols;}) });
+        });
+      }
+      processGrids();
+      console.log('[ImageGrid] Processing complete.');
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startProcessing);
+    } else {
+      startProcessing();
+    }
+    
+    // 延迟重试一次（确保所有内容都已渲染）
+    setTimeout(function() {
+      if (!document.querySelector('.image-grid-container')) {
+        console.log('[ImageGrid] Retrying after delay...');
+        processGrids();
+      }
+    }, 500);
+  }
+  initImageGrid();
+
   /* ------ 20. 文章图片点击放大预览 ------ */
   function initImageViewer() {
     var article = $('.article-container.post-content');
