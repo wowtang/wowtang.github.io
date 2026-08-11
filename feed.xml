@@ -205,15 +205,27 @@ A：本面板仅作为前端界面，所有权限校验依赖 Twikoo 后端的�
 </ul>
 <hr />
 <h2 id="--10">🖼️ 项目预览图</h2>
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/423414e5-485a-4a40-8d41-e1e533999728" />
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/fe76abba-3146-414d-a972-f7820df68722" />
-<img width="1743" height="928" alt="image" src="https://github.com/user-attachments/assets/67755b6f-b2e7-448c-97f0-b41022def953" />
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/1ad6a745-93ed-44ac-9122-038cb418c2e5" />
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/3ed25ca9-c44e-4ed2-980d-0310f43a247d" />
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/5bdd21fc-3fc8-4b08-a964-850579044312" />
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/0ad6e174-7dd0-4343-8980-85f15940379c" />
-<img width="1738" height="922" alt="image" src="https://github.com/user-attachments/assets/9bbe6254-c757-43ae-84e7-c757e16fbbc3" />
-<img width="1735" height="922" alt="image" src="https://github.com/user-attachments/assets/7bd93263-73af-43ee-8dfa-721c816b8e34" />
+<table>
+<thead>
+<tr>
+<th><img width="100%" src="https://github.com/user-attachments/assets/423414e5-485a-4a40-8d41-e1e533999728"/></th>
+<th><img width="100%" src="https://github.com/user-attachments/assets/fe76abba-3146-414d-a972-f7820df68722"/></th>
+<th><img width="100%" src="https://github.com/user-attachments/assets/67755b6f-b2e7-448c-97f0-b41022def953"/></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img width="100%" src="https://github.com/user-attachments/assets/1ad6a745-93ed-44ac-9122-038cb418c2e5"/></td>
+<td><img width="100%" src="https://github.com/user-attachments/assets/3ed25ca9-c44e-4ed2-980d-0310f43a247d"/></td>
+<td><img width="100%" src="https://github.com/user-attachments/assets/5bdd21fc-3fc8-4b08-a964-850579044312"/></td>
+</tr>
+<tr>
+<td><img width="100%" src="https://github.com/user-attachments/assets/0ad6e174-7dd0-4343-8980-85f15940379c"/></td>
+<td><img width="100%" src="https://github.com/user-attachments/assets/9bbe6254-c757-43ae-84e7-c757e16fbbc3"/></td>
+<td><img width="100%" src="https://github.com/user-attachments/assets/7bd93263-73af-43ee-8dfa-721c816b8e34"/></td>
+</tr>
+</tbody>
+</table>
 <hr />
 ]]></description>
       <category>Twikoo</category>
