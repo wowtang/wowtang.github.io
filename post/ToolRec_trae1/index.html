@@ -730,7 +730,7 @@ TRAE最贴合我个人玩家使用场景的地方，是它既能当作普通VSCo
       var wrap = document.getElementById('card-widget-wrap');
       if (!wrap) return;
       
-      var stickyList = 'author,toc'.split(',');
+      var stickyList = [];
       
       var items = Array.from(wrap.children);
       items.sort(function(a, b){

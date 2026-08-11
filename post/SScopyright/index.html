@@ -981,7 +981,7 @@ All original content is licensed under the <a href="https://creativecommons.org/
       var wrap = document.getElementById('card-widget-wrap');
       if (!wrap) return;
       
-      var stickyList = 'author,toc'.split(',');
+      var stickyList = [];
       
       var items = Array.from(wrap.children);
       items.sort(function(a, b){
