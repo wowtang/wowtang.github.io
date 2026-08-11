@@ -579,6 +579,302 @@
     el.innerHTML = el.innerHTML.replace(/\{YEAR\}/g, new Date().getFullYear());
   });
 
+  /* ------ 20. 文章图片点击放大预览 ------ */
+  function initImageViewer() {
+    var article = $('.article-container.post-content');
+    if (!article) return;
+
+    var viewer = null;
+    var viewerImg = null;
+    var images = [];
+    var currentIndex = 0;
+    var scale = 1;
+    var translateX = 0;
+    var translateY = 0;
+    var isDragging = false;
+    var startX = 0;
+    var startY = 0;
+    var startTranslateX = 0;
+    var startTranslateY = 0;
+
+    function collectImages() {
+      images = $$('img', article).filter(function (img) {
+        // 排除表情、头像等非正文图片
+        return !img.closest('.tk-avatar') && 
+               !img.closest('.tk-head') && 
+               !img.closest('pre') &&
+               img.src && !img.src.endsWith('.svg') || img.getAttribute('src');
+      });
+    }
+
+    function createViewer() {
+      viewer = document.createElement('div');
+      viewer.className = 'image-viewer';
+      viewer.innerHTML = 
+        '<img class="image-viewer-img" alt="">' +
+        '<button class="image-viewer-close" aria-label="关闭">&times;</button>' +
+        '<button class="image-viewer-nav image-viewer-prev" aria-label="上一张">&#10094;</button>' +
+        '<button class="image-viewer-nav image-viewer-next" aria-label="下一张">&#10095;</button>' +
+        '<div class="image-viewer-info">' +
+          '<span class="counter"></span>' +
+          '<span class="caption"></span>' +
+        '</div>' +
+        '<div class="image-viewer-hint">ESC 关闭 · ← → 切换 · 滚轮缩放 · 拖拽移动</div>';
+      document.body.appendChild(viewer);
+
+      viewerImg = viewer.querySelector('.image-viewer-img');
+      
+      // 关闭按钮
+      viewer.querySelector('.image-viewer-close').addEventListener('click', closeViewer);
+      
+      // 点击背景关闭
+      viewer.addEventListener('click', function (e) {
+        if (e.target === viewer) closeViewer();
+      });
+
+      // 左右切换
+      viewer.querySelector('.image-viewer-prev').addEventListener('click', function (e) {
+        e.stopPropagation();
+        prevImage();
+      });
+      viewer.querySelector('.image-viewer-next').addEventListener('click', function (e) {
+        e.stopPropagation();
+        nextImage();
+      });
+
+      // 鼠标滚轮缩放
+      viewer.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        var delta = e.deltaY > 0 ? -0.1 : 0.1;
+        var newScale = Math.min(Math.max(scale + delta, 0.5), 5);
+        zoomTo(newScale);
+      }, { passive: false });
+
+      // 双击切换缩放
+      viewerImg.addEventListener('dblclick', function (e) {
+        e.stopPropagation();
+        if (scale === 1) {
+          zoomTo(2);
+        } else {
+          resetZoom();
+        }
+      });
+
+      // 拖拽移动（放大状态下）
+      viewerImg.addEventListener('mousedown', function (e) {
+        if (scale <= 1) return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startTranslateX = translateX;
+        startTranslateY = translateY;
+        viewerImg.classList.add('dragging');
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+        translateX = startTranslateX + (e.clientX - startX);
+        translateY = startTranslateY + (e.clientY - startY);
+        updateTransform();
+      });
+
+      document.addEventListener('mouseup', function () {
+        if (isDragging) {
+          isDragging = false;
+          viewerImg.classList.remove('dragging');
+        }
+      });
+
+      // 图片点击切换缩放
+      viewerImg.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (scale === 1) {
+          zoomTo(2);
+        } else {
+          resetZoom();
+        }
+      });
+
+      // 触摸支持
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var touchStartScale = 1;
+      var lastTouchDist = 0;
+
+      viewer.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          startTranslateX = translateX;
+          startTranslateY = translateY;
+        } else if (e.touches.length === 2) {
+          e.preventDefault();
+          lastTouchDist = getTouchDistance(e.touches);
+          touchStartScale = scale;
+        }
+      }, { passive: false });
+
+      viewer.addEventListener('touchmove', function (e) {
+        if (e.touches.length === 1 && scale > 1) {
+          e.preventDefault();
+          translateX = startTranslateX + (e.touches[0].clientX - touchStartX);
+          translateY = startTranslateY + (e.touches[0].clientY - touchStartY);
+          updateTransform();
+        } else if (e.touches.length === 2) {
+          e.preventDefault();
+          var dist = getTouchDistance(e.touches);
+          var newScale = Math.min(Math.max(touchStartScale * (dist / lastTouchDist), 0.5), 5);
+          zoomTo(newScale);
+        }
+      }, { passive: false });
+
+      viewer.addEventListener('touchend', function (e) {
+        if (e.changedTouches.length === 1 && e.touches.length === 0) {
+          // 单击关闭
+          var dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+          var dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+          if (dx < 10 && dy < 10 && scale === 1) {
+            // 只是单击，不关闭
+          }
+        }
+      });
+
+      function getTouchDistance(touches) {
+        var dx = touches[0].clientX - touches[1].clientX;
+        var dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+    }
+
+    function openViewer(index) {
+      collectImages();
+      if (!images.length) return;
+      
+      currentIndex = Math.max(0, Math.min(index || 0, images.length - 1));
+      
+      if (!viewer) createViewer();
+      
+      var img = images[currentIndex];
+      viewerImg.src = img.src;
+      viewerImg.alt = img.alt || '';
+      
+      viewer.classList.add('active');
+      body.style.overflow = 'hidden';
+      
+      resetZoom();
+      updateInfo();
+    }
+
+    function closeViewer() {
+      if (!viewer) return;
+      viewer.classList.remove('active');
+      body.style.overflow = '';
+      
+      setTimeout(function () {
+        if (viewer && !viewer.classList.contains('active')) {
+          viewerImg.src = '';
+        }
+      }, 300);
+    }
+
+    function prevImage() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        openViewer(currentIndex);
+      }
+    }
+
+    function nextImage() {
+      if (currentIndex < images.length - 1) {
+        currentIndex++;
+        openViewer(currentIndex);
+      }
+    }
+
+    function zoomTo(newScale) {
+      scale = newScale;
+      if (scale > 1) {
+        viewerImg.classList.add('zoomed');
+      } else {
+        viewerImg.classList.remove('zoomed');
+        translateX = 0;
+        translateY = 0;
+      }
+      updateTransform();
+    }
+
+    function resetZoom() {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      viewerImg.classList.remove('zoomed');
+      updateTransform();
+    }
+
+    function updateTransform() {
+      if (viewerImg) {
+        viewerImg.style.transform = 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scale + ')';
+      }
+    }
+
+    function updateInfo() {
+      var info = viewer.querySelector('.image-viewer-info');
+      var counter = viewer.querySelector('.counter');
+      var caption = viewer.querySelector('.caption');
+      
+      counter.textContent = (currentIndex + 1) + ' / ' + images.length;
+      
+      var img = images[currentIndex];
+      caption.textContent = img.alt || '';
+      caption.style.display = img.alt ? 'block' : 'none';
+      
+      // 更新导航按钮状态
+      viewer.querySelector('.image-viewer-prev').disabled = currentIndex === 0;
+      viewer.querySelector('.image-viewer-next').disabled = currentIndex === images.length - 1;
+    }
+
+    // 事件委托：监听文章中的图片点击
+    article.addEventListener('click', function (e) {
+      var img = e.target.closest('img');
+      if (!img) return;
+      
+      // 排除头像、表情等
+      if (img.closest('.tk-avatar') || img.closest('.tk-head')) return;
+      
+      var index = images.indexOf(img);
+      if (index === -1) {
+        // 重新收集图片并查找
+        collectImages();
+        index = images.indexOf(img);
+      }
+      
+      if (index !== -1) {
+        openViewer(index);
+      }
+    });
+
+    // 键盘事件
+    document.addEventListener('keydown', function (e) {
+      if (!viewer || !viewer.classList.contains('active')) return;
+      
+      if (e.key === 'Escape') {
+        closeViewer();
+      } else if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === '+' || e.key === '=') {
+        zoomTo(Math.min(scale + 0.2, 5));
+      } else if (e.key === '-' || e.key === '_') {
+        zoomTo(Math.max(scale - 0.2, 0.5));
+      } else if (e.key === '0') {
+        resetZoom();
+      }
+    });
+  }
+  initImageViewer();
+
   /* ------ 19. 外链跳转风险提示（模态框） ------ */
   function initLinkOut() {
     if (!CFG.linkOutEnable) return;

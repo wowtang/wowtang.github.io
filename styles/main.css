@@ -1842,3 +1842,205 @@ html.not-loaded body { transition: none !important; }
     width: 100%;
   }
 }
+
+/* ------ 29. 文章图片点击放大预览 ------ */
+.post-content img {
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
+}
+
+.post-content img:hover {
+  transform: scale(1.02);
+}
+
+/* 图片预览模态框 */
+.image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.image-viewer.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image-viewer-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  cursor: zoom-out;
+  transition: transform 0.3s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.image-viewer-img.zoomed {
+  cursor: grab;
+}
+
+.image-viewer-img.zoomed.dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+/* 关闭按钮 */
+.image-viewer-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 10001;
+}
+
+.image-viewer-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* 左右切换按钮 */
+.image-viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 10001;
+}
+
+.image-viewer-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.image-viewer-prev {
+  left: 32px;
+}
+
+.image-viewer-next {
+  right: 32px;
+}
+
+.image-viewer-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.image-viewer-nav:disabled:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-50%);
+}
+
+/* 图片信息栏 */
+.image-viewer-info {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  max-width: 80vw;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.image-viewer-info .counter {
+  opacity: 0.8;
+  font-size: 13px;
+}
+
+.image-viewer-info .caption {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 操作提示 */
+.image-viewer-hint {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* 暗色模式适配 */
+[data-theme="dark"] .image-viewer {
+  background: rgba(0, 0, 0, 0.92);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .image-viewer-close {
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .image-viewer-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .image-viewer-prev {
+    left: 12px;
+  }
+
+  .image-viewer-next {
+    right: 12px;
+  }
+
+  .image-viewer-info {
+    bottom: 24px;
+    padding: 8px 18px;
+    font-size: 13px;
+  }
+
+  .image-viewer-hint {
+    display: none;
+  }
+}
