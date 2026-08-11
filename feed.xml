@@ -12,10 +12,10 @@
       <title>Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布</title>
       <link>https://wowtang.top/post/Twikoo-comment-management-1.0/</link>
       <guid isPermaLink="true">https://wowtang.top/post/Twikoo-comment-management-1.0/</guid>
-      <pubDate>Tue, 11 Aug 2026 16:32:21 +0000</pubDate>
+      <pubDate>Wed, 12 Aug 2026 00:32:21 +0800</pubDate>
       <description><![CDATA[<h1 id="twikoo---">Twikoo 评论管理后台 · 开源版</h1>
 <p>一个开箱即用的 <strong>Twikoo 评论系统管理面板</strong>，原版UI较简陋，我们提供美观、响应式的后台界面，支持评论审核、配置管理、数据导入导出、深色主题等特性。<strong>无需额外安装</strong>，仅需一个 HTML 文件即可部署。</p>
-<p>Github仓库：https://github.com/wowtang/Twikoo-comment-management</p>
+<p>Github仓库：<a href="https://github.com/wowtang/Twikoo-comment-management">https://github.com/wowtang/Twikoo-comment-management</a></p>
 <hr />
 <h2 id="-">📖 项目简介</h2>
 <p>本项目是一个基于 <strong>Twikoo</strong> 评论引擎的纯前端管理面板，所有代码整合在 <code>index.html</code> 中。它通过调用 Twikoo 的官方 JavaScript SDK，实现以下功能：</p>
