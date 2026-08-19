@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, viewport-fit=cover" />
-    <title>自律 · 戒色 V3</title>
+    <title>自律 · 戒撸 V3.3</title>
     <style>
         /* ===== CSS 变量（浅色/深色） ===== */
         :root {
@@ -11,8 +11,8 @@
             --primary-light: #b8a9ff;
             --primary-dark: #5a4bd1;
             --success: #34c759;
-            --gold: #ffa94d;
             --danger: #ff3b30;
+            --gold: #ffa94d;
             --bg: #f2f4f8;
             --card-bg: rgba(255, 255, 255, 0.72);
             --card-border: rgba(255, 255, 255, 0.4);
@@ -61,6 +61,110 @@
         }
         a, button, input {
             font-family: inherit;
+        }
+
+        /* ===== 首次访问遮罩 ===== */
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        .onboarding-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .onboarding-card {
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            padding: 32px 28px 28px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+            opacity: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .onboarding-overlay.active .onboarding-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .onboarding-card h2 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        .onboarding-card .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .onboarding-card .harm-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .onboarding-card .harm-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            border-left: 3px solid var(--danger);
+            align-items: flex-start;
+        }
+        .onboarding-card .harm-item .icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .onboarding-card .harm-item .text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .onboarding-card .harm-item .text strong {
+            color: var(--text-primary);
+        }
+        .onboarding-card .btn-start {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 12px 30px rgba(124, 108, 240, 0.3);
+            letter-spacing: 0.3px;
+        }
+        .onboarding-card .btn-start:active {
+            transform: scale(0.96);
+            opacity: 0.8;
         }
 
         /* ===== 应用布局 ===== */
@@ -182,7 +286,7 @@
 
         /* ===== 顶部导航条 (移动显示汉堡) ===== */
         .navbar {
-            display: none; /* 桌面隐藏，移动显示 */
+            display: none;
             align-items: center;
             justify-content: space-between;
             padding: 12px 20px 8px;
@@ -257,17 +361,19 @@
         .stat-item .value { font-size: 22px; font-weight: 600; color: var(--text-primary); }
         .stat-item .value.gold { color: var(--gold); }
         .stat-item .value.success { color: var(--success); }
+        .stat-item .value.danger { color: var(--danger); }
 
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
         .btn-checkin {
-            width: 100%;
-            padding: 16px;
+            flex: 1;
+            padding: 16px 0;
             border: none;
             border-radius: 16px;
             font-size: 17px;
             font-weight: 600;
-            background: var(--primary);
-            color: #fff;
-            box-shadow: 0 8px 24px rgba(124, 108, 240, 0.25);
             transition: all 0.2s;
             cursor: pointer;
             display: flex;
@@ -275,17 +381,53 @@
             justify-content: center;
             gap: 8px;
         }
-        .btn-checkin:active { transform: scale(0.96); opacity: 0.8; }
-        .btn-checkin:disabled { background: #c7c7cc; box-shadow: none; color: #fff; opacity: 0.7; transform: none; }
+        .btn-checkin:active { transform: scale(0.94); opacity: 0.8; }
+        .btn-checkin:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: default;
+        }
+        .btn-checkin.clean {
+            background: var(--success);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(52, 199, 89, 0.25);
+        }
+        .btn-checkin.dirty {
+            background: var(--danger);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(255, 59, 48, 0.25);
+        }
+        .btn-checkin.clean:disabled { background: #a0a0a0; box-shadow: none; }
+        .btn-checkin.dirty:disabled { background: #a0a0a0; box-shadow: none; }
 
         .week-dots { display: flex; justify-content: center; gap: 14px; padding: 4px 0; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #d1d1d6; transition: background 0.3s; }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d1d1d6;
+            transition: background 0.3s;
+            position: relative;
+        }
         .dot.active { background: var(--primary-light); }
+        .dot.dirty { background: var(--danger); }
         .dot.today { border: 2px solid var(--gold); background: #fff; }
+        .dot.today.dirty { border-color: var(--danger); background: var(--danger); }
+        .dot.today.active { border-color: var(--gold); background: var(--primary-light); }
 
         .quote { font-size: 15px; color: var(--text-secondary); text-align: center; font-style: italic; padding: 8px 0; border-top: 0.5px solid var(--drawer-border); border-bottom: 0.5px solid var(--drawer-border); line-height: 1.5; }
 
         .last-checkin { font-size: 14px; color: var(--text-secondary); text-align: center; margin-top: 8px; }
+        .today-status {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            padding: 8px 0;
+            margin-bottom: 4px;
+        }
+        .today-status.clean { color: var(--success); }
+        .today-status.dirty { color: var(--danger); }
+        .today-status.unknown { color: var(--text-secondary); }
 
         /* ===== 日历 ===== */
         .calendar-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -294,9 +436,28 @@
         .calendar-nav button:active { background: rgba(0,0,0,0.04); }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
         .calendar-grid .weekday { font-size: 13px; font-weight: 500; color: var(--text-light); padding: 6px 0; }
-        .calendar-grid .day { padding: 8px 0; border-radius: 12px; font-size: 16px; background: rgba(255,255,255,0.3); transition: background 0.15s; position: relative; cursor: default; }
+        .calendar-grid .day {
+            padding: 8px 0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.3);
+            transition: background 0.15s;
+            position: relative;
+            cursor: default;
+        }
         .calendar-grid .day.today { border: 2px solid var(--gold); background: rgba(255, 255, 255, 0.6); }
-        .calendar-grid .day.has-record::after { content: ''; display: block; width: 6px; height: 6px; background: var(--success); border-radius: 50%; margin: 2px auto 0; }
+        .calendar-grid .day.has-record::after {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin: 2px auto 0;
+            background: var(--success);
+        }
+        .calendar-grid .day.dirty-record::after {
+            background: var(--danger);
+        }
         .calendar-grid .day.other-month { color: var(--text-light); opacity: 0.5; }
 
         /* ===== 统计 ===== */
@@ -304,8 +465,11 @@
         .stats-card { background: rgba(255,255,255,0.4); border-radius: 16px; padding: 14px 8px; text-align: center; }
         .stats-card .num { font-size: 26px; font-weight: 700; color: var(--text-primary); }
         .stats-card .label { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .stats-card .num.success { color: var(--success); }
+        .stats-card .num.danger { color: var(--danger); }
+        .stats-card .num.gold { color: var(--gold); }
 
-        /* 热力图（年视图） */
+        /* 热力图（双色） */
         .heatmap-grid { display: grid; grid-template-columns: repeat(53, 1fr); gap: 3px; margin-top: 12px; }
         .heatmap-grid .hm-cell { aspect-ratio: 1; border-radius: 4px; background: rgba(0,0,0,0.04); transition: background 0.2s; }
         .heatmap-grid .hm-cell.level0 { background: rgba(0,0,0,0.04); }
@@ -313,11 +477,13 @@
         .heatmap-grid .hm-cell.level2 { background: #7cb8d4; }
         .heatmap-grid .hm-cell.level3 { background: #3a8bb5; }
         .heatmap-grid .hm-cell.level4 { background: #1a5a7a; }
+        .heatmap-grid .hm-cell.dirty { background: #f5a0a0; }
         [data-theme="dark"] .heatmap-grid .hm-cell.level0 { background: rgba(255,255,255,0.06); }
         [data-theme="dark"] .heatmap-grid .hm-cell.level1 { background: #2a4a5a; }
         [data-theme="dark"] .heatmap-grid .hm-cell.level2 { background: #3a6a8a; }
         [data-theme="dark"] .heatmap-grid .hm-cell.level3 { background: #4a8aba; }
         [data-theme="dark"] .heatmap-grid .hm-cell.level4 { background: #6aaada; }
+        [data-theme="dark"] .heatmap-grid .hm-cell.dirty { background: #8a2a2a; }
 
         /* ===== 成就 ===== */
         .achievement-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
@@ -337,11 +503,13 @@
         .btn-secondary { background: var(--primary); color: #fff; border: none; border-radius: 14px; padding: 12px 20px; font-size: 15px; font-weight: 500; width: 100%; margin-top: 8px; cursor: pointer; transition: all 0.2s; }
         .btn-secondary:active { transform: scale(0.96); }
 
-        /* ===== 关于 ===== */
-        .harm-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--drawer-border); align-items: flex-start; }
+        /* ===== 关于（危害详情） ===== */
+        .harm-category { margin-top: 16px; }
+        .harm-category h4 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .harm-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 0.5px solid var(--drawer-border); align-items: flex-start; }
         .harm-item:last-child { border-bottom: none; }
-        .harm-item .icon { font-size: 20px; }
-        .harm-item .text { font-size: 15px; color: var(--text-secondary); line-height: 1.4; }
+        .harm-item .icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+        .harm-item .text { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
         .harm-item .text strong { color: var(--text-primary); }
 
         /* ===== Toast ===== */
@@ -382,780 +550,984 @@
             .page-container { padding: 16px 16px calc(16px + var(--safe-bottom)); }
             .card { padding: 16px 14px; }
             .stat-item .value { font-size: 20px; }
+            .btn-group { flex-direction: row; }
+            .btn-checkin { font-size: 15px; padding: 14px 0; }
+            .onboarding-card { padding: 24px 18px 20px; }
         }
 
         @media (max-width: 400px) {
             .days-number { font-size: 48px; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
+            .btn-group { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-<div id="app">
-    <!-- 侧边栏 -->
-    <div class="drawer" id="drawer">
-        <div class="drawer-header">
-            <div class="avatar">🧘</div>
-            <div class="name">自律者</div>
-            <div class="sub">坚持即自由</div>
-        </div>
-        <div class="drawer-menu">
-            <div class="menu-item active" data-page="home"><span class="icon">🏠</span> 首页</div>
-            <div class="menu-item" data-page="calendar"><span class="icon">📅</span> 打卡日历</div>
-            <div class="menu-item" data-page="stats"><span class="icon">📊</span> 数据统计</div>
-            <div class="menu-item" data-page="achievements"><span class="icon">🏅</span> 成就</div>
-            <div class="menu-item" data-page="settings"><span class="icon">⚙️</span> 设置</div>
-            <div class="menu-item" data-page="about"><span class="icon">❤️</span> 关于</div>
-        </div>
-        <div class="drawer-footer">
-            <div class="theme-toggle">
-                <button id="themeToggle">🌗 切换主题</button>
+    <!-- ===== 首次访问引导遮罩 ===== -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-card">
+            <h2>⚠️ 正视危害</h2>
+            <p class="subtitle">了解真相，才能坚定戒撸的决心</p>
+            <div class="harm-list">
+                <div class="harm-item">
+                    <span class="icon">🧠</span>
+                    <div class="text"><strong>大脑损伤</strong> — 多巴胺受体下调，前额叶功能抑制，专注力与决策能力严重下降。</div>
+                </div>
+                <div class="harm-item">
+                    <span class="icon">⚡</span>
+                    <div class="text"><strong>精力枯竭</strong> — 损耗肾精与微量元素，导致慢性疲劳、腰膝酸软、睡眠质量恶化。</div>
+                </div>
+                <div class="harm-item">
+                    <span class="icon">💔</span>
+                    <div class="text"><strong>心理失衡</strong> — 羞耻内疚循环，焦虑社交回避，物化他人，破坏真实亲密关系。</div>
+                </div>
+                <div class="harm-item">
+                    <span class="icon">⏳</span>
+                    <div class="text"><strong>时间黑洞</strong> — 吞噬学习、运动、社交时间，目标感淡化，拖延加重。</div>
+                </div>
+                <div class="harm-item">
+                    <span class="icon">🔗</span>
+                    <div class="text"><strong>成瘾强化</strong> — 类似毒品激活奖赏回路，产生耐受性，戒断时烦躁失眠，极易复发。</div>
+                </div>
+                <div class="harm-item">
+                    <span class="icon">🌱</span>
+                    <div class="text"><strong>自我否定</strong> — 反复失控后自我效能感崩塌，丧失改变信心，陷入无力感。</div>
+                </div>
             </div>
-            <div>v3.0 · 全端适配</div>
+            <button class="btn-start" id="onboardingBtn">我知道自慰的危害了，开始自律</button>
         </div>
     </div>
 
-    <!-- 移动遮罩 -->
-    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <!-- ===== 主应用 ===== -->
+    <div id="app">
+        <!-- 侧边栏 -->
+        <div class="drawer" id="drawer">
+            <div class="drawer-header">
+                <div class="avatar">🧘</div>
+                <div class="name">自律者</div>
+                <div class="sub">坚持即自由</div>
+            </div>
+            <div class="drawer-menu">
+                <div class="menu-item active" data-page="home"><span class="icon">🏠</span> 首页</div>
+                <div class="menu-item" data-page="calendar"><span class="icon">📅</span> 打卡日历</div>
+                <div class="menu-item" data-page="stats"><span class="icon">📊</span> 数据统计</div>
+                <div class="menu-item" data-page="achievements"><span class="icon">🏅</span> 成就</div>
+                <div class="menu-item" data-page="settings"><span class="icon">⚙️</span> 设置</div>
+                <div class="menu-item" data-page="about"><span class="icon">❤️</span> 关于</div>
+            </div>
+            <div class="drawer-footer">
+                <div class="theme-toggle">
+                    <button id="themeToggle">🌗 切换主题</button>
+                </div>
+                <div>v3.3 · 全端适配</div>
+            </div>
+        </div>
 
-    <!-- 主内容 -->
-    <div class="main-content">
-        <!-- 导航条 (移动) -->
-        <nav class="navbar">
-            <span class="hamburger" id="hamburgerBtn">☰</span>
-            <span class="title" id="pageTitle">首页</span>
-            <span style="width:36px;"></span>
-        </nav>
+        <!-- 移动遮罩 -->
+        <div class="drawer-overlay" id="drawerOverlay"></div>
 
-        <!-- 页面容器 -->
-        <div class="page-container" id="pageContainer">
-            <!-- ===== 首页 ===== -->
-            <div class="page active" id="page-home">
-                <div class="card">
-                    <div class="days-number" id="daysNumber">0</div>
-                    <div class="days-label">今天你撸管了吗？<br>连续自律 · 天</div>
-                    <div class="progress-wrapper" style="margin-top:16px;">
-                        <div class="progress-meta">
-                            <span id="progressLabel">向 90 天目标前进</span>
-                            <span id="progressPercent">0%</span>
+        <!-- 主内容 -->
+        <div class="main-content">
+            <!-- 导航条 (移动) -->
+            <nav class="navbar">
+                <span class="hamburger" id="hamburgerBtn">☰</span>
+                <span class="title" id="pageTitle">首页</span>
+                <span style="width:36px;"></span>
+            </nav>
+
+            <!-- 页面容器 -->
+            <div class="page-container" id="pageContainer">
+                <!-- ===== 首页 ===== -->
+                <div class="page active" id="page-home">
+                    <div class="card">
+                        <div class="today-status" id="todayStatus">今日状态：未记录</div>
+                        <div class="days-number" id="daysNumber">0</div>
+                        <div class="days-label">连续未撸 · 天</div>
+                        <div class="progress-wrapper" style="margin-top:16px;">
+                            <div class="progress-meta">
+                                <span id="progressLabel">向 90 天目标前进</span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
                         </div>
-                        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="stat-grid">
+                            <div class="stat-item"><div class="label">总未撸</div><div class="value gold" id="totalClean">0</div></div>
+                            <div class="stat-item"><div class="label">总撸了</div><div class="value danger" id="totalDirty">0</div></div>
+                            <div class="stat-item"><div class="label">最高连续未撸</div><div class="value success" id="maxStreak">0</div></div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn-checkin clean" id="checkinClean">✊ 今日未撸</button>
+                        <button class="btn-checkin dirty" id="checkinDirty">💢 今日撸了</button>
+                    </div>
+                    <div class="last-checkin" id="lastCheckinInfo"></div>
+
+                    <div class="card" style="margin-top:16px;">
+                        <div class="quote" id="homeQuote">✨ 自律即自由，每一天都是新生。</div>
+                        <div class="week-dots" id="weekDots" style="margin-top:12px;"></div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="stat-grid">
-                        <div class="stat-item"><div class="label">总打卡</div><div class="value gold" id="totalDays">0</div></div>
-                        <div class="stat-item"><div class="label">最高纪录</div><div class="value success" id="maxStreak">0</div></div>
-                        <div class="stat-item"><div class="label">目标进度</div><div class="value" id="targetProgress">0%</div></div>
+                <!-- ===== 日历 ===== -->
+                <div class="page" id="page-calendar">
+                    <div class="card">
+                        <div class="calendar-nav">
+                            <button id="prevMonth">‹</button>
+                            <span class="month-year" id="monthYear">2026年8月</span>
+                            <button id="nextMonth">›</button>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
+                    <div class="text-secondary text-center" style="font-size:14px; margin-top:4px;">
+                        • 绿点 = 未撸 · 红点 = 撸了 · 金色边框 = 今日
                     </div>
                 </div>
 
-                <button class="btn-checkin" id="checkinBtn">✊ 今日打卡</button>
-                <div class="last-checkin" id="lastCheckinInfo"></div>
+                <!-- ===== 统计 ===== -->
+                <div class="page" id="page-stats">
+                    <div class="card">
+                        <div class="stats-grid">
+                            <div class="stats-card"><div class="num success" id="statTotalClean">0</div><div class="label">总未撸</div></div>
+                            <div class="stats-card"><div class="num danger" id="statTotalDirty">0</div><div class="label">总撸了</div></div>
+                            <div class="stats-card"><div class="num gold" id="statStreak">0</div><div class="label">当前连续未撸</div></div>
+                            <div class="stats-card"><div class="num" id="statMaxStreak">0</div><div class="label">最高连续未撸</div></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; padding:6px 0;">
+                            <span class="text-secondary">本月未撸</span>
+                            <span id="statMonthClean" style="font-weight:600;">0</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
+                            <span class="text-secondary">本月撸了</span>
+                            <span id="statMonthDirty" style="font-weight:600;">0</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
+                            <span class="text-secondary">平均每月未撸</span>
+                            <span id="statAvgMonthClean" style="font-weight:600;">0</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
+                            <span class="text-secondary">最长未撸间隔</span>
+                            <span id="statMaxGap" style="font-weight:600;">0 天</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
+                            <span class="text-secondary">最近一次撸</span>
+                            <span id="statLastDirty" style="font-weight:600;">-</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
+                            <span class="text-secondary">首次记录</span>
+                            <span id="statStartDate" style="font-weight:600;">-</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4 style="margin-bottom:8px;">📊 年度未撸热力图 (绿色深度表示未撸频次，红色表示撸了)</h4>
+                        <div class="heatmap-grid" id="heatmapGrid"></div>
+                        <div style="display:flex; justify-content:center; gap:8px; margin-top:8px; font-size:12px; color:var(--text-secondary); flex-wrap:wrap;">
+                            <span>未撸少</span>
+                            <span style="display:inline-block; width:12px; height:12px; background:rgba(0,0,0,0.04); border-radius:3px;"></span>
+                            <span style="display:inline-block; width:12px; height:12px; background:#c6e0f0; border-radius:3px;"></span>
+                            <span style="display:inline-block; width:12px; height:12px; background:#7cb8d4; border-radius:3px;"></span>
+                            <span style="display:inline-block; width:12px; height:12px; background:#3a8bb5; border-radius:3px;"></span>
+                            <span style="display:inline-block; width:12px; height:12px; background:#1a5a7a; border-radius:3px;"></span>
+                            <span>多</span>
+                            <span style="margin-left:8px;">🔴 撸了</span>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="card" style="margin-top:16px;">
-                    <div class="quote" id="homeQuote">✨ 自律即自由，每一天都是新生。</div>
-                    <div class="week-dots" id="weekDots" style="margin-top:12px;"></div>
+                <!-- ===== 成就 ===== -->
+                <div class="page" id="page-achievements">
+                    <div class="card">
+                        <h4 style="margin-bottom:12px;">🏅 成就勋章 (基于连续未撸)</h4>
+                        <div class="achievement-grid" id="achievementGrid"></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- ===== 日历 ===== -->
-            <div class="page" id="page-calendar">
-                <div class="card">
-                    <div class="calendar-nav">
-                        <button id="prevMonth">‹</button>
-                        <span class="month-year" id="monthYear">2026年8月</span>
-                        <button id="nextMonth">›</button>
+                <!-- ===== 设置 ===== -->
+                <div class="page" id="page-settings">
+                    <div class="card">
+                        <div class="setting-row">
+                            <span class="label">🎯 目标连续未撸天数</span>
+                            <input type="number" id="targetInput" value="90" min="1" max="999" />
+                        </div>
+                        <button class="btn-secondary" id="saveTargetBtn" style="margin-top:12px;">保存目标</button>
                     </div>
-                    <div class="calendar-grid" id="calendarGrid"></div>
+                    <div class="card">
+                        <div class="setting-row">
+                            <span class="label">🔔 每日提醒</span>
+                            <button id="notificationBtn" style="padding:6px 16px; border-radius:30px; border:0.5px solid var(--text-light); background:var(--card-bg); color:var(--text-primary); cursor:pointer;">启用</button>
+                        </div>
+                        <button class="btn-secondary" id="exportBtn">📥 导出数据 (JSON)</button>
+                        <button class="btn-danger" id="resetBtn">🗑️ 重置所有数据</button>
+                        <div class="text-secondary text-center" style="font-size:13px; margin-top:8px;">此操作不可撤销</div>
+                    </div>
                 </div>
-                <div class="text-secondary text-center" style="font-size:14px; margin-top:4px;">• 绿点表示已打卡 • 金色边框为今日</div>
-            </div>
 
-            <!-- ===== 统计 ===== -->
-            <div class="page" id="page-stats">
-                <div class="card">
-                    <div class="stats-grid">
-                        <div class="stats-card"><div class="num" id="statTotal">0</div><div class="label">累计打卡</div></div>
-                        <div class="stats-card"><div class="num" id="statStreak">0</div><div class="label">当前连续</div></div>
-                        <div class="stats-card"><div class="num" id="statMax">0</div><div class="label">最高纪录</div></div>
-                        <div class="stats-card"><div class="num" id="statMonthRate">0%</div><div class="label">本月打卡率</div></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; padding:6px 0;">
-                        <span class="text-secondary">平均连续周期</span>
-                        <span id="statAvgCycle" style="font-weight:600;">0 天</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
-                        <span class="text-secondary">总中断次数</span>
-                        <span id="statBreaks" style="font-weight:600;">0</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; padding:6px 0; border-top:0.5px solid var(--drawer-border);">
-                        <span class="text-secondary">首次打卡</span>
-                        <span id="statStartDate" style="font-weight:600;">-</span>
-                    </div>
-                </div>
-                <div class="card">
-                    <h4 style="margin-bottom:8px;">📊 年度热力图</h4>
-                    <div class="heatmap-grid" id="heatmapGrid"></div>
-                    <div style="display:flex; justify-content:center; gap:8px; margin-top:8px; font-size:12px; color:var(--text-secondary);">
-                        <span>少</span>
-                        <span style="display:inline-block; width:12px; height:12px; background:rgba(0,0,0,0.04); border-radius:3px;"></span>
-                        <span style="display:inline-block; width:12px; height:12px; background:#c6e0f0; border-radius:3px;"></span>
-                        <span style="display:inline-block; width:12px; height:12px; background:#7cb8d4; border-radius:3px;"></span>
-                        <span style="display:inline-block; width:12px; height:12px; background:#3a8bb5; border-radius:3px;"></span>
-                        <span style="display:inline-block; width:12px; height:12px; background:#1a5a7a; border-radius:3px;"></span>
-                        <span>多</span>
-                    </div>
-                </div>
-            </div>
+                <!-- ===== 关于（详细危害） ===== -->
+                <div class="page" id="page-about">
+                    <div class="card">
+                        <h3 style="margin-bottom:8px;">⚠️ 撸管的真实危害</h3>
+                        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px;">了解真相，才能坚定决心</p>
 
-            <!-- ===== 成就 ===== -->
-            <div class="page" id="page-achievements">
-                <div class="card">
-                    <h4 style="margin-bottom:12px;">🏅 成就勋章</h4>
-                    <div class="achievement-grid" id="achievementGrid"></div>
-                </div>
-            </div>
+                        <div class="harm-category">
+                            <h4>🧠 神经系统与大脑</h4>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>多巴胺受体下调</strong> — 频繁刺激导致多巴胺D2受体减少，愉悦阈值升高，日常事物变得乏味。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>前额叶功能抑制</strong> — 削弱冲动控制与决策能力，使人更容易做出短视选择。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>记忆与专注力下降</strong> — 影响海马体功能，导致学习效率降低，注意力难以集中。</div></div>
+                        </div>
 
-            <!-- ===== 设置 ===== -->
-            <div class="page" id="page-settings">
-                <div class="card">
-                    <div class="setting-row">
-                        <span class="label">🎯 目标天数</span>
-                        <input type="number" id="targetInput" value="90" min="1" max="999" />
-                    </div>
-                    <button class="btn-secondary" id="saveTargetBtn" style="margin-top:12px;">保存目标</button>
-                </div>
-                <div class="card">
-                    <div class="setting-row">
-                        <span class="label">🔔 每日提醒</span>
-                        <button id="notificationBtn" style="padding:6px 16px; border-radius:30px; border:0.5px solid var(--text-light); background:var(--card-bg); color:var(--text-primary); cursor:pointer;">启用</button>
-                    </div>
-                    <button class="btn-secondary" id="exportBtn">📥 导出数据 (JSON)</button>
-                    <button class="btn-danger" id="resetBtn">🗑️ 重置所有数据</button>
-                    <div class="text-secondary text-center" style="font-size:13px; margin-top:8px;">此操作不可撤销</div>
-                </div>
-            </div>
+                        <div class="harm-category">
+                            <h4>⚡ 精力与体能</h4>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>肾精亏损</strong> — 中医理论认为过度泄精损耗先天之本，导致腰膝酸软、畏寒怕冷。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>慢性疲劳</strong> — 消耗大量锌、硒等微量元素，引起持续性疲惫感，运动能力下滑。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>睡眠质量恶化</strong> — 影响褪黑素分泌，导致入睡困难、多梦易醒。</div></div>
+                        </div>
 
-            <!-- ===== 关于 ===== -->
-            <div class="page" id="page-about">
-                <div class="card">
-                    <h3 style="margin-bottom:12px;">❤️ 初心 · 清醒选择</h3>
-                    <div class="harm-item"><span class="icon">🧠</span><div class="text"><strong>大脑损伤</strong> — 多巴胺系统紊乱，削弱专注力与决策能力。</div></div>
-                    <div class="harm-item"><span class="icon">⚡</span><div class="text"><strong>精力枯竭</strong> — 损耗肾精与能量，导致疲劳、记忆力下降。</div></div>
-                    <div class="harm-item"><span class="icon">💔</span><div class="text"><strong>关系疏离</strong> — 物化他人，削弱真实亲密能力。</div></div>
-                    <div class="harm-item"><span class="icon">🌧️</span><div class="text"><strong>情绪黑洞</strong> — 加重焦虑、抑郁，形成羞耻循环。</div></div>
-                    <div class="harm-item"><span class="icon">⏳</span><div class="text"><strong>时间盗贼</strong> — 吞噬梦想与成长机会。</div></div>
-                </div>
-                <div class="card" style="text-align:center; color:var(--text-secondary); font-size:14px;">
-                    <p style="margin-bottom:6px;">“每一次克制，都在为未来的自己投票。” 🌱</p>
-                    <p style="font-size:13px;">数据仅保存在本地设备，不会上传。</p>
-                    <p style="font-size:13px; margin-top:4px;">版本 3.0 · 全端适配 · 功能增强</p>
+                        <div class="harm-category">
+                            <h4>💔 心理与情绪</h4>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>羞耻与内疚循环</strong> — 行为后产生强烈负罪感，自我评价降低，形成“破罐破摔”恶性循环。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>焦虑与社交回避</strong> — 过度关注自身，在人际交往中感到紧张不安，回避异性接触。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>物化他人</strong> — 以性视角审视他人，削弱共情能力，破坏亲密关系质量。</div></div>
+                        </div>
+
+                        <div class="harm-category">
+                            <h4>⏳ 时间与人生</h4>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>时间黑洞</strong> — 平均每次消耗30分钟以上，累积起来吞噬大量学习、运动、社交时间。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>目标感淡化</strong> — 即时满足占据大脑，长期规划能力下降，拖延症加重。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>自我效能感降低</strong> — 反复失败后，对自己控制力产生怀疑，丧失改变信心。</div></div>
+                        </div>
+
+                        <div class="harm-category">
+                            <h4>🔗 成瘾机制</h4>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>类似毒品成瘾</strong> — 激活相同脑区（奖赏回路），产生耐受性，需要更强烈刺激才能满足。</div></div>
+                            <div class="harm-item"><span class="icon">•</span><div class="text"><strong>戒断反应</strong> — 初期试图停止时，会出现烦躁、失眠、渴望等不适，容易导致复发。</div></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="text-align:center; color:var(--text-secondary); font-size:14px;">
+                        <p style="margin-bottom:6px;">“每一次克制，都在为未来的自己投票。” 🌱</p>
+                        <p style="font-size:13px;">数据仅保存在本地设备，不会上传。</p>
+                        <p style="font-size:13px; margin-top:4px;">版本 3.3 · 全端适配 · 双状态记录</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
-<script>
-    (function() {
-        'use strict';
+    <script>
+        (function() {
+            'use strict';
 
-        // ===== 数据层 =====
-        const STORAGE_KEY = 'nofap_data';
-        const VISIT_KEY = 'nofap_visited';
+            // ===== 数据层 =====
+            const STORAGE_KEY = 'nofap_data_v32';
+            const VISIT_KEY = 'nofap_visited_v33';
 
-        function getDefaultData() {
-            return {
-                startDate: null,
-                history: [], // 存储 ISO 时间字符串
-                targetDays: 90,
-                theme: 'light',
-                notificationEnabled: false,
-                lastReminderDate: null
-            };
-        }
-
-        let data = loadData();
-        if (!data) {
-            data = getDefaultData();
-            saveData(data);
-        }
-        // 兼容旧数据
-        if (!data.targetDays) data.targetDays = 90;
-        if (!data.history) data.history = [];
-        if (!data.theme) data.theme = 'light';
-        if (data.notificationEnabled === undefined) data.notificationEnabled = false;
-
-        // ===== 工具 =====
-        function getToday() {
-            return new Date().toISOString().split('T')[0];
-        }
-
-        function getTodayISO() {
-            return new Date().toISOString(); // 完整时间
-        }
-
-        function loadData() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
-        }
-
-        function saveData(d) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-        }
-
-        function calcStreak(history, today) {
-            if (!history || history.length === 0) return 0;
-            // 提取日期部分
-            const dates = history.map(h => h.split('T')[0]);
-            const unique = [...new Set(dates)].sort();
-            let checkDate = today;
-            if (!unique.includes(today)) {
-                const yesterday = new Date();
-                yesterday.setDate(yesterday.getDate() - 1);
-                const yStr = yesterday.toISOString().split('T')[0];
-                if (!unique.includes(yStr)) return 0;
-                checkDate = yStr;
+            function getDefaultData() {
+                return {
+                    startDate: null,
+                    cleanHistory: [],   // 未撸日期 ISO 时间字符串
+                    dirtyHistory: [],   // 撸了日期 ISO 时间字符串
+                    targetDays: 90,
+                    theme: 'light',
+                    notificationEnabled: false,
+                    lastReminderDate: null
+                };
             }
-            let streak = 0;
-            let current = new Date(checkDate);
-            while (true) {
-                const dStr = current.toISOString().split('T')[0];
-                if (unique.includes(dStr)) {
-                    streak++;
-                    current.setDate(current.getDate() - 1);
-                } else break;
+
+            let data = loadData();
+            if (!data) {
+                data = getDefaultData();
+                saveData(data);
             }
-            return streak;
-        }
+            // 兼容旧数据
+            if (data.history && !data.cleanHistory) {
+                data.cleanHistory = data.history;
+                delete data.history;
+                saveData(data);
+            }
+            if (!data.cleanHistory) data.cleanHistory = [];
+            if (!data.dirtyHistory) data.dirtyHistory = [];
+            if (!data.targetDays) data.targetDays = 90;
+            if (!data.theme) data.theme = 'light';
+            if (data.notificationEnabled === undefined) data.notificationEnabled = false;
 
-        function calcTotal(history) {
-            if (!history) return 0;
-            const dates = history.map(h => h.split('T')[0]);
-            return new Set(dates).size;
-        }
+            // ===== 工具 =====
+            function getToday() {
+                return new Date().toISOString().split('T')[0];
+            }
 
-        function calcMaxStreak(history) {
-            if (!history || history.length === 0) return 0;
-            const dates = history.map(h => h.split('T')[0]);
-            const sorted = [...new Set(dates)].sort();
-            let max = 0, cur = 0;
-            for (let i = 0; i < sorted.length; i++) {
-                if (i === 0) cur = 1;
-                else {
+            function getTodayISO() {
+                return new Date().toISOString();
+            }
+
+            function loadData() {
+                try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+            }
+
+            function saveData(d) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+            }
+
+            // 计算连续未撸天数
+            function calcStreak(cleanHistory, dirtyHistory, today) {
+                if (!cleanHistory || cleanHistory.length === 0) return 0;
+                const cleanDates = cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = dirtyHistory.map(h => h.split('T')[0]);
+                // 从今天开始往回推，如果某天是未撸则连续，若为撸了则中断
+                let streak = 0;
+                let current = new Date(today);
+                while (true) {
+                    const dateStr = current.toISOString().split('T')[0];
+                    if (cleanDates.includes(dateStr)) {
+                        streak++;
+                        current.setDate(current.getDate() - 1);
+                    } else {
+                        break;
+                    }
+                }
+                return streak;
+            }
+
+            function calcTotal(history) {
+                if (!history) return 0;
+                const dates = history.map(h => h.split('T')[0]);
+                return new Set(dates).size;
+            }
+
+            function calcMaxStreak(cleanHistory, dirtyHistory) {
+                if (!cleanHistory || cleanHistory.length === 0) return 0;
+                const cleanDates = cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = dirtyHistory.map(h => h.split('T')[0]);
+                // 合并所有有记录的日期
+                const allRecorded = new Set([...cleanDates, ...dirtyDates]);
+                const allSorted = [...allRecorded].sort();
+                let max = 0, cur = 0;
+                for (let i = 0; i < allSorted.length; i++) {
+                    const date = allSorted[i];
+                    if (cleanDates.includes(date)) {
+                        cur++;
+                    } else {
+                        cur = 0;
+                    }
+                    // 如果中间有间隔，重置
+                    if (i > 0) {
+                        const prev = new Date(allSorted[i-1]);
+                        const curr = new Date(allSorted[i]);
+                        const diff = (curr - prev) / (1000*60*60*24);
+                        if (diff > 1) {
+                            cur = cleanDates.includes(date) ? 1 : 0;
+                        }
+                    }
+                    if (cur > max) max = cur;
+                }
+                return max;
+            }
+
+            function getMonthStats(cleanHistory, dirtyHistory) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                let cleanCount = 0, dirtyCount = 0;
+                const cleanDates = cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = dirtyHistory.map(h => h.split('T')[0]);
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    if (cleanDates.includes(dateStr)) cleanCount++;
+                    if (dirtyDates.includes(dateStr)) dirtyCount++;
+                }
+                return { cleanCount, dirtyCount };
+            }
+
+            function calcAvgMonthClean(cleanHistory) {
+                if (!cleanHistory || cleanHistory.length === 0) return 0;
+                const dates = cleanHistory.map(h => h.split('T')[0]);
+                const sorted = [...new Set(dates)].sort();
+                const first = new Date(sorted[0]);
+                const now = new Date();
+                const months = (now.getFullYear() - first.getFullYear()) * 12 + (now.getMonth() - first.getMonth()) + 1;
+                if (months <= 0) return 0;
+                return Math.round(calcTotal(cleanHistory) / months);
+            }
+
+            function calcMaxGap(cleanHistory) {
+                if (!cleanHistory || cleanHistory.length < 2) return 0;
+                const dates = cleanHistory.map(h => h.split('T')[0]);
+                const sorted = [...new Set(dates)].sort();
+                let maxGap = 0;
+                for (let i = 1; i < sorted.length; i++) {
                     const prev = new Date(sorted[i-1]);
                     const curr = new Date(sorted[i]);
                     const diff = (curr - prev) / (1000*60*60*24);
-                    cur = diff === 1 ? cur + 1 : 1;
+                    if (diff > 1) {
+                        const gap = diff - 1;
+                        if (gap > maxGap) maxGap = gap;
+                    }
                 }
-                if (cur > max) max = cur;
+                return maxGap;
             }
-            return max;
-        }
 
-        function getMonthRate(history) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let checked = 0;
-            const dates = history.map(h => h.split('T')[0]);
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                if (dates.includes(dateStr)) checked++;
+            function getLastDirty(dirtyHistory) {
+                if (!dirtyHistory || dirtyHistory.length === 0) return null;
+                const sorted = [...dirtyHistory].sort();
+                return sorted[sorted.length - 1];
             }
-            return Math.round((checked / daysInMonth) * 100);
-        }
 
-        function calcBreaks(history) {
-            if (!history || history.length < 2) return 0;
-            const dates = history.map(h => h.split('T')[0]);
-            const sorted = [...new Set(dates)].sort();
-            let breaks = 0;
-            for (let i = 1; i < sorted.length; i++) {
-                const prev = new Date(sorted[i-1]);
-                const curr = new Date(sorted[i]);
-                const diff = (curr - prev) / (1000*60*60*24);
-                if (diff > 1) breaks++;
+            function getLastCheckinTime(cleanHistory, dirtyHistory) {
+                const all = [...cleanHistory, ...dirtyHistory];
+                if (all.length === 0) return null;
+                const sorted = all.sort();
+                return sorted[sorted.length - 1];
             }
-            return breaks;
-        }
 
-        function calcAvgCycle(history) {
-            const total = calcTotal(history);
-            const breaks = calcBreaks(history);
-            if (breaks === 0) return total;
-            return Math.round(total / (breaks + 1));
-        }
+            // ===== 成就 =====
+            const ACHIEVEMENTS = [
+                { id: '3d', label: '3天', icon: '🥉', days: 3 },
+                { id: '7d', label: '7天', icon: '🥈', days: 7 },
+                { id: '14d', label: '14天', icon: '🥇', days: 14 },
+                { id: '30d', label: '30天', icon: '💪', days: 30 },
+                { id: '60d', label: '60天', icon: '🌟', days: 60 },
+                { id: '90d', label: '90天', icon: '🎯', days: 90 },
+                { id: '100d', label: '100天', icon: '👑', days: 100 }
+            ];
 
-        function getLastCheckinTime(history) {
-            if (!history || history.length === 0) return null;
-            const sorted = [...history].sort();
-            return sorted[sorted.length - 1];
-        }
-
-        // ===== 成就定义 =====
-        const ACHIEVEMENTS = [
-            { id: '3d', label: '3天', icon: '🥉', days: 3 },
-            { id: '7d', label: '7天', icon: '🥈', days: 7 },
-            { id: '14d', label: '14天', icon: '🥇', days: 14 },
-            { id: '30d', label: '30天', icon: '💪', days: 30 },
-            { id: '60d', label: '60天', icon: '🌟', days: 60 },
-            { id: '90d', label: '90天', icon: '🎯', days: 90 },
-            { id: '100d', label: '100天', icon: '👑', days: 100 }
-        ];
-
-        function getUnlockedAchievements(streak) {
-            return ACHIEVEMENTS.filter(a => streak >= a.days);
-        }
-
-        // ===== DOM 引用 =====
-        const pages = {
-            home: document.getElementById('page-home'),
-            calendar: document.getElementById('page-calendar'),
-            stats: document.getElementById('page-stats'),
-            achievements: document.getElementById('page-achievements'),
-            settings: document.getElementById('page-settings'),
-            about: document.getElementById('page-about')
-        };
-        const pageTitle = document.getElementById('pageTitle');
-        const menuItems = document.querySelectorAll('.menu-item');
-        const drawer = document.getElementById('drawer');
-        const overlay = document.getElementById('drawerOverlay');
-        const hamburger = document.getElementById('hamburgerBtn');
-        const toast = document.getElementById('toast');
-        const themeToggle = document.getElementById('themeToggle');
-
-        // ===== 侧边栏 =====
-        function openDrawer() { drawer.classList.add('open'); overlay.classList.add('open'); }
-        function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
-        hamburger.addEventListener('click', openDrawer);
-        overlay.addEventListener('click', closeDrawer);
-
-        // 桌面端宽度>=1024时自动展开，且不显示遮罩
-        function handleResize() {
-            if (window.innerWidth >= 1024) {
-                drawer.classList.remove('open');
-                overlay.classList.remove('open');
+            function getUnlockedAchievements(streak) {
+                return ACHIEVEMENTS.filter(a => streak >= a.days);
             }
-        }
-        window.addEventListener('resize', handleResize);
 
-        // ===== 页面切换 =====
-        function switchPage(pageId) {
-            Object.keys(pages).forEach(key => pages[key].classList.remove('active'));
-            if (pages[pageId]) pages[pageId].classList.add('active');
+            // ===== DOM 引用 =====
+            const pages = {
+                home: document.getElementById('page-home'),
+                calendar: document.getElementById('page-calendar'),
+                stats: document.getElementById('page-stats'),
+                achievements: document.getElementById('page-achievements'),
+                settings: document.getElementById('page-settings'),
+                about: document.getElementById('page-about')
+            };
+            const pageTitle = document.getElementById('pageTitle');
+            const menuItems = document.querySelectorAll('.menu-item');
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawerOverlay');
+            const hamburger = document.getElementById('hamburgerBtn');
+            const toast = document.getElementById('toast');
+            const themeToggle = document.getElementById('themeToggle');
+            const onboardingOverlay = document.getElementById('onboardingOverlay');
+            const onboardingBtn = document.getElementById('onboardingBtn');
+
+            // ===== 侧边栏 =====
+            function openDrawer() { drawer.classList.add('open'); overlay.classList.add('open'); }
+            function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
+            hamburger.addEventListener('click', openDrawer);
+            overlay.addEventListener('click', closeDrawer);
+
+            function handleResize() {
+                if (window.innerWidth >= 1024) {
+                    drawer.classList.remove('open');
+                    overlay.classList.remove('open');
+                }
+            }
+            window.addEventListener('resize', handleResize);
+
+            // ===== 页面切换 =====
+            function switchPage(pageId) {
+                Object.keys(pages).forEach(key => pages[key].classList.remove('active'));
+                if (pages[pageId]) pages[pageId].classList.add('active');
+
+                menuItems.forEach(item => {
+                    item.classList.toggle('active', item.dataset.page === pageId);
+                });
+
+                const map = {
+                    home: '首页',
+                    calendar: '打卡日历',
+                    stats: '数据统计',
+                    achievements: '成就',
+                    settings: '设置',
+                    about: '关于'
+                };
+                pageTitle.textContent = map[pageId] || '首页';
+                closeDrawer();
+
+                if (pageId === 'calendar') renderCalendar();
+                if (pageId === 'stats') renderStats();
+                if (pageId === 'achievements') renderAchievements();
+                if (pageId === 'settings') {
+                    document.getElementById('targetInput').value = data.targetDays || 90;
+                    updateNotificationBtn();
+                }
+            }
 
             menuItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.page === pageId);
+                item.addEventListener('click', function() {
+                    switchPage(this.dataset.page);
+                });
             });
 
-            const map = {
-                home: '首页',
-                calendar: '打卡日历',
-                stats: '数据统计',
-                achievements: '成就',
-                settings: '设置',
-                about: '关于'
-            };
-            pageTitle.textContent = map[pageId] || '首页';
-
-            closeDrawer();
-
-            // 渲染对应页面
-            if (pageId === 'calendar') renderCalendar();
-            if (pageId === 'stats') renderStats();
-            if (pageId === 'achievements') renderAchievements();
-            if (pageId === 'settings') {
-                document.getElementById('targetInput').value = data.targetDays || 90;
-                updateNotificationBtn();
+            // ===== Toast =====
+            let toastTimer = null;
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
             }
-        }
 
-        menuItems.forEach(item => {
-            item.addEventListener('click', function() {
-                switchPage(this.dataset.page);
-            });
-        });
-
-        // ===== Toast =====
-        let toastTimer = null;
-        function showToast(msg) {
-            toast.textContent = msg;
-            toast.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        // ===== 主题切换 =====
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            data.theme = theme;
-            saveData(data);
-            themeToggle.textContent = theme === 'light' ? '🌙 深色' : '☀️ 浅色';
-        }
-
-        themeToggle.addEventListener('click', function() {
-            const newTheme = data.theme === 'light' ? 'dark' : 'light';
-            applyTheme(newTheme);
-        });
-
-        // ===== 通知权限 =====
-        function updateNotificationBtn() {
-            const btn = document.getElementById('notificationBtn');
-            if (!('Notification' in window)) {
-                btn.textContent = '不支持';
-                btn.disabled = true;
-                return;
-            }
-            if (Notification.permission === 'granted') {
-                btn.textContent = '✅ 已启用';
-                btn.style.background = 'var(--success)';
-                btn.style.color = '#fff';
-                data.notificationEnabled = true;
+            // ===== 主题 =====
+            function applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                data.theme = theme;
                 saveData(data);
-            } else if (Notification.permission === 'denied') {
-                btn.textContent = '❌ 已拒绝';
-                btn.disabled = true;
-            } else {
-                btn.textContent = '🔔 开启提醒';
-                btn.style.background = 'var(--card-bg)';
-                btn.style.color = 'var(--text-primary)';
-                btn.disabled = false;
+                themeToggle.textContent = theme === 'light' ? '🌙 深色' : '☀️ 浅色';
             }
-        }
+            themeToggle.addEventListener('click', function() {
+                const newTheme = data.theme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            });
 
-        document.getElementById('notificationBtn').addEventListener('click', function() {
-            if (!('Notification' in window)) { showToast('浏览器不支持通知'); return; }
-            if (Notification.permission === 'granted') {
-                showToast('已启用');
-                return;
-            }
-            if (Notification.permission === 'denied') {
-                showToast('请在浏览器设置中允许通知');
-                return;
-            }
-            Notification.requestPermission().then(perm => {
-                if (perm === 'granted') {
+            // ===== 通知 =====
+            function updateNotificationBtn() {
+                const btn = document.getElementById('notificationBtn');
+                if (!('Notification' in window)) {
+                    btn.textContent = '不支持';
+                    btn.disabled = true;
+                    return;
+                }
+                if (Notification.permission === 'granted') {
+                    btn.textContent = '✅ 已启用';
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = '#fff';
                     data.notificationEnabled = true;
                     saveData(data);
-                    updateNotificationBtn();
-                    showToast('通知已开启，每晚21:00将提醒打卡');
+                } else if (Notification.permission === 'denied') {
+                    btn.textContent = '❌ 已拒绝';
+                    btn.disabled = true;
                 } else {
-                    showToast('通知被拒绝');
+                    btn.textContent = '🔔 开启提醒';
+                    btn.style.background = 'var(--card-bg)';
+                    btn.style.color = 'var(--text-primary)';
+                    btn.disabled = false;
                 }
-            });
-        });
+            }
 
-        // ===== 每日提醒 (定时检查) =====
-        function checkReminder() {
-            if (!data.notificationEnabled) return;
-            if (!('Notification' in window) || Notification.permission !== 'granted') return;
-            const now = new Date();
-            const hour = now.getHours();
-            const min = now.getMinutes();
-            // 只在21:00-21:05之间触发
-            if (hour === 21 && min < 5) {
+            document.getElementById('notificationBtn').addEventListener('click', function() {
+                if (!('Notification' in window)) { showToast('浏览器不支持通知'); return; }
+                if (Notification.permission === 'granted') {
+                    showToast('已启用');
+                    return;
+                }
+                if (Notification.permission === 'denied') {
+                    showToast('请在浏览器设置中允许通知');
+                    return;
+                }
+                Notification.requestPermission().then(perm => {
+                    if (perm === 'granted') {
+                        data.notificationEnabled = true;
+                        saveData(data);
+                        updateNotificationBtn();
+                        showToast('通知已开启，每晚21:00将提醒');
+                    } else {
+                        showToast('通知被拒绝');
+                    }
+                });
+            });
+
+            // ===== 每日提醒 =====
+            function checkReminder() {
+                if (!data.notificationEnabled) return;
+                if (!('Notification' in window) || Notification.permission !== 'granted') return;
+                const now = new Date();
+                const hour = now.getHours();
+                const min = now.getMinutes();
+                if (hour === 21 && min < 5) {
+                    const today = getToday();
+                    if (data.lastReminderDate === today) return;
+                    const cleanDates = data.cleanHistory.map(h => h.split('T')[0]);
+                    const dirtyDates = data.dirtyHistory.map(h => h.split('T')[0]);
+                    if (!cleanDates.includes(today) && !dirtyDates.includes(today)) {
+                        new Notification('🌱 戒撸提醒', {
+                            body: '今天还没有记录状态哦，请选择「未撸」或「撸了」',
+                            icon: '🧘'
+                        });
+                        data.lastReminderDate = today;
+                        saveData(data);
+                    }
+                }
+            }
+            setInterval(checkReminder, 60000);
+
+            // ===== 渲染首页 =====
+            function renderHome() {
                 const today = getToday();
-                if (data.lastReminderDate === today) return; // 当天已提醒
-                const historyDates = data.history.map(h => h.split('T')[0]);
-                if (!historyDates.includes(today)) {
-                    new Notification('🌱 戒色自律提醒', {
-                        body: '今天还没有打卡哦，坚持就是胜利！',
-                        icon: '🧘'
-                    });
-                    data.lastReminderDate = today;
-                    saveData(data);
+                const cleanHistory = data.cleanHistory || [];
+                const dirtyHistory = data.dirtyHistory || [];
+                const streak = calcStreak(cleanHistory, dirtyHistory, today);
+                const totalClean = calcTotal(cleanHistory);
+                const totalDirty = calcTotal(dirtyHistory);
+                const maxStreak = calcMaxStreak(cleanHistory, dirtyHistory);
+                const target = data.targetDays || 90;
+                const progress = Math.min(100, Math.round((streak / target) * 100));
+
+                // 今日状态
+                const cleanDates = cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = dirtyHistory.map(h => h.split('T')[0]);
+                const statusEl = document.getElementById('todayStatus');
+                if (cleanDates.includes(today)) {
+                    statusEl.textContent = '✅ 今日未撸';
+                    statusEl.className = 'today-status clean';
+                } else if (dirtyDates.includes(today)) {
+                    statusEl.textContent = '❌ 今日撸了';
+                    statusEl.className = 'today-status dirty';
+                } else {
+                    statusEl.textContent = '⏳ 今日未记录';
+                    statusEl.className = 'today-status unknown';
                 }
-            }
-        }
-        setInterval(checkReminder, 60000); // 每分钟检查
 
-        // ===== 渲染首页 =====
-        function renderHome() {
-            const today = getToday();
-            const history = data.history || [];
-            const streak = calcStreak(history, today);
-            const total = calcTotal(history);
-            const maxStreak = calcMaxStreak(history);
-            const target = data.targetDays || 90;
-            const progress = Math.min(100, Math.round((streak / target) * 100));
+                document.getElementById('daysNumber').textContent = streak;
+                document.getElementById('totalClean').textContent = totalClean;
+                document.getElementById('totalDirty').textContent = totalDirty;
+                document.getElementById('maxStreak').textContent = maxStreak;
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressPercent').textContent = progress + '%';
+                document.getElementById('progressLabel').textContent = `向 ${target} 天连续未撸目标前进`;
 
-            document.getElementById('daysNumber').textContent = streak;
-            document.getElementById('totalDays').textContent = total;
-            document.getElementById('maxStreak').textContent = maxStreak;
-            document.getElementById('targetProgress').textContent = progress + '%';
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressPercent').textContent = progress + '%';
-            document.getElementById('progressLabel').textContent = `向 ${target} 天目标前进`;
-
-            // 打卡按钮
-            const btn = document.getElementById('checkinBtn');
-            const historyDates = history.map(h => h.split('T')[0]);
-            if (historyDates.includes(today)) {
-                btn.disabled = true;
-                btn.innerHTML = '✅ 今日已打卡';
-            } else {
-                btn.disabled = false;
-                btn.innerHTML = '✊ 今日打卡';
-            }
-
-            // 最近打卡时间
-            const lastTime = getLastCheckinTime(history);
-            if (lastTime) {
-                const diff = Math.floor((Date.now() - new Date(lastTime)) / 1000 / 60);
-                let msg = '最近打卡：' + (diff < 1 ? '刚刚' : diff + ' 分钟前');
-                document.getElementById('lastCheckinInfo').textContent = msg;
-            } else {
-                document.getElementById('lastCheckinInfo').textContent = '还未打卡，开始你的自律之旅吧';
-            }
-
-            // 语录
-            const quotes = [
-                "自律即自由，每一天都是新生。",
-                "戒色不是剥夺，而是把能量还给真正的自己。",
-                "每一次拒绝诱惑，都在重塑你的大脑。",
-                "真正的力量，来自对欲望的掌控。",
-                "你今日的坚持，是明日自由的基石。",
-                "让清醒的选择，成为你的习惯。",
-                "能量守恒：用在哪里，就收获哪里。",
-                "戒断的苦，远小于后悔的痛。",
-                "你的意志力，比你想象的更强大。",
-                "专注成长，而非短暂的快感。",
-                "每一天都是新的战役，也是新的胜利。",
-                "干净的心灵，才能承载远大的梦想。",
-                "戒色，是对自己最深沉的温柔。",
-                "冲破惯性，才能看见新的风景。",
-                "你值得拥有清晰的大脑和充沛的精力。",
-                "一念之间，天地宽阔。",
-                "积累微小胜利，成就伟大转变。",
-                "拒绝诱惑，是最高级的自尊。",
-                "当你凝视深渊，转身即是光明。",
-                "自律的人，终将自由。"
-            ];
-            document.getElementById('homeQuote').textContent = '“' + quotes[Math.floor(Math.random() * quotes.length)] + '”';
-
-            // 周记录点
-            const last7 = [];
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date(today);
-                d.setDate(d.getDate() - i);
-                last7.push(d.toISOString().split('T')[0]);
-            }
-            let dotsHtml = '';
-            const histDates = history.map(h => h.split('T')[0]);
-            for (let d of last7) {
-                let cls = 'dot';
-                if (histDates.includes(d)) cls += ' active';
-                if (d === today) cls += ' today';
-                dotsHtml += `<span class="${cls}"></span>`;
-            }
-            document.getElementById('weekDots').innerHTML = dotsHtml;
-        }
-
-        // ===== 打卡 =====
-        document.getElementById('checkinBtn').addEventListener('click', function() {
-            if (this.disabled) return;
-            const today = getToday();
-            const histDates = data.history.map(h => h.split('T')[0]);
-            if (histDates.includes(today)) {
-                this.disabled = true;
-                this.innerHTML = '✅ 今日已打卡';
-                showToast('今天已打卡啦');
-                return;
-            }
-            const iso = getTodayISO();
-            data.history.push(iso);
-            if (!data.startDate) data.startDate = iso;
-            saveData(data);
-            renderHome();
-            // 更新其他页面数据
-            if (document.getElementById('page-stats').classList.contains('active')) renderStats();
-            if (document.getElementById('page-achievements').classList.contains('active')) renderAchievements();
-            showToast('🎉 打卡成功！继续坚持');
-            this.style.transform = 'scale(0.94)';
-            setTimeout(() => this.style.transform = '', 200);
-        });
-
-        // ===== 日历 =====
-        let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth();
-
-        function renderCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            document.getElementById('monthYear').textContent = `${currentYear}年${currentMonth+1}月`;
-
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const today = getToday();
-            const histDates = data.history.map(h => h.split('T')[0]);
-
-            let html = '';
-            ['日','一','二','三','四','五','六'].forEach(w => html += `<div class="weekday">${w}</div>`);
-            for (let i = 0; i < firstDay; i++) html += `<div class="day other-month"></div>`;
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                let cls = 'day';
-                if (dateStr === today) cls += ' today';
-                if (histDates.includes(dateStr)) cls += ' has-record';
-                html += `<div class="${cls}">${d}</div>`;
-            }
-            grid.innerHTML = html;
-        }
-
-        document.getElementById('prevMonth').addEventListener('click', function() {
-            if (currentMonth === 0) { currentMonth = 11; currentYear--; } else currentMonth--;
-            renderCalendar();
-        });
-        document.getElementById('nextMonth').addEventListener('click', function() {
-            if (currentMonth === 11) { currentMonth = 0; currentYear++; } else currentMonth++;
-            renderCalendar();
-        });
-
-        // ===== 统计 =====
-        function renderStats() {
-            const today = getToday();
-            const history = data.history || [];
-            const streak = calcStreak(history, today);
-            const total = calcTotal(history);
-            const maxStreak = calcMaxStreak(history);
-            const rate = getMonthRate(history);
-            const breaks = calcBreaks(history);
-            const avg = calcAvgCycle(history);
-            const start = data.startDate ? new Date(data.startDate).toLocaleDateString() : '-';
-
-            document.getElementById('statTotal').textContent = total;
-            document.getElementById('statStreak').textContent = streak;
-            document.getElementById('statMax').textContent = maxStreak;
-            document.getElementById('statMonthRate').textContent = rate + '%';
-            document.getElementById('statBreaks').textContent = breaks;
-            document.getElementById('statAvgCycle').textContent = avg + ' 天';
-            document.getElementById('statStartDate').textContent = start;
-
-            // 热力图 (年视图)
-            renderHeatmap();
-        }
-
-        function renderHeatmap() {
-            const grid = document.getElementById('heatmapGrid');
-            const now = new Date();
-            const year = now.getFullYear();
-            const startOfYear = new Date(year, 0, 1);
-            const startDay = startOfYear.getDay(); // 0=周日
-            const daysInYear = Math.floor((new Date(year, 11, 31) - startOfYear) / (24*60*60*1000)) + 1;
-            const totalCells = Math.ceil((daysInYear + startDay) / 7) * 7; // 补齐到整周
-
-            const histDates = data.history.map(h => h.split('T')[0]);
-            let html = '';
-            // 生成cells
-            for (let i = 0; i < totalCells; i++) {
-                const dayOffset = i - startDay;
-                if (dayOffset < 0 || dayOffset >= daysInYear) {
-                    html += `<div class="hm-cell level0"></div>`;
-                    continue;
+                // 按钮状态
+                const btnClean = document.getElementById('checkinClean');
+                const btnDirty = document.getElementById('checkinDirty');
+                const hasRecord = cleanDates.includes(today) || dirtyDates.includes(today);
+                if (hasRecord) {
+                    btnClean.disabled = true;
+                    btnDirty.disabled = true;
+                    if (cleanDates.includes(today)) {
+                        btnClean.innerHTML = '✅ 今日已未撸';
+                        btnDirty.innerHTML = '💢 今日撸了 (不可选)';
+                    } else {
+                        btnClean.innerHTML = '✊ 今日未撸 (不可选)';
+                        btnDirty.innerHTML = '❌ 今日已撸';
+                    }
+                } else {
+                    btnClean.disabled = false;
+                    btnDirty.disabled = false;
+                    btnClean.innerHTML = '✊ 今日未撸';
+                    btnDirty.innerHTML = '💢 今日撸了';
                 }
-                const date = new Date(year, 0, 1 + dayOffset);
-                const dateStr = date.toISOString().split('T')[0];
-                const count = histDates.filter(d => d === dateStr).length;
-                let level = 0;
-                if (count > 0) level = 1;
-                if (count > 1) level = 2;
-                if (count > 3) level = 3;
-                if (count > 6) level = 4;
-                html += `<div class="hm-cell level${level}"></div>`;
+
+                // 最近记录
+                const lastTime = getLastCheckinTime(cleanHistory, dirtyHistory);
+                if (lastTime) {
+                    const diff = Math.floor((Date.now() - new Date(lastTime)) / 1000 / 60);
+                    let msg = '最近记录：' + (diff < 1 ? '刚刚' : diff + ' 分钟前');
+                    document.getElementById('lastCheckinInfo').textContent = msg;
+                } else {
+                    document.getElementById('lastCheckinInfo').textContent = '还没有记录，开始记录吧';
+                }
+
+                // 语录
+                const quotes = [
+                    "自律即自由，每一天都是新生。",
+                    "戒撸不是剥夺，而是把能量还给真正的自己。",
+                    "每一次拒绝诱惑，都在重塑你的大脑。",
+                    "真正的力量，来自对欲望的掌控。",
+                    "你今日的坚持，是明日自由的基石。",
+                    "让清醒的选择，成为你的习惯。",
+                    "能量守恒：用在哪里，就收获哪里。",
+                    "戒断的苦，远小于后悔的痛。",
+                    "你的意志力，比你想象的更强大。",
+                    "专注成长，而非短暂的快感。",
+                    "每一天都是新的战役，也是新的胜利。",
+                    "干净的心灵，才能承载远大的梦想。",
+                    "戒撸，是对自己最深沉的温柔。",
+                    "冲破惯性，才能看见新的风景。",
+                    "你值得拥有清晰的大脑和充沛的精力。",
+                    "一念之间，天地宽阔。",
+                    "积累微小胜利，成就伟大转变。",
+                    "拒绝诱惑，是最高级的自尊。",
+                    "当你凝视深渊，转身即是光明。",
+                    "自律的人，终将自由。"
+                ];
+                document.getElementById('homeQuote').textContent = '“' + quotes[Math.floor(Math.random() * quotes.length)] + '”';
+
+                // 周记录点（混合显示）
+                const last7 = [];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(today);
+                    d.setDate(d.getDate() - i);
+                    last7.push(d.toISOString().split('T')[0]);
+                }
+                let dotsHtml = '';
+                for (let d of last7) {
+                    let cls = 'dot';
+                    if (cleanDates.includes(d)) cls += ' active';
+                    else if (dirtyDates.includes(d)) cls += ' dirty';
+                    if (d === today) cls += ' today';
+                    dotsHtml += `<span class="${cls}"></span>`;
+                }
+                document.getElementById('weekDots').innerHTML = dotsHtml;
             }
-            grid.innerHTML = html;
-        }
 
-        // ===== 成就 =====
-        function renderAchievements() {
-            const today = getToday();
-            const streak = calcStreak(data.history, today);
-            const unlocked = getUnlockedAchievements(streak);
-            const grid = document.getElementById('achievementGrid');
-            let html = '';
-            ACHIEVEMENTS.forEach(a => {
-                const isUnlocked = unlocked.some(u => u.id === a.id);
-                html += `<div class="achievement-item ${isUnlocked ? '' : 'locked'}">
-                    <span class="icon">${a.icon}</span>
-                    <span class="label">${a.label}</span>
-                    ${isUnlocked ? '<span style="font-size:10px; color:var(--success);">✅</span>' : ''}
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        // ===== 设置 =====
-        document.getElementById('saveTargetBtn').addEventListener('click', function() {
-            const input = document.getElementById('targetInput');
-            let val = parseInt(input.value);
-            if (isNaN(val) || val < 1) val = 1;
-            if (val > 999) val = 999;
-            data.targetDays = val;
-            saveData(data);
-            renderHome();
-            showToast('✅ 目标已更新');
-        });
-
-        document.getElementById('exportBtn').addEventListener('click', function() {
-            const json = JSON.stringify(data, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `nofap_data_${getToday()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('📥 数据导出成功');
-        });
-
-        document.getElementById('resetBtn').addEventListener('click', function() {
-            if (confirm('确定要清除所有打卡记录吗？此操作不可撤销！')) {
-                data = getDefaultData();
+            // ===== 打卡按钮事件 =====
+            document.getElementById('checkinClean').addEventListener('click', function() {
+                if (this.disabled) return;
+                const today = getToday();
+                const cleanDates = data.cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = data.dirtyHistory.map(h => h.split('T')[0]);
+                if (cleanDates.includes(today) || dirtyDates.includes(today)) {
+                    showToast('今天已经记录过了');
+                    this.disabled = true;
+                    document.getElementById('checkinDirty').disabled = true;
+                    return;
+                }
+                const iso = getTodayISO();
+                data.cleanHistory.push(iso);
+                if (!data.startDate) data.startDate = iso;
                 saveData(data);
                 renderHome();
-                renderStats();
+                if (document.getElementById('page-stats').classList.contains('active')) renderStats();
+                if (document.getElementById('page-achievements').classList.contains('active')) renderAchievements();
+                showToast('✅ 已记录“今日未撸”');
+                this.style.transform = 'scale(0.94)';
+                setTimeout(() => this.style.transform = '', 200);
+            });
+
+            document.getElementById('checkinDirty').addEventListener('click', function() {
+                if (this.disabled) return;
+                const today = getToday();
+                const cleanDates = data.cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = data.dirtyHistory.map(h => h.split('T')[0]);
+                if (cleanDates.includes(today) || dirtyDates.includes(today)) {
+                    showToast('今天已经记录过了');
+                    this.disabled = true;
+                    document.getElementById('checkinClean').disabled = true;
+                    return;
+                }
+                const iso = getTodayISO();
+                data.dirtyHistory.push(iso);
+                if (!data.startDate) data.startDate = iso;
+                saveData(data);
+                renderHome();
+                if (document.getElementById('page-stats').classList.contains('active')) renderStats();
+                if (document.getElementById('page-achievements').classList.contains('active')) renderAchievements();
+                showToast('⚠️ 已记录“今日撸了”，继续加油！');
+                this.style.transform = 'scale(0.94)';
+                setTimeout(() => this.style.transform = '', 200);
+            });
+
+            // ===== 日历 =====
+            let currentYear = new Date().getFullYear();
+            let currentMonth = new Date().getMonth();
+
+            function renderCalendar() {
+                const grid = document.getElementById('calendarGrid');
+                document.getElementById('monthYear').textContent = `${currentYear}年${currentMonth+1}月`;
+
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                const today = getToday();
+                const cleanDates = data.cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = data.dirtyHistory.map(h => h.split('T')[0]);
+
+                let html = '';
+                ['日','一','二','三','四','五','六'].forEach(w => html += `<div class="weekday">${w}</div>`);
+                for (let i = 0; i < firstDay; i++) html += `<div class="day other-month"></div>`;
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    let cls = 'day';
+                    if (dateStr === today) cls += ' today';
+                    if (cleanDates.includes(dateStr)) cls += ' has-record';
+                    else if (dirtyDates.includes(dateStr)) cls += ' dirty-record';
+                    html += `<div class="${cls}">${d}</div>`;
+                }
+                grid.innerHTML = html;
+            }
+
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                if (currentMonth === 0) { currentMonth = 11; currentYear--; } else currentMonth--;
                 renderCalendar();
+            });
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                if (currentMonth === 11) { currentMonth = 0; currentYear++; } else currentMonth++;
+                renderCalendar();
+            });
+
+            // ===== 统计 =====
+            function renderStats() {
+                const today = getToday();
+                const cleanHistory = data.cleanHistory || [];
+                const dirtyHistory = data.dirtyHistory || [];
+                const streak = calcStreak(cleanHistory, dirtyHistory, today);
+                const totalClean = calcTotal(cleanHistory);
+                const totalDirty = calcTotal(dirtyHistory);
+                const maxStreak = calcMaxStreak(cleanHistory, dirtyHistory);
+                const { cleanCount: monthClean, dirtyCount: monthDirty } = getMonthStats(cleanHistory, dirtyHistory);
+                const avgMonthClean = calcAvgMonthClean(cleanHistory);
+                const maxGap = calcMaxGap(cleanHistory);
+                const lastDirty = getLastDirty(dirtyHistory);
+                const start = data.startDate ? new Date(data.startDate).toLocaleDateString() : '-';
+
+                document.getElementById('statTotalClean').textContent = totalClean;
+                document.getElementById('statTotalDirty').textContent = totalDirty;
+                document.getElementById('statStreak').textContent = streak;
+                document.getElementById('statMaxStreak').textContent = maxStreak;
+                document.getElementById('statMonthClean').textContent = monthClean;
+                document.getElementById('statMonthDirty').textContent = monthDirty;
+                document.getElementById('statAvgMonthClean').textContent = avgMonthClean + ' 天';
+                document.getElementById('statMaxGap').textContent = maxGap + ' 天';
+                document.getElementById('statLastDirty').textContent = lastDirty ? new Date(lastDirty).toLocaleDateString() : '无';
+                document.getElementById('statStartDate').textContent = start;
+
+                renderHeatmap();
+            }
+
+            function renderHeatmap() {
+                const grid = document.getElementById('heatmapGrid');
+                const now = new Date();
+                const year = now.getFullYear();
+                const startOfYear = new Date(year, 0, 1);
+                const startDay = startOfYear.getDay();
+                const daysInYear = Math.floor((new Date(year, 11, 31) - startOfYear) / (24*60*60*1000)) + 1;
+                const totalCells = Math.ceil((daysInYear + startDay) / 7) * 7;
+                const cleanDates = data.cleanHistory.map(h => h.split('T')[0]);
+                const dirtyDates = data.dirtyHistory.map(h => h.split('T')[0]);
+
+                let html = '';
+                for (let i = 0; i < totalCells; i++) {
+                    const dayOffset = i - startDay;
+                    if (dayOffset < 0 || dayOffset >= daysInYear) {
+                        html += `<div class="hm-cell level0"></div>`;
+                        continue;
+                    }
+                    const date = new Date(year, 0, 1 + dayOffset);
+                    const dateStr = date.toISOString().split('T')[0];
+                    if (dirtyDates.includes(dateStr)) {
+                        html += `<div class="hm-cell dirty"></div>`;
+                        continue;
+                    }
+                    const count = cleanDates.filter(d => d === dateStr).length;
+                    let level = 0;
+                    if (count > 0) level = 1;
+                    if (count > 1) level = 2;
+                    if (count > 3) level = 3;
+                    if (count > 6) level = 4;
+                    html += `<div class="hm-cell level${level}"></div>`;
+                }
+                grid.innerHTML = html;
+            }
+
+            // ===== 成就 =====
+            function renderAchievements() {
+                const today = getToday();
+                const streak = calcStreak(data.cleanHistory, data.dirtyHistory, today);
+                const unlocked = getUnlockedAchievements(streak);
+                const grid = document.getElementById('achievementGrid');
+                let html = '';
+                ACHIEVEMENTS.forEach(a => {
+                    const isUnlocked = unlocked.some(u => u.id === a.id);
+                    html += `<div class="achievement-item ${isUnlocked ? '' : 'locked'}">
+                        <span class="icon">${a.icon}</span>
+                        <span class="label">${a.label}</span>
+                        ${isUnlocked ? '<span style="font-size:10px; color:var(--success);">✅</span>' : ''}
+                    </div>`;
+                });
+                grid.innerHTML = html;
+            }
+
+            // ===== 设置 =====
+            document.getElementById('saveTargetBtn').addEventListener('click', function() {
+                const input = document.getElementById('targetInput');
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < 1) val = 1;
+                if (val > 999) val = 999;
+                data.targetDays = val;
+                saveData(data);
+                renderHome();
+                showToast('✅ 目标已更新');
+            });
+
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                const json = JSON.stringify(data, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `nofap_data_${getToday()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('📥 数据导出成功');
+            });
+
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                if (confirm('确定要清除所有记录吗？此操作不可撤销！')) {
+                    data = getDefaultData();
+                    saveData(data);
+                    renderHome();
+                    renderStats();
+                    renderCalendar();
+                    renderAchievements();
+                    showToast('已重置所有数据');
+                    switchPage('home');
+                }
+            });
+
+            // ===== 首次访问引导 =====
+            function showOnboarding() {
+                onboardingOverlay.classList.add('active');
+            }
+
+            function hideOnboarding() {
+                onboardingOverlay.classList.remove('active');
+                localStorage.setItem(VISIT_KEY, 'true');
+                // 初始化数据（如果还没有）
+                if (!data.startDate && data.cleanHistory.length === 0 && data.dirtyHistory.length === 0) {
+                    // 不自动打卡，让用户手动开始
+                }
+                // 渲染主界面
+                renderHome();
+                renderCalendar();
+                renderStats();
                 renderAchievements();
-                showToast('已重置所有数据');
+                document.getElementById('targetInput').value = data.targetDays || 90;
+                updateNotificationBtn();
                 switchPage('home');
+                if (window.innerWidth >= 1024) {
+                    drawer.classList.remove('open');
+                }
             }
-        });
 
-        // ===== 首次访问提示 =====
-        if (!localStorage.getItem(VISIT_KEY)) {
-            setTimeout(() => {
-                showToast('👋 欢迎！请先阅读“关于”了解危害');
-            }, 600);
-            localStorage.setItem(VISIT_KEY, 'true');
-        }
+            onboardingBtn.addEventListener('click', hideOnboarding);
 
-        // ===== 初始化 =====
-        function init() {
-            applyTheme(data.theme || 'light');
-            renderHome();
-            renderCalendar();
-            renderStats();
-            renderAchievements();
-            document.getElementById('targetInput').value = data.targetDays || 90;
-            updateNotificationBtn();
-            switchPage('home');
-            // 桌面端自动展开侧边栏（不折叠）
-            if (window.innerWidth >= 1024) {
-                drawer.classList.remove('open');
+            // ===== 初始化 =====
+            function init() {
+                applyTheme(data.theme || 'light');
+                // 检查是否首次访问
+                const visited = localStorage.getItem(VISIT_KEY);
+                if (!visited) {
+                    showOnboarding();
+                    // 但我们需要先设置数据默认值，避免渲染空页面
+                    // 数据已经在前面初始化
+                } else {
+                    renderHome();
+                    renderCalendar();
+                    renderStats();
+                    renderAchievements();
+                    document.getElementById('targetInput').value = data.targetDays || 90;
+                    updateNotificationBtn();
+                    switchPage('home');
+                    if (window.innerWidth >= 1024) {
+                        drawer.classList.remove('open');
+                    }
+                }
             }
-        }
 
-        if (document.readyState === 'complete') init();
-        else window.addEventListener('load', init);
-    })();
-</script>
+            if (document.readyState === 'complete') init();
+            else window.addEventListener('load', init);
+        })();
+    </script>
 </body>
 </html>
