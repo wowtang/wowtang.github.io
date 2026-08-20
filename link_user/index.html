@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>友情链接管理 · Sunrise's blog</title>
+    <style>
+        /* ------ Liushen Theme Tokens ------ */
+        :root {
+            --primary: #2679cc;
+            --accent: #00c4b6;
+            --hover: #ff7242;
+            --text: #1f2d3d;
+            --text-body: #4c4948;
+            --text-meta: #858585;
+            --text-mute: #99a9bf;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-shadow: 0 8px 30px rgba(31, 38, 73, 0.08);
+            --card-shadow-hover: 0 12px 36px rgba(31, 38, 73, 0.12);
+            --card-radius: 12px;
+            --sidebar-gradient: linear-gradient(60deg, #ffd7e4 0%, #c8f1ff 100%);
+            --body-bg: #f7f7f7;
+            --divider: rgba(0, 0, 0, 0.06);
+            --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --primary: #5fa9ff;
+            --accent: #2dd4bf;
+            --hover: #ffb38a;
+            --text: #e6edf3;
+            --text-body: #c9d1d9;
+            --text-meta: #8b949e;
+            --text-mute: #6e7681;
+            --card-bg: rgba(22, 27, 34, 0.78);
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+            --card-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.55);
+            --body-bg: #0d1117;
+            --divider: rgba(255, 255, 255, 0.08);
+            --sidebar-gradient: linear-gradient(60deg, #2a1e2c 0%, #1c2c40 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--body-font);
+            background: var(--body-bg);
+            background-image: var(--sidebar-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            line-height: 1.6;
+            color: var(--text-body);
+            transition: background-color .3s ease, color .3s ease;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--card-radius);
+            padding: 48px 40px;
+            box-shadow: var(--card-shadow);
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            transition: box-shadow .25s ease;
+            overflow: visible;
+        }
+
+        .container:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .header {
+            margin-bottom: 36px;
+        }
+
+        .header-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: var(--text-meta);
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(38, 121, 204, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: var(--body-font);
+        }
+
+        [data-theme="dark"] .btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(95, 169, 255, 0.25);
+            color: var(--primary);
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(38, 121, 204, 0.3);
+        }
+
+        [data-theme="dark"] .btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 6px 20px rgba(95, 169, 255, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            font-size: 18px;
+            transition: transform 0.25s ease;
+        }
+
+        .btn:hover .btn-icon {
+            transform: scale(1.15);
+        }
+
+        .footer {
+            margin-top: 32px;
+            border-top: 1px dashed var(--divider);
+            color: var(--text-meta);
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: var(--hover);
+        }
+
+        /* Theme toggle & home toggle */
+        .toggle-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0 14px;
+        }
+
+        .toggle-row .home-toggle,
+        .toggle-row .theme-toggle {
+            position: static;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(38, 121, 204, 0.2);
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            position: relative;
+        }
+
+        /* Custom tooltip */
+        .custom-tooltip {
+            position: fixed;
+            background: #1f2d3d;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateX(-50%) translateY(-4px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .custom-tooltip.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+        .custom-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2d3d;
+        }
+
+        [data-theme="dark"] .toggle-row .home-toggle,
+        [data-theme="dark"] .toggle-row .theme-toggle {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(95, 169, 255, 0.25);
+        }
+
+        .toggle-row .home-toggle:hover,
+        .toggle-row .theme-toggle:hover {
+            transform: translateY(-2px);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* ------ Modal ------ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--card-radius);
+            width: 90%;
+            max-width: 880px;
+            height: 82vh;
+            max-height: 680px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: var(--sidebar-gradient);
+            color: var(--text);
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .modal-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            color: var(--text);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] .modal-close {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+        }
+
+        .modal-close:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            background: var(--card-bg);
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .modal-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(38, 121, 204, 0.15);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        [data-theme="dark"] .modal-loader {
+            border-color: rgba(95, 169, 255, 0.15);
+            border-top-color: var(--primary);
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* ------ Scrollbar ------ */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(38, 121, 204, 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(38, 121, 204, 0.55);
+        }
+
+        /* ------ Responsive ------ */
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .header-icon {
+                font-size: 36px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+
+            .modal {
+                width: 95%;
+                height: 90vh;
+                max-height: none;
+            }
+
+            .toggle-row .home-toggle,
+                .toggle-row .theme-toggle {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 18px;
+                }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🔗</span>
+            <h1>友情链接管理</h1>
+            <p>选择以下操作来管理您的友情链接</p>
+        </div>
+
+        <div class="button-group">
+            <button class="btn" onclick="openModal('申请友链', 'https://sunrise-studio.feishu.cn/share/base/form/shrcnzp4Pkdy1i0PzzgjgVvM7Dh')">
+                <span class="btn-icon">📝</span>
+                <span>申请友链</span>
+            </button>
+
+            <button class="btn" onclick="openModal('修改友链', 'https://sunrise-studio.feishu.cn/share/base/form/shrcnqVoRJ3niMpcguXYENvTj0e')">
+                <span class="btn-icon">✏️</span>
+                <span>修改友链</span>
+            </button>
+
+            <button class="btn" onclick="openModal('找回站长ID', 'https://sunrise-studio.feishu.cn/share/base/form/shrcn77vfto0xoihQpMgtVZC8DK')">
+                <span class="btn-icon">🆔</span>
+                <span>找回站长ID</span>
+            </button>
+
+            <button class="btn" onclick="openModal('友链状态查询', 'https://sunrise-studio.feishu.cn/share/base/query/shrcno02d7iZTVDsfLau2Crvn8w')">
+                <span class="btn-icon">🔍</span>
+                <span>友链状态查询</span>
+            </button>
+        </div>
+
+        <div class="footer">
+            <div class="toggle-row">
+                <a class="home-toggle" href="/" aria-label="回到首页" data-tip="点击返回博客首页">🏠</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题" data-tip="点击切换浅色/深色模式">🌙</button>
+            </div>
+            <p>Powered by <a href="/">Sunrise's blog</a></p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">表单</span>
+                <button class="modal-close" onclick="closeModal()" aria-label="关闭">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-loader" id="modalLoader"></div>
+                <iframe id="modalFrame" src="" onload="hideLoader()"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const overlay = document.getElementById('modalOverlay');
+        const iframe = document.getElementById('modalFrame');
+        const loader = document.getElementById('modalLoader');
+        const title = document.getElementById('modalTitle');
+        const themeToggle = document.getElementById('themeToggle');
+
+        function openModal(titleText, url) {
+            title.textContent = titleText;
+            loader.style.display = 'block';
+            iframe.src = url;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            overlay.classList.remove('active');
+            iframe.src = '';
+            loader.style.display = 'block';
+            document.body.style.overflow = '';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        // 点击遮罩关闭
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeModal();
+            }
+        });
+
+        // ESC 关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // ------ Theme toggle (Liushen style) ------
+        function getPreferredTheme() {
+            const saved = localStorage.getItem('friendLinkTheme');
+            if (saved) return saved;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                themeToggle.setAttribute('data-tip', '点击切换浅色/深色模式');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+                themeToggle.setAttribute('data-tip', '点击切换浅色/深色模式');
+            }
+            localStorage.setItem('friendLinkTheme', theme);
+        }
+
+        // Init theme
+        applyTheme(getPreferredTheme());
+
+        themeToggle.addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+
+        // ------ Custom Tooltip ------
+        const tooltip = document.createElement('div');
+        tooltip.className = 'custom-tooltip';
+        document.body.appendChild(tooltip);
+
+        document.querySelectorAll('.toggle-row .home-toggle, .toggle-row .theme-toggle').forEach(function(btn) {
+            btn.addEventListener('mouseenter', function() {
+                const text = btn.getAttribute('data-tip') || btn.getAttribute('aria-label') || '';
+                tooltip.textContent = text;
+                // wait a frame for layout to measure tooltip height
+                requestAnimationFrame(function() {
+                    const rect = btn.getBoundingClientRect();
+                    const tipH = tooltip.offsetHeight;
+                    tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                    tooltip.style.top = (rect.top - tipH - 10) + 'px';
+                    tooltip.classList.add('active');
+                });
+            });
+            btn.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
