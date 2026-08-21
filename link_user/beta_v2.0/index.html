@@ -1409,10 +1409,10 @@
         /* ------ Full-screen Watermark ------ */
         #watermark {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -75%;
+            left: -75%;
+            width: 250%;
+            height: 250%;
             pointer-events: none;
             z-index: 9999;
             overflow: visible;
@@ -1432,10 +1432,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
         .watermark-item .wm-line {
-            width: 100%;
+            width: auto;
+            white-space: nowrap;
             text-align: center;
         }
 
@@ -2096,7 +2096,7 @@
                     return;
                 }
             } else if (type === 'email') {
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value.length > 254) {
                     showLoginError('邮箱格式错误');
                     return;
                 }
@@ -2314,16 +2314,19 @@
 
             removeWatermarkCutout();
 
+            // Match the watermark container's 250% x 250% positioning
             const cutout = document.createElement('div');
             cutout.id = 'watermark-cutout';
             cutout.style.cssText = `
                 position: fixed;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
+                top: -75%;
+                left: -75%;
+                width: 250%;
+                height: 250%;
                 pointer-events: none;
                 z-index: 10000;
-                clip-path: rect(${rect.top}px ${vw - rect.right}px ${vh - rect.bottom}px ${rect.left}px);
-                -webkit-clip-path: rect(${rect.top}px ${vw - rect.right}px ${vh - rect.bottom}px ${rect.left}px);
+                clip-path: rect(${rect.top + vh*0.75}px ${vw*2.5 - (rect.right + vw*0.75)}px ${vh*2.5 - (rect.bottom + vh*0.75)}px ${rect.left + vw*0.75}px);
+                -webkit-clip-path: rect(${rect.top + vh*0.75}px ${vw*2.5 - (rect.right + vw*0.75)}px ${vh*2.5 - (rect.bottom + vh*0.75)}px ${rect.left + vw*0.75}px);
             `;
 
             // Clone existing watermark items (with their current inline styles)
@@ -2346,15 +2349,17 @@
             }
         }
 
-        // Recreate cutout on resize
+        // Recreate cutout on resize (debounced, must happen after watermark rebuild)
         window.addEventListener('resize', () => {
-            if (document.body.classList.contains('modal-open')) {
-                // Find currently visible modal
-                const visibleModal = document.querySelector('.login-modal-overlay.show .login-modal, .confirm-modal-overlay.show .confirm-modal');
-                if (visibleModal) {
-                    createWatermarkCutout(visibleModal);
+            clearTimeout(window._cutoutResizeTimer);
+            window._cutoutResizeTimer = setTimeout(() => {
+                if (document.body.classList.contains('modal-open')) {
+                    const visibleModal = document.querySelector('.login-modal-overlay.show .login-modal, .confirm-modal-overlay.show .confirm-modal');
+                    if (visibleModal) {
+                        createWatermarkCutout(visibleModal);
+                    }
                 }
-            }
+            }, 250);
         });
 
         function formatTimestamp(date) {
@@ -2417,36 +2422,37 @@
             const stepX = rotatedW + gapX;
             const stepY = rotatedH + gapY;
 
-            // Anchor the grid at viewport center so there's always a complete
-            // watermark exactly at the page center
-            const vwHalf = vw / 2;
-            const vhHalf = vh / 2;
+            // Container is 250% x 250%, positioned at -75%, -75%
+            // In container coordinates: viewport spans from (0.75vw, 0.75vh) to (1.75vw, 1.75vh)
+            // Viewport center in container coordinates: (1.25vw, 1.25vh)
+            const centerX = vw * 1.25;
+            const centerY = vh * 1.25;
+            const containerW = vw * 2.5;
+            const containerH = vh * 2.5;
 
             const positions = [];
 
-            // Compute row range from center
-            const rMin = Math.floor((-vhHalf - h/2) / stepY) - 1;
-            const rMax = Math.ceil((vhHalf + h/2) / stepY) + 1;
+            // Row range: cover entire container from h/2 above top to h/2 below bottom
+            const rMin = Math.floor((h/2 - centerY) / stepY) - 1;
+            const rMax = Math.ceil((containerH - h/2 - centerY) / stepY) + 1;
 
             for (let r = rMin; r <= rMax; r++) {
                 const isOddRow = ((r % 2) + 2) % 2 === 1;
                 const offsetX = isOddRow ? stepX / 2 : 0;
 
-                // Adjust column range for odd rows (offset by half a cell)
+                // Column range for each row type
                 let kMin, kMax;
                 if (isOddRow) {
-                    // center_x = vw/2 + stepX/2 + k*stepX
-                    kMin = Math.floor((-vwHalf - stepX/2 - w/2) / stepX) - 1;
-                    kMax = Math.ceil((vwHalf - stepX/2 + w/2) / stepX) + 1;
+                    kMin = Math.floor((w/2 - centerX - offsetX) / stepX) - 1;
+                    kMax = Math.ceil((containerW - w/2 - centerX - offsetX) / stepX) + 1;
                 } else {
-                    kMin = Math.floor((-vwHalf - w/2) / stepX) - 1;
-                    kMax = Math.ceil((vwHalf + w/2) / stepX) + 1;
+                    kMin = Math.floor((w/2 - centerX) / stepX) - 1;
+                    kMax = Math.ceil((containerW - w/2 - centerX) / stepX) + 1;
                 }
 
                 for (let k = kMin; k <= kMax; k++) {
-                    const visualCenterX = vwHalf + offsetX + k * stepX;
-                    const visualCenterY = vhHalf + r * stepY;
-                    // left/top = visual center - half element size
+                    const visualCenterX = centerX + offsetX + k * stepX;
+                    const visualCenterY = centerY + r * stepY;
                     const x = visualCenterX - w / 2;
                     const y = visualCenterY - h / 2;
                     positions.push({ x, y });
