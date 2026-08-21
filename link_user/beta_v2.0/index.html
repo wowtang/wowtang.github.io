@@ -1413,7 +1413,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 9999;
-            overflow: hidden;
+            overflow: visible;
             user-select: none;
         }
         .watermark-item {
@@ -2227,7 +2227,7 @@
             updateMenuPermissions();
         })();
 
-        // ------ Watermark Logic ------
+        // ------ Watermark Logic (DOM-based, zero clipping) ------
         const watermarkEl = document.getElementById('watermark');
 
         function formatTimestamp(date) {
@@ -2250,83 +2250,88 @@
             return { line1: now, line2: status };
         }
 
-        function drawRotatedWatermark(ctx, cx, cy, line1, line2, fontSize, lineGap, angle) {
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.rotate(angle);
-            ctx.font = fontSize + 'px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif';
-            ctx.fillStyle = 'rgba(128, 128, 128, 0.4)';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(line1, 0, -lineGap / 2);
-            ctx.fillText(line2, 0, lineGap / 2);
-            ctx.restore();
-        }
+        // Measure rotated bounding box of a single watermark element
+        function measureWatermark(line1, line2) {
+            const probe = document.createElement('div');
+            probe.className = 'watermark-item';
+            probe.style.visibility = 'hidden';
+            probe.style.position = 'absolute';
+            probe.style.left = '-9999px';
+            probe.style.top = '-9999px';
+            probe.innerHTML = line1 + '<br>' + line2;
+            document.body.appendChild(probe);
+            const rect = probe.getBoundingClientRect();
+            document.body.removeChild(probe);
 
-        function generateWatermarkCanvas(line1, line2) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const dpr = window.devicePixelRatio || 1;
-
-            const fontSize = 16;
-            const lineGap = 22;
+            const w = rect.width;
+            const h = rect.height;
             const angle = -Math.PI / 8; // -22.5deg
             const cos = Math.cos(angle);
             const sin = Math.sin(angle);
+            const rotatedW = Math.abs(w * cos) + Math.abs(h * sin);
+            const rotatedH = Math.abs(w * sin) + Math.abs(h * cos);
 
-            // Measure text widths
-            ctx.font = fontSize + 'px sans-serif';
-            const w1 = ctx.measureText(line1).width;
-            const w2 = ctx.measureText(line2).width;
-            const maxWidth = Math.max(w1, w2);
+            return { w, h, rotatedW, rotatedH };
+        }
 
-            // Unrotated text block dimensions
-            const textBlockW = maxWidth;
-            const textBlockH = fontSize * 2 + lineGap;
+        // Render watermarks covering the full viewport with brick pattern
+        let watermarkLayoutCache = null;
 
-            // Calculate rotated bounding box for a single watermark
-            const rotatedW = Math.abs(textBlockW * cos) + Math.abs(textBlockH * sin);
-            const rotatedH = Math.abs(textBlockW * sin) + Math.abs(textBlockH * cos);
+        function renderWatermarks(line1, line2) {
+            const { rotatedW, rotatedH } = measureWatermark(line1, line2);
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
 
-            // Gaps between watermarks
-            const gapX = 80;
-            const gapY = 60;
+            // Tighter gaps for higher density
+            const gapX = 70;
+            const gapY = 55;
+            const stepX = rotatedW + gapX;
+            const stepY = rotatedH + gapY;
 
-            // Single cell dimensions (each cell holds one rotated watermark + gap)
-            const cellW = rotatedW + gapX;
-            const cellH = rotatedH + gapY;
+            // Start watermarks off-screen (negative offsets) so they extend beyond viewport
+            const startX = -stepX;
+            const startY = -stepY;
 
-            // Brick pattern: 4 columns × 2 rows per tile
-            // Row 0: watermarks at columns 0, 2  (centers at 0.5*cellW, 2.5*cellW)
-            // Row 1: watermarks at columns 1, 3  (centers at 1.5*cellW, 3.5*cellW)
-            // All centers ≥ 0.5*cellW from any tile edge → no clipping
-            const tileW = cellW * 4;
-            const tileH = cellH * 2;
+            // Continue watermarks beyond viewport boundaries
+            const endX = vw + stepX * 2;
+            const endY = vh + stepY * 2;
 
-            canvas.width = tileW * dpr;
-            canvas.height = tileH * dpr;
-            canvas.style.width = tileW + 'px';
-            canvas.style.height = tileH + 'px';
+            // Calculate grid to cover from start to end
+            const cols = Math.ceil((endX - startX) / stepX);
+            const rows = Math.ceil((endY - startY) / stepY);
 
-            ctx.scale(dpr, dpr);
-            ctx.clearRect(0, 0, tileW, tileH);
+            watermarkEl.innerHTML = '';
 
-            // Row 0: even columns (0, 2)
-            drawRotatedWatermark(ctx, cellW * 0.5, cellH * 0.5, line1, line2, fontSize, lineGap, angle);
-            drawRotatedWatermark(ctx, cellW * 2.5, cellH * 0.5, line1, line2, fontSize, lineGap, angle);
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    // Brick pattern: odd rows offset by half a cell
+                    const offsetX = (row % 2 === 1) ? stepX / 2 : 0;
+                    const x = startX + col * stepX + offsetX;
+                    const y = startY + row * stepY;
 
-            // Row 1: odd columns (1, 3) — offset by 1 cell for brick stagger
-            drawRotatedWatermark(ctx, cellW * 1.5, cellH * 1.5, line1, line2, fontSize, lineGap, angle);
-            drawRotatedWatermark(ctx, cellW * 3.5, cellH * 1.5, line1, line2, fontSize, lineGap, angle);
+                    const item = document.createElement('div');
+                    item.className = 'watermark-item';
+                    item.style.left = x + 'px';
+                    item.style.top = y + 'px';
+                    item.innerHTML = line1 + '<br>' + line2;
+                    watermarkEl.appendChild(item);
+                }
+            }
 
-            return canvas.toDataURL('image/png');
+            // Cache layout info for resize handling
+            watermarkLayoutCache = { rotatedW, rotatedH, gapX, gapY, vw, vh };
         }
 
         function updateWatermark() {
             const { line1, line2 } = getWatermarkText();
-            const dataUrl = generateWatermarkCanvas(line1, line2);
-            watermarkEl.style.backgroundImage = 'url(' + dataUrl + ')';
+            renderWatermarks(line1, line2);
         }
+
+        // Re-render on window resize
+        window.addEventListener('resize', function() {
+            const { line1, line2 } = getWatermarkText();
+            renderWatermarks(line1, line2);
+        });
 
         // Update every second for real-time timestamp
         setInterval(updateWatermark, 1000);
