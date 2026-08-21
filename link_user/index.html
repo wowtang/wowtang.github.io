@@ -290,8 +290,8 @@
             border-radius: var(--card-radius);
             width: 90%;
             max-width: 880px;
-            height: 82vh;
-            max-height: 680px;
+            height: clamp(400px, 82vh, 90vh);
+            max-height: calc(100vh - 40px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -408,8 +408,8 @@
 
             .modal {
                 width: 95%;
-                height: 90vh;
-                max-height: none;
+                height: calc(100vh - 40px);
+                max-height: calc(100vh - 40px);
             }
 
             .toggle-row .home-toggle,
@@ -430,7 +430,7 @@
         </div>
 
         <div class="button-group">
-            <button class="btn" onclick="openModal('申请友链', 'https://sunrise-studio.feishu.cn/share/base/form/shrcnzp4Pkdy1i0PzzgjgVvM7Dh')">
+            <button class="btn" onclick="openModal('申请友链', 'https://sunrise-studio.feishu.cn/share/base/form/shrcnZnMRte5yTWdXIKWuZWwQ0b')">
                 <span class="btn-icon">📝</span>
                 <span>申请友链</span>
             </button>
