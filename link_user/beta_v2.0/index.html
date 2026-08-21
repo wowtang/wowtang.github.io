@@ -2099,6 +2099,18 @@
         loginTypeRadios.forEach(radio => radio.addEventListener('change', updateLoginPlaceholder));
         headerLogoutBtn.addEventListener('click', handleLogout);
 
+        // Sync auto-login with remember account
+        autoLoginCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                rememberCheckbox.checked = true;
+            }
+        });
+        rememberCheckbox.addEventListener('change', function() {
+            if (!this.checked) {
+                autoLoginCheckbox.checked = false;
+            }
+        });
+
         // Close modal on overlay click (with drag-protection for text selection)
         let mouseDownPos = null;
         let mouseMoved = false;
