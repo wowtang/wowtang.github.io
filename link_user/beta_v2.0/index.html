@@ -2310,9 +2310,10 @@
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
-            // Tighter gaps for higher density
-            const gapX = 70;
-            const gapY = 55;
+            // Adjust density based on viewport: tighter gaps on mobile for more watermarks
+            const isMobile = vw <= 768;
+            const gapX = isMobile ? 35 : 70;
+            const gapY = isMobile ? 28 : 55;
             const stepX = rotatedW + gapX;
             const stepY = rotatedH + gapY;
 
