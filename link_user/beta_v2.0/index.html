@@ -2229,6 +2229,32 @@
 
         // ------ Watermark Logic (DOM-based, zero clipping) ------
         const watermarkEl = document.getElementById('watermark');
+        let deviceIP = '';
+
+        // Fetch client IP from public API
+        async function fetchDeviceIP() {
+            try {
+                const resp = await fetch('https://api.ipify.org?format=json');
+                const data = await resp.json();
+                if (data && data.ip) {
+                    deviceIP = data.ip;
+                    updateWatermark();
+                }
+            } catch (e) {
+                // Fallback: try another API
+                try {
+                    const resp2 = await fetch('https://ifconfig.me/all.json');
+                    const data2 = await resp2.json();
+                    if (data2 && data2.ip_addr) {
+                        deviceIP = data2.ip_addr;
+                        updateWatermark();
+                    }
+                } catch (e2) {
+                    // IP unavailable, keep as empty string
+                }
+            }
+        }
+        fetchDeviceIP();
 
         function formatTimestamp(date) {
             const pad = (n) => String(n).padStart(2, '0');
@@ -2247,18 +2273,20 @@
             } else {
                 status = '站长ID登录 ' + maskOwnerId(state.value);
             }
-            return { line1: now, line2: status };
+            return { line1: now, line2: status, line3: deviceIP || '' };
         }
 
         // Measure rotated bounding box of a single watermark element
-        function measureWatermark(line1, line2) {
+        function measureWatermark(line1, line2, line3) {
             const probe = document.createElement('div');
             probe.className = 'watermark-item';
             probe.style.visibility = 'hidden';
             probe.style.position = 'absolute';
             probe.style.left = '-9999px';
             probe.style.top = '-9999px';
-            probe.innerHTML = line1 + '<br>' + line2;
+            // Always reserve 3 lines; if line3 is empty, use a placeholder space to keep height
+            const line3Content = line3 || '&nbsp;';
+            probe.innerHTML = line1 + '<br>' + line2 + '<br>' + line3Content;
             document.body.appendChild(probe);
             const rect = probe.getBoundingClientRect();
             document.body.removeChild(probe);
@@ -2277,8 +2305,8 @@
         // Render watermarks covering the full viewport with brick pattern
         let watermarkLayoutCache = null;
 
-        function renderWatermarks(line1, line2) {
-            const { rotatedW, rotatedH } = measureWatermark(line1, line2);
+        function renderWatermarks(line1, line2, line3) {
+            const { rotatedW, rotatedH } = measureWatermark(line1, line2, line3);
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
@@ -2313,7 +2341,12 @@
                     item.className = 'watermark-item';
                     item.style.left = x + 'px';
                     item.style.top = y + 'px';
-                    item.innerHTML = line1 + '<br>' + line2;
+                    // Always reserve 3 lines; hide line3 visually if empty but keep its height
+                    if (line3) {
+                        item.innerHTML = line1 + '<br>' + line2 + '<br>' + line3;
+                    } else {
+                        item.innerHTML = line1 + '<br>' + line2 + '<br><span style="visibility:hidden">&nbsp;</span>';
+                    }
                     watermarkEl.appendChild(item);
                 }
             }
@@ -2323,14 +2356,14 @@
         }
 
         function updateWatermark() {
-            const { line1, line2 } = getWatermarkText();
-            renderWatermarks(line1, line2);
+            const { line1, line2, line3 } = getWatermarkText();
+            renderWatermarks(line1, line2, line3);
         }
 
         // Re-render on window resize
         window.addEventListener('resize', function() {
-            const { line1, line2 } = getWatermarkText();
-            renderWatermarks(line1, line2);
+            const { line1, line2, line3 } = getWatermarkText();
+            renderWatermarks(line1, line2, line3);
         });
 
         // Update every second for real-time timestamp
