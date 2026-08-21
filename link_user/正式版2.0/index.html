@@ -1404,34 +1404,9 @@
                 height: 30px;
             }
         }
-        /* ------ Full-screen Watermark ------ */
-        #watermark {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            overflow: hidden;
-            user-select: none;
-        }
-        .watermark-item {
-            position: absolute;
-            transform: rotate(-22.5deg);
-            color: rgba(128, 128, 128, 0.4);
-            font-size: 16px;
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
-            text-align: center;
-            line-height: 1.3;
-            white-space: nowrap;
-            will-change: transform;
-        }
     </style>
 </head>
 <body>
-    <!-- Full-screen watermark -->
-    <div id="watermark"></div>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -2078,7 +2053,6 @@
             closeLoginModal();
             updateHeaderUI();
             updateMenuPermissions();
-            updateWatermark();
         }
 
         function handleLogout() {
@@ -2090,7 +2064,6 @@
             // Keep rememberedType/rememberedValue if user chose "remember"
             updateHeaderUI();
             updateMenuPermissions();
-            updateWatermark();
             // Return to welcome screen
             welcomeScreen.style.display = 'flex';
             frameWrapper.classList.remove('active');
@@ -2227,119 +2200,7 @@
             updateMenuPermissions();
         })();
 
-        // ------ Watermark Logic ------
-        const watermarkEl = document.getElementById('watermark');
-
-        function formatTimestamp(date) {
-            const pad = (n) => String(n).padStart(2, '0');
-            return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate())
-                + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
-        }
-
-        function getWatermarkText() {
-            const state = getLoginState();
-            const now = formatTimestamp(new Date());
-            let status = '';
-            if (!state) {
-                status = '未登录用户';
-            } else if (state.type === 'email') {
-                status = '邮箱登录 ' + state.value;
-            } else {
-                status = '站长ID登录 ' + maskOwnerId(state.value);
-            }
-            return { line1: now, line2: status };
-        }
-
-        function drawRotatedWatermark(ctx, cx, cy, line1, line2, fontSize, lineGap, angle) {
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.rotate(angle);
-            ctx.font = fontSize + 'px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif';
-            ctx.fillStyle = 'rgba(128, 128, 128, 0.4)';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(line1, 0, -lineGap / 2);
-            ctx.fillText(line2, 0, lineGap / 2);
-            ctx.restore();
-        }
-
-        function generateWatermarkCanvas(line1, line2) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const dpr = window.devicePixelRatio || 1;
-
-            const fontSize = 16;
-            const lineGap = 22;
-            const angle = -Math.PI / 8; // -22.5deg
-            const cos = Math.cos(angle);
-            const sin = Math.sin(angle);
-
-            // Measure text widths
-            ctx.font = fontSize + 'px sans-serif';
-            const w1 = ctx.measureText(line1).width;
-            const w2 = ctx.measureText(line2).width;
-            const maxWidth = Math.max(w1, w2);
-
-            // Unrotated text block dimensions
-            const textBlockW = maxWidth;
-            const textBlockH = fontSize * 2 + lineGap;
-
-            // Calculate rotated bounding box for a single watermark
-            const rotatedW = Math.abs(textBlockW * cos) + Math.abs(textBlockH * sin);
-            const rotatedH = Math.abs(textBlockW * sin) + Math.abs(textBlockH * cos);
-
-            // Gaps between watermarks
-            const gapX = 80;
-            const gapY = 60;
-
-            // Single cell dimensions (each cell holds one rotated watermark + gap)
-            const cellW = rotatedW + gapX;
-            const cellH = rotatedH + gapY;
-
-            // Brick pattern: 4 columns × 2 rows per tile
-            // Row 0: watermarks at columns 0, 2  (centers at 0.5*cellW, 2.5*cellW)
-            // Row 1: watermarks at columns 1, 3  (centers at 1.5*cellW, 3.5*cellW)
-            // All centers ≥ 0.5*cellW from any tile edge → no clipping
-            const tileW = cellW * 4;
-            const tileH = cellH * 2;
-
-            canvas.width = tileW * dpr;
-            canvas.height = tileH * dpr;
-            canvas.style.width = tileW + 'px';
-            canvas.style.height = tileH + 'px';
-
-            ctx.scale(dpr, dpr);
-            ctx.clearRect(0, 0, tileW, tileH);
-
-            // Row 0: even columns (0, 2)
-            drawRotatedWatermark(ctx, cellW * 0.5, cellH * 0.5, line1, line2, fontSize, lineGap, angle);
-            drawRotatedWatermark(ctx, cellW * 2.5, cellH * 0.5, line1, line2, fontSize, lineGap, angle);
-
-            // Row 1: odd columns (1, 3) — offset by 1 cell for brick stagger
-            drawRotatedWatermark(ctx, cellW * 1.5, cellH * 1.5, line1, line2, fontSize, lineGap, angle);
-            drawRotatedWatermark(ctx, cellW * 3.5, cellH * 1.5, line1, line2, fontSize, lineGap, angle);
-
-            return canvas.toDataURL('image/png');
-        }
-
-        function updateWatermark() {
-            const { line1, line2 } = getWatermarkText();
-            const dataUrl = generateWatermarkCanvas(line1, line2);
-            watermarkEl.style.backgroundImage = 'url(' + dataUrl + ')';
-        }
-
-        // Update every second for real-time timestamp
-        setInterval(updateWatermark, 1000);
-
-        // Initial watermark render
-        updateWatermark();
-
-        // Hook watermark update into login/logout
-        const origUpdateHeaderUI = updateHeaderUI;
-        updateHeaderUI = function() {
-            origUpdateHeaderUI();
-            updateWatermark();
-        };
+        
     </script>
 </body>
 </html>
