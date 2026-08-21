@@ -166,13 +166,17 @@
             font-size: 12px;
         }
 
-        .footer a {
+        .footer a,
+        .header a {
             color: var(--primary);
             text-decoration: none;
+            transition: color 0.2s ease;
         }
 
-        .footer a:hover {
+        .footer a:hover,
+        .header a:hover {
             color: var(--hover);
+            text-decoration: underline;
         }
 
         /* Theme toggle & home toggle */
@@ -427,6 +431,7 @@
             <span class="header-icon">🔗</span>
             <h1>友情链接管理</h1>
             <p>选择以下操作来管理您的友情链接</p>
+            <p>友链管理规范请查阅 <a href="/post/link_sq/" target="_blank" rel="noopener noreferrer">《Sunrise's blog 互链须知》</a></p>
         </div>
 
         <div class="button-group">
@@ -440,7 +445,7 @@
                 <span>修改友链</span>
             </button>
 
-            <button class="btn" onclick="openModal('找回站长ID', 'https://sunrise-studio.feishu.cn/share/base/form/shrcn77vfto0xoihQpMgtVZC8DK')">
+            <button class="btn" onclick="openModal('找回站长ID', 'https://sunrise-studio.feishu.cn/share/base/form/shrcn97l74qBg0MU2XNNymDo7Sb')">
                 <span class="btn-icon">🆔</span>
                 <span>找回站长ID</span>
             </button>
@@ -453,10 +458,10 @@
 
         <div class="footer">
             <div class="toggle-row">
-                <a class="home-toggle" href="/" aria-label="回到首页" data-tip="点击返回博客首页">🏠</a>
+                <a class="home-toggle" href="/" target="_blank" rel="noopener noreferrer" aria-label="回到首页" data-tip="点击返回博客首页">🏠</a>
                 <button class="theme-toggle" id="themeToggle" aria-label="切换主题" data-tip="点击切换浅色/深色模式">🌙</button>
             </div>
-            <p>Powered by <a href="/">Sunrise's blog</a></p>
+            <p>Powered by <a href="/" target="_blank" rel="noopener noreferrer">Sunrise's blog</a></p>
         </div>
     </div>
 
