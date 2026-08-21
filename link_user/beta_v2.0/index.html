@@ -2276,98 +2276,150 @@
             return { line1: now, line2: status, line3: deviceIP || '' };
         }
 
-        // Measure rotated bounding box of a single watermark element
-        function measureWatermark(line1, line2, line3) {
+        // Pre-compute the maximum possible watermark size to keep layout stable
+        // regardless of text content changes (login/logout, etc.)
+        let watermarkLayoutCache = null;
+
+        // Measure once with longest possible text to get fixed dimensions
+        function computeWatermarkDimensions() {
+            // Longest possible text for each line
+            const maxLine1 = '2026-12-31 23:59:59';
+            const maxLine2 = '站长ID登录 SUN123456789012';
+            const maxLine3 = '255.255.255.255';
+
+            // Use fixed width probe to guarantee consistent measurement
             const probe = document.createElement('div');
             probe.className = 'watermark-item';
             probe.style.visibility = 'hidden';
             probe.style.position = 'absolute';
             probe.style.left = '-9999px';
             probe.style.top = '-9999px';
-            // Always reserve 3 lines; if line3 is empty, use a placeholder space to keep height
-            const line3Content = line3 || '&nbsp;';
-            probe.innerHTML = line1 + '<br>' + line2 + '<br>' + line3Content;
+            probe.style.width = '260px';
+            probe.innerHTML = maxLine1 + '<br>' + maxLine2 + '<br>' + maxLine3;
             document.body.appendChild(probe);
             const rect = probe.getBoundingClientRect();
             document.body.removeChild(probe);
 
             const w = rect.width;
             const h = rect.height;
-            const angle = -Math.PI / 8; // -22.5deg
+            const angle = -Math.PI / 8;
             const cos = Math.cos(angle);
             const sin = Math.sin(angle);
             const rotatedW = Math.abs(w * cos) + Math.abs(h * sin);
             const rotatedH = Math.abs(w * sin) + Math.abs(h * cos);
 
-            return { w, h, rotatedW, rotatedH };
-        }
-
-        // Render watermarks covering the full viewport with brick pattern
-        let watermarkLayoutCache = null;
-
-        function renderWatermarks(line1, line2, line3) {
-            const { rotatedW, rotatedH } = measureWatermark(line1, line2, line3);
             const vw = window.innerWidth;
             const vh = window.innerHeight;
-
-            // Adjust density based on viewport: tighter gaps on mobile for more watermarks
             const isMobile = vw <= 768;
-            const gapX = isMobile ? 35 : 70;
-            const gapY = isMobile ? 28 : 55;
+            const gapX = isMobile ? 2 : 6;
+            const gapY = isMobile ? 1 : 4;
             const stepX = rotatedW + gapX;
             const stepY = rotatedH + gapY;
 
-            // Start watermarks off-screen (negative offsets) so they extend beyond viewport
-            const startX = -stepX;
-            const startY = -stepY;
+            // Anchor the grid at viewport center so there's always a complete
+            // watermark exactly at the page center
+            const vwHalf = vw / 2;
+            const vhHalf = vh / 2;
 
-            // Continue watermarks beyond viewport boundaries
-            const endX = vw + stepX * 2;
-            const endY = vh + stepY * 2;
+            const positions = [];
 
-            // Calculate grid to cover from start to end
-            const cols = Math.ceil((endX - startX) / stepX);
-            const rows = Math.ceil((endY - startY) / stepY);
+            // Compute row range from center
+            const rMin = Math.floor((-vhHalf - h/2) / stepY) - 1;
+            const rMax = Math.ceil((vhHalf + h/2) / stepY) + 1;
 
-            watermarkEl.innerHTML = '';
+            for (let r = rMin; r <= rMax; r++) {
+                const isOddRow = ((r % 2) + 2) % 2 === 1;
+                const offsetX = isOddRow ? stepX / 2 : 0;
 
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    // Brick pattern: odd rows offset by half a cell
-                    const offsetX = (row % 2 === 1) ? stepX / 2 : 0;
-                    const x = startX + col * stepX + offsetX;
-                    const y = startY + row * stepY;
+                // Adjust column range for odd rows (offset by half a cell)
+                let kMin, kMax;
+                if (isOddRow) {
+                    // center_x = vw/2 + stepX/2 + k*stepX
+                    kMin = Math.floor((-vwHalf - stepX/2 - w/2) / stepX) - 1;
+                    kMax = Math.ceil((vwHalf - stepX/2 + w/2) / stepX) + 1;
+                } else {
+                    kMin = Math.floor((-vwHalf - w/2) / stepX) - 1;
+                    kMax = Math.ceil((vwHalf + w/2) / stepX) + 1;
+                }
 
-                    const item = document.createElement('div');
-                    item.className = 'watermark-item';
-                    item.style.left = x + 'px';
-                    item.style.top = y + 'px';
-                    // Always reserve 3 lines; hide line3 visually if empty but keep its height
-                    if (line3) {
-                        item.innerHTML = line1 + '<br>' + line2 + '<br>' + line3;
-                    } else {
-                        item.innerHTML = line1 + '<br>' + line2 + '<br><span style="visibility:hidden">&nbsp;</span>';
-                    }
-                    watermarkEl.appendChild(item);
+                for (let k = kMin; k <= kMax; k++) {
+                    const visualCenterX = vwHalf + offsetX + k * stepX;
+                    const visualCenterY = vhHalf + r * stepY;
+                    // left/top = visual center - half element size
+                    const x = visualCenterX - w / 2;
+                    const y = visualCenterY - h / 2;
+                    positions.push({ x, y });
                 }
             }
 
-            // Cache layout info for resize handling
-            watermarkLayoutCache = { rotatedW, rotatedH, gapX, gapY, vw, vh };
+            return { w, h, rotatedW, rotatedH, stepX, stepY, positions };
+        }
+
+        // Build DOM elements (only called on first load and resize)
+        function buildWatermarkLayout(line1, line2, line3) {
+            watermarkLayoutCache = computeWatermarkDimensions();
+            const { w, h, positions } = watermarkLayoutCache;
+
+            watermarkEl.innerHTML = '';
+
+            for (let i = 0; i < positions.length; i++) {
+                const { x, y } = positions[i];
+                const item = document.createElement('div');
+                item.className = 'watermark-item';
+                item.style.left = x + 'px';
+                item.style.top = y + 'px';
+                // CRITICAL: Fix width/height so the rotated bounding box never changes
+                // even when text content changes (timestamp, login state, etc.)
+                item.style.width = w + 'px';
+                item.style.height = h + 'px';
+                // Always reserve 3 lines; hide line3 visually if empty
+                if (line3) {
+                    item.innerHTML = line1 + '<br>' + line2 + '<br>' + line3;
+                } else {
+                    item.innerHTML = line1 + '<br>' + line2 + '<br><span style="visibility:hidden">&nbsp;</span>';
+                }
+                watermarkEl.appendChild(item);
+            }
+        }
+
+        // Only update text content without changing positions
+        function updateWatermarkContent(line1, line2, line3) {
+            const items = watermarkEl.querySelectorAll('.watermark-item');
+            items.forEach(item => {
+                if (line3) {
+                    item.innerHTML = line1 + '<br>' + line2 + '<br>' + line3;
+                } else {
+                    item.innerHTML = line1 + '<br>' + line2 + '<br><span style="visibility:hidden">&nbsp;</span>';
+                }
+            });
         }
 
         function updateWatermark() {
             const { line1, line2, line3 } = getWatermarkText();
-            renderWatermarks(line1, line2, line3);
+            if (watermarkLayoutCache) {
+                // Layout already exists, just update text content (positions stay fixed)
+                updateWatermarkContent(line1, line2, line3);
+            } else {
+                // First time: build entire layout
+                buildWatermarkLayout(line1, line2, line3);
+            }
         }
 
-        // Re-render on window resize
+        // Re-layout on window resize (only when mobile/desktop boundary crossed or viewport changed significantly)
+        let lastResizeTime = 0;
         window.addEventListener('resize', function() {
-            const { line1, line2, line3 } = getWatermarkText();
-            renderWatermarks(line1, line2, line3);
+            const now = Date.now();
+            // Debounce: re-layout on resize end
+            clearTimeout(window._watermarkResizeTimer);
+            window._watermarkResizeTimer = setTimeout(() => {
+                const { line1, line2, line3 } = getWatermarkText();
+                // Force re-layout
+                watermarkLayoutCache = null;
+                buildWatermarkLayout(line1, line2, line3);
+            }, 200);
         });
 
-        // Update every second for real-time timestamp
+        // Update every second for real-time timestamp (only updates text, not positions)
         setInterval(updateWatermark, 1000);
 
         // Initial watermark render
