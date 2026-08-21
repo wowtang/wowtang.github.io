@@ -1421,7 +1421,7 @@
         .watermark-item {
             position: absolute;
             transform: rotate(-22.5deg);
-            color: rgba(128, 128, 128, 0.4);
+            color: rgba(128, 128, 128, 0.2);
             font-size: 16px;
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
             text-align: center;
@@ -1441,12 +1441,12 @@
 
         /* Watermark turns white when modal is open */
         body.modal-open #watermark .watermark-item {
-            color: rgba(255, 255, 255, 0.45) !important;
+            color: rgba(255, 255, 255, 0.22) !important;
             transition: color 0.3s ease;
         }
         /* Restore normal color on watermark cutout items */
         #watermark-cutout .watermark-item {
-            color: rgba(128, 128, 128, 0.4) !important;
+            color: rgba(128, 128, 128, 0.2) !important;
             transition: none;
         }
         /* Raise modal overlays above watermark cutout when modal is open */
@@ -2369,7 +2369,7 @@
             items.forEach(item => {
                 const clone = item.cloneNode(true);
                 // Ensure normal color is applied
-                clone.style.color = 'rgba(128, 128, 128, 0.4)';
+                clone.style.color = 'rgba(128, 128, 128, 0.2)';
                 cutout.appendChild(clone);
             });
 
