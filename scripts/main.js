@@ -195,13 +195,14 @@
     var holder = $('.menus_items');
     if (!holder) return;
     holder.innerHTML = '';
+    var hideIcon = !CFG.navIconShow; // 当 navIconShow 为 false 时隐藏图标
     data.forEach(function (item) {
       var wrap = document.createElement('div');
       wrap.className = 'menus_item';
       if (item.children && item.children.length) {
         var trigger = document.createElement('span');
         trigger.className = 'site-page group';
-        trigger.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"></i><span> ' + escapeHtml(item.label) + '</span><i class="fas fa-chevron-down"></i>';
+        trigger.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"' + (hideIcon ? ' style="display:none"' : '') + '></i><span> ' + escapeHtml(item.label) + '</span><i class="fas fa-chevron-down"></i>';
         wrap.appendChild(trigger);
         var ul = document.createElement('ul');
         ul.className = 'menus_item_child';
@@ -210,7 +211,7 @@
           var a = document.createElement('a');
           a.className = 'site-page child';
           a.href = c.link || '#';
-          a.innerHTML = '<i class="fa-fw ' + (c.icon || 'fa-solid fa-circle') + '"></i><span> ' + escapeHtml(c.label) + '</span>';
+          a.innerHTML = '<i class="fa-fw ' + (c.icon || 'fa-solid fa-circle') + '"' + (hideIcon ? ' style="display:none"' : '') + '></i><span> ' + escapeHtml(c.label) + '</span>';
           li.appendChild(a); ul.appendChild(li);
         });
         wrap.appendChild(ul);
@@ -218,7 +219,7 @@
         var a = document.createElement('a');
         a.className = 'site-page';
         a.href = item.link || '#';
-        a.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"></i><span> ' + escapeHtml(item.label) + '</span>';
+        a.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"' + (hideIcon ? ' style="display:none"' : '') + '></i><span> ' + escapeHtml(item.label) + '</span>';
         wrap.appendChild(a);
       }
       holder.appendChild(wrap);

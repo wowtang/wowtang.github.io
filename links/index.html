@@ -188,45 +188,47 @@
     </a>
   </span>
 
+  
+  
   <div id="menus" class="nav-no-icon">
     
     <div class="menus_items visible">
       
         
           <div class="menus_item">
-            <a class="site-page" href="/"><i class="fa-fw fa-solid fa-bookmark"></i><span> 🏠首页</span></a>
+            <a class="site-page" href="/"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 🏠首页</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/post"><i class="fa-fw fa-solid fa-bookmark"></i><span> 📄博客</span></a>
+            <a class="site-page" href="/post"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 📄博客</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/memos"><i class="fa-fw fa-solid fa-bookmark"></i><span> ⭐️闪念</span></a>
+            <a class="site-page" href="/memos"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> ⭐️闪念</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/archives"><i class="fa-fw fa-solid fa-bookmark"></i><span> 📂归档</span></a>
+            <a class="site-page" href="/archives"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 📂归档</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/tags"><i class="fa-fw fa-solid fa-bookmark"></i><span> 🏷标签</span></a>
+            <a class="site-page" href="/tags"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 🏷标签</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/links"><i class="fa-fw fa-solid fa-bookmark"></i><span> 🔗友链</span></a>
+            <a class="site-page" href="/links"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 🔗友链</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/post/about"><i class="fa-fw fa-solid fa-bookmark"></i><span> 👨关于</span></a>
+            <a class="site-page" href="/post/about"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 👨关于</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/post/bigthings"><i class="fa-fw fa-solid fa-bookmark"></i><span> 🏅博客日志</span></a>
+            <a class="site-page" href="/post/bigthings"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 🏅博客日志</span></a>
           </div>
         
           <div class="menus_item">
-            <a class="site-page" href="/post/feedback"><i class="fa-fw fa-solid fa-bookmark"></i><span> 🎯一起来找茬</span></a>
+            <a class="site-page" href="/post/feedback"><i class="fa-fw fa-solid fa-bookmark" style=&quot;display:none&quot;></i><span> 🎯一起来找茬</span></a>
           </div>
         
       
@@ -338,9 +340,9 @@
           
           
         <a class="flink-item" href="https://wowtang.top" target="_blank" rel="noopener">
-          <img class="flink-avatar" src="https://wowtang.top/images/avatar.png" alt="Sunrise&#39;s blog" onerror="this.onerror=null;this.src='/media/images/default-avatar.svg';">
+          <img class="flink-avatar" src="https://wowtang.top/images/avatar.png" alt="Sunrise&#39;s blog（本站）" onerror="this.onerror=null;this.src='/media/images/default-avatar.svg';">
           <div class="flink-meta">
-            <h4 class="flink-name">Sunrise&#39;s blog</h4>
+            <h4 class="flink-name">Sunrise&#39;s blog（本站）</h4>
             <p class="flink-desc">心境自成天地，地狱可化作桃源，天堂也能沦为苦海。</p>
           </div>
         </a>
@@ -769,7 +771,6 @@
     </div>
     
     <div class="friend-feed-wrap" id="friend-feed-wrap" hidden>
-      <div class="friend-feed-loading" id="friend-feed-loading">正在抓取朋友动态…</div>
       <div class="friend-feed-list" id="friend-feed-list"></div>
     </div>
     
@@ -786,7 +787,7 @@
           
           
           
-        <li data-url="https://wowtang.top" data-name="Sunrise&#39;s blog" data-avatar="https://wowtang.top/images/avatar.png"></li>
+        <li data-url="https://wowtang.top" data-name="Sunrise&#39;s blog（本站）" data-avatar="https://wowtang.top/images/avatar.png"></li>
           
         
           
@@ -1125,7 +1126,6 @@ https://styunlen.cn/feed</span>
 [data-theme="dark"] .apply-notice h3 { color: #e6edf3; }
 [data-theme="dark"] .apply-notice p, [data-theme="dark"] .apply-notice ul { color: #c9d1d9; }
 .friend-feed-wrap { padding: 8px 0; }
-.friend-feed-loading { text-align: center; color: var(--text-meta); padding: 24px; font-size: 13px; }
 .friend-feed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 .friend-feed-item {
   display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px;
@@ -1145,6 +1145,96 @@ https://styunlen.cn/feed</span>
 [data-theme="dark"] .friend-feed-info { color: #8b949e; }
 [data-theme="dark"] .friend-feed-desc { color: #8b949e; }
 [data-theme="dark"] .friend-feed-item:hover .friend-feed-title { color: #5fa9ff; }
+
+/* 骨架屏 shimmer 动画 */
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 骨架屏基础样式 */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(125, 125, 125, 0.08) 25%,
+    rgba(125, 125, 125, 0.16) 50%,
+    rgba(125, 125, 125, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* 骨架屏卡片 */
+.friend-feed-skeleton {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .friend-feed-skeleton {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 骨架屏头像 */
+.skeleton-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* 骨架屏文本行 */
+.skeleton-line {
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+/* 骨架屏元信息区域 */
+.skeleton-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.skeleton-line.title {
+  width: 85%;
+  height: 16px;
+  margin-bottom: 10px;
+}
+
+.skeleton-line.info {
+  width: 40%;
+  height: 12px;
+  margin-bottom: 10px;
+}
+
+.skeleton-line.desc {
+  width: 95%;
+  height: 12px;
+  margin-bottom: 0;
+}
+
+.skeleton-line.desc-2 {
+  width: 70%;
+  height: 12px;
+  margin-top: 6px;
+}
 </style>
 
 <script>
@@ -1209,13 +1299,30 @@ https://styunlen.cn/feed</span>
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   var listEl = document.getElementById('friend-feed-list');
-  var loadingEl = document.getElementById('friend-feed-loading');
   var flinkList = document.querySelector('.flink-list');
   var feedToggle = document.getElementById('friend-feed-toggle');
   var feedWrap = document.getElementById('friend-feed-wrap');
   var applyWrap = document.getElementById('friend-apply-wrap');
   var loaded = false;
   var currentPanel = 'list'; // list / feed / apply
+
+  // 注入骨架屏占位（6个骨架卡片）
+  if (listEl) {
+    var skeletonCard = '<div class="friend-feed-skeleton">' +
+      '<div class="skeleton-avatar skeleton"></div>' +
+      '<div class="skeleton-meta">' +
+        '<div class="skeleton-line title skeleton"></div>' +
+        '<div class="skeleton-line info skeleton"></div>' +
+        '<div class="skeleton-line desc skeleton"></div>' +
+        '<div class="skeleton-line desc-2 skeleton"></div>' +
+      '</div>' +
+    '</div>';
+    var skeletonHtml = '';
+    for (var i = 0; i < 16; i++) {
+      skeletonHtml += skeletonCard;
+    }
+    listEl.innerHTML = skeletonHtml;
+  }
 
   // 页面加载后预加载 RSS 数据，点击时直接展示（仅当朋友动态启用时）
   if (feedWrap) loadFeeds();
@@ -1279,7 +1386,7 @@ https://styunlen.cn/feed</span>
     if (loaded) return;
     loaded = true;
     if (feeds.length === 0) {
-      loadingEl.textContent = '尚未配置朋友 RSS（请在主题配置「友链动态 RSS」填写，每行一个）';
+      listEl.innerHTML = '<div class="aside-empty" style="grid-column: 1/-1;">尚未配置朋友 RSS（请在主题配置「友链动态 RSS」填写，每行一个）</div>';
       return;
     }
     var all = [];
@@ -1309,10 +1416,8 @@ https://styunlen.cn/feed</span>
     function render() {
       all.sort(function (a, b) { return new Date(b.pubDate) - new Date(a.pubDate); });
       all = all.slice(0, 60);
-      loadingEl.style.display = 'none';
       if (all.length === 0) {
-        loadingEl.style.display = '';
-        loadingEl.textContent = '暂无朋友动态（RSS 抓取失败或为空）';
+        listEl.innerHTML = '<div class="aside-empty" style="grid-column: 1/-1;">暂无朋友动态（RSS 抓取失败或为空）</div>';
         return;
       }
       listEl.innerHTML = all.map(function (it) {
