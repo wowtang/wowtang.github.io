@@ -205,12 +205,33 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 .menus_item .site-page.group i.fa-chevron-down { font-size: 9px; margin-left: 3px; transition: transform .2s ease; }
 .menus_item:hover .site-page.group i.fa-chevron-down { transform: rotate(180deg); }
 
-/* nav-no-icon: 顶栏隐藏菜单项图标（JS 动态控制窄屏首字渲染） */
+/* ================================================================
+   nav-no-icon: 顶栏菜单图标隐藏 + 窄屏裁剪 + 宽屏展开动画
+   核心思路：CSS 默认裁剪到 1em（零闪烁，模板加类）
+            JS 负责屏宽变化时的 max-width 过渡动画
+   ================================================================= */
+
+/* 1. 隐藏菜单项文字前的第一个 <i>（菜单项图标） */
 #menus.nav-no-icon .site-page > i:first-child {
   display: none;
 }
+
+/* 2. 基础：所有 span 统一 inline-block + nowrap */
 #menus.nav-no-icon .menus_item .site-page span {
+  display: inline-block;
   white-space: nowrap;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+/* 3. 默认窄屏态：裁剪到 1em（模板加类后立即生效，零闪烁） */
+#menus.nav-no-icon:not(.nav-wide) .menus_item .site-page span {
+  max-width: 1em;
+}
+
+/* 4. JS 激活宽屏态：提供 transition 属性，无 max-width 约束 */
+#menus.nav-no-icon.nav-wide .menus_item .site-page span {
+  transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .menus_item_child {

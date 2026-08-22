@@ -227,57 +227,166 @@
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   renderMultiLevelMenus();
 
-  /* ------ 9a. 顶栏菜单图标 + 窄屏首字动态渲染 ------ */
+  /* ------ 9a. 顶栏菜单图标 + 窄屏裁剪 + 宽屏展开动画 ------
+   核心思路：模板(header.html)直接带 nav-no-icon 类
+            → CSS 默认裁剪到 1em（零闪烁，首帧即正确）
+            → JS 仅负责屏宽变化时的 max-width 过渡动画
+   ------------------------------------------------------- */
   var NAV_NARROW_BREAKPOINT = 1280;
 
+  // 辅助：测量 span 在非裁剪状态下的自然宽度（同步操作，无可见闪烁）
+  function measureSpanWidth(span) {
+    var prevMax = span.style.maxWidth;
+    span.style.maxWidth = 'none';
+    var w = span.getBoundingClientRect().width;
+    span.style.maxWidth = prevMax;
+    return Math.ceil(w);
+  }
+
+  // 辅助：统一处理 transitionend 回调（所有 span 完成后才执行 cleanup）
+  function bindTransitionEnds(spans, callback) {
+    var countdown = spans.length;
+    for (var i = 0; i < spans.length; i++) {
+      spans[i].addEventListener('transitionend', function handler(e) {
+        if (e.propertyName !== 'max-width') return;
+        this.removeEventListener('transitionend', handler);
+        countdown--;
+        if (countdown <= 0) callback();
+      });
+    }
+  }
+
+  // 切换窄屏/宽屏状态（简化版 - 避免 CSS/JS 状态冲突）
   function setMenuNarrow(narrow) {
     var menusEl = $('#menus');
     if (!menusEl) return;
+    // 安全守卫：仅在模板标记的 nav-no-icon 模式下工作
+    if (!menusEl.classList.contains('nav-no-icon')) return;
+
+    // 收集所有菜单项 span，首次保存完整文本
     var items = menusEl.querySelectorAll('.site-page');
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      var span = item.querySelector('span');
+    var spanEls = [];
+    var i, item, span;
+    for (i = 0; i < items.length; i++) {
+      item = items[i];
+      span = item.querySelector('span');
       if (!span) continue;
-      // 保存原始文本到 data-fulltext（仅首次）
       if (!span.hasAttribute('data-fulltext')) {
         span.setAttribute('data-fulltext', span.textContent.trim());
       }
-      var fullText = span.getAttribute('data-fulltext');
-      if (narrow) {
-        // 窄屏：仅渲染第一个字（Array.from 正确处理 emoji 等多码点字符）
-        span.textContent = Array.from(fullText)[0] || '';
-        // 给按钮加 title 以便悬停看到完整名称
-        item.setAttribute('title', fullText);
-      } else {
-        // 宽屏：恢复完整文本
-        span.textContent = fullText;
-        item.removeAttribute('title');
+      spanEls.push(span);
+    }
+    if (spanEls.length === 0) return;
+
+    if (narrow) {
+      // —— 切换到窄屏（显示单字） ——
+      if (menusEl.classList.contains('nav-wide')) {
+        // 从宽屏收缩：添加 transition 动画
+        for (i = 0; i < spanEls.length; i++) {
+          spanEls[i].style.transition = 'max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
+        // 强制 reflow
+        // eslint-disable-next-line no-unused-expressions
+        spanEls[0].offsetHeight;
+        // 触发收缩动画
+        for (i = 0; i < spanEls.length; i++) {
+          spanEls[i].style.maxWidth = '1em';
+        }
+        // 动画结束后清理
+        setTimeout(function () {
+          for (var j = 0; j < spanEls.length; j++) {
+            spanEls[j].style.transition = '';
+            spanEls[j].style.maxWidth = '';
+          }
+          menusEl.classList.remove('nav-wide');
+        }, 400);
       }
+      // 补充 title 提示
+      var allItems = menusEl.querySelectorAll('.site-page');
+      for (i = 0; i < allItems.length; i++) {
+        var sp = allItems[i].querySelector('span');
+        if (sp) allItems[i].setAttribute('title', sp.getAttribute('data-fulltext'));
+      }
+
+    } else {
+      // —— 切换到宽屏（显示全文） ——
+      // 1. 先测量自然宽度（临时移除 max-width）
+      var targets = [];
+      for (i = 0; i < spanEls.length; i++) {
+        var prevMax = spanEls[i].style.maxWidth;
+        spanEls[i].style.maxWidth = 'none';
+        var w = spanEls[i].getBoundingClientRect().width;
+        spanEls[i].style.maxWidth = prevMax;
+        targets.push(Math.ceil(w));
+      }
+
+      // 2. 设置起始锁定点 + 添加 transition
+      for (i = 0; i < spanEls.length; i++) {
+        spanEls[i].style.transition = 'max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        spanEls[i].style.maxWidth = '1em';
+      }
+
+      // 3. 添加 nav-wide 类（用于标识状态）
+      menusEl.classList.add('nav-wide');
+
+      // 4. 强制 reflow，确保 transition 已就绪
+      // eslint-disable-next-line no-unused-expressions
+      spanEls[0].offsetHeight;
+
+      // 5. 触发展开动画
+      for (i = 0; i < spanEls.length; i++) {
+        spanEls[i].style.maxWidth = targets[i] + 'px';
+      }
+
+      // 6. 动画结束后：移除 transition，但保持 maxWidth（这是关键！）
+      //    保持 inline style 避免 CSS 规则覆盖
+      setTimeout(function () {
+        for (var j = 0; j < spanEls.length; j++) {
+          spanEls[j].style.transition = '';
+          // 保持 maxWidth，不要清除！
+        }
+        // 移除 title 属性（宽屏不需要提示）
+        var allItems = menusEl.querySelectorAll('.site-page');
+        for (j = 0; j < allItems.length; j++) {
+          allItems[j].removeAttribute('title');
+        }
+      }, 400);
     }
   }
 
   function initNavIcon() {
-    var showIcon = CFG.navIconShow !== false;
     var menusEl = $('#menus');
     if (!menusEl) return;
 
-    if (!showIcon) {
-      menusEl.classList.add('nav-no-icon');
-      // 初次根据屏宽决定是否截断
-      setMenuNarrow(window.innerWidth <= NAV_NARROW_BREAKPOINT);
-    } else {
-      menusEl.classList.remove('nav-no-icon');
-      setMenuNarrow(false);
+    // 当前状态记录，避免重复动画
+    var currentNarrow = null;
+
+    // 注意：nav-no-icon 类已在模板(header.html)中根据配置添加
+    // 这里仅根据屏宽决定是否需要展开动画
+    if (menusEl.classList.contains('nav-no-icon')) {
+      currentNarrow = window.innerWidth <= NAV_NARROW_BREAKPOINT;
+      if (currentNarrow) {
+        // 窄屏：CSS 已原生裁剪到 1em，仅补充 title 提示
+        setMenuNarrow(true);
+      } else {
+        // 宽屏：CSS 默认裁剪 → JS 动画展开（reveal 效果，零闪烁）
+        setMenuNarrow(false);
+      }
     }
 
-    // 监听窗口尺寸变化，动态切换
+    // 窗口尺寸变化时动态切换（带防抖 + 状态变化检测）
     var resizeTimer;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        if (CFG.navIconShow !== false) return; // 图标显示时不需要窄屏截断
-        setMenuNarrow(window.innerWidth <= NAV_NARROW_BREAKPOINT);
-      }, 100);
+        if (!menusEl.classList.contains('nav-no-icon')) return;
+        var newNarrow = window.innerWidth <= NAV_NARROW_BREAKPOINT;
+        // 只有状态发生变化时才执行动画
+        if (newNarrow !== currentNarrow) {
+          currentNarrow = newNarrow;
+          setMenuNarrow(newNarrow);
+        }
+      }, 120);
     });
   }
   initNavIcon();
