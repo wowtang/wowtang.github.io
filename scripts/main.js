@@ -227,6 +227,35 @@
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   renderMultiLevelMenus();
 
+  /* ------ 9b. 页脚导航（footerNavList 非空时动态渲染） ------ */
+  function renderFooterNav() {
+    var raw = CFG.footerNavList;
+    if (!raw || !raw.trim()) return;
+    var holder = $('#footer-nav');
+    if (!holder) return;
+    var lines = raw.split('\n');
+    var items = [];
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var parts = line.split('#%#');
+      if (parts.length < 2) continue;
+      var label = parts[0].trim();
+      var link = parts.slice(1).join('#%#').trim();
+      if (!label || !link) continue;
+      items.push({ label: label, link: link });
+    }
+    if (!items.length) return;
+    holder.innerHTML = '';
+    items.forEach(function (item) {
+      var a = document.createElement('a');
+      a.href = item.link;
+      a.textContent = item.label;
+      holder.appendChild(a);
+    });
+  }
+  renderFooterNav();
+
   /* ------ 10. 全屏搜索 ------ */
   var searchModal = $('#search-modal');
   var searchInput = $('#search-input');
