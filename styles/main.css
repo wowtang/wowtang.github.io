@@ -205,6 +205,14 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 .menus_item .site-page.group i.fa-chevron-down { font-size: 9px; margin-left: 3px; transition: transform .2s ease; }
 .menus_item:hover .site-page.group i.fa-chevron-down { transform: rotate(180deg); }
 
+/* nav-no-icon: 顶栏隐藏菜单项图标（JS 动态控制窄屏首字渲染） */
+#menus.nav-no-icon .site-page > i:first-child {
+  display: none;
+}
+#menus.nav-no-icon .menus_item .site-page span {
+  white-space: nowrap;
+}
+
 .menus_item_child {
   position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(8px);
   background: var(--card-bg-solid); border-radius: 10px;
@@ -1177,8 +1185,8 @@ body.page-index #nav.nav-transparent #nav-right {
 
 /* ---------- 专用导航 class（由 main.js 滚动/切换主题时加在 <nav id="nav"> 上） ---------- */
 #nav.nav-text-dark {
-  background: rgba(13, 17, 23, 0.9) !important;
-  backdrop-filter: blur(12px);
+  background: transparent !important;
+  backdrop-filter: none;
 }
 #nav.nav-text-dark .nav-site-title,
 #nav.nav-text-dark .nav-site-title:hover {
@@ -1218,10 +1226,12 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 
 /* --- 问题1补充：[data-theme="dark"] 下全局导航兜底（与 nav-text-dark 双重保障） --- */
+/* 注意：#nav 容器保持透明，由子元素 #blog-info / #menus / #nav-right 各自的毛玻璃背景提供视觉效果，
+   避免 #nav 矩形容器在底部露出黑色长条 */
 [data-theme="dark"] #nav.nav-shrink,
 [data-theme="dark"] #nav.nav-fixed,
 [data-theme="dark"] #nav {
-  background: rgba(13, 17, 23, 0.9);
+  background: transparent;
 }
 [data-theme="dark"] #nav .nav-site-title,
 [data-theme="dark"] #nav .nav-site-title:hover {

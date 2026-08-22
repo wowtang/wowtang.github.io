@@ -227,6 +227,61 @@
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   renderMultiLevelMenus();
 
+  /* ------ 9a. 顶栏菜单图标 + 窄屏首字动态渲染 ------ */
+  var NAV_NARROW_BREAKPOINT = 1280;
+
+  function setMenuNarrow(narrow) {
+    var menusEl = $('#menus');
+    if (!menusEl) return;
+    var items = menusEl.querySelectorAll('.site-page');
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      var span = item.querySelector('span');
+      if (!span) continue;
+      // 保存原始文本到 data-fulltext（仅首次）
+      if (!span.hasAttribute('data-fulltext')) {
+        span.setAttribute('data-fulltext', span.textContent.trim());
+      }
+      var fullText = span.getAttribute('data-fulltext');
+      if (narrow) {
+        // 窄屏：仅渲染第一个字（Array.from 正确处理 emoji 等多码点字符）
+        span.textContent = Array.from(fullText)[0] || '';
+        // 给按钮加 title 以便悬停看到完整名称
+        item.setAttribute('title', fullText);
+      } else {
+        // 宽屏：恢复完整文本
+        span.textContent = fullText;
+        item.removeAttribute('title');
+      }
+    }
+  }
+
+  function initNavIcon() {
+    var showIcon = CFG.navIconShow !== false;
+    var menusEl = $('#menus');
+    if (!menusEl) return;
+
+    if (!showIcon) {
+      menusEl.classList.add('nav-no-icon');
+      // 初次根据屏宽决定是否截断
+      setMenuNarrow(window.innerWidth <= NAV_NARROW_BREAKPOINT);
+    } else {
+      menusEl.classList.remove('nav-no-icon');
+      setMenuNarrow(false);
+    }
+
+    // 监听窗口尺寸变化，动态切换
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (CFG.navIconShow !== false) return; // 图标显示时不需要窄屏截断
+        setMenuNarrow(window.innerWidth <= NAV_NARROW_BREAKPOINT);
+      }, 100);
+    });
+  }
+  initNavIcon();
+
   /* ------ 9b. 页脚导航（footerNavList 非空时动态渲染） ------ */
   function renderFooterNav() {
     var raw = CFG.footerNavList;
