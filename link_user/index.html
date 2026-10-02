@@ -13,7 +13,6 @@
 html,body{
     width:100%;
     height:100%;
-    overflow:hidden;
 }
 iframe{
     width:100%;
@@ -21,9 +20,47 @@ iframe{
     border:none;
     display:block;
 }
+.mobile-box{
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+}
+.open-btn{
+    padding:14px 24px;
+    font-size:18px;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
 </style>
 </head>
 <body>
-<iframe src="https://sunrise-studio.feishu.cn/share/base/webpage/shrcnXcPJEb8G1brqpk36nIWTWe?share_link_type=qrcode"></iframe>
+<script>
+// 判断是否移动设备
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+const formUrl = "https://sunrise-studio.feishu.cn/share/base/webpage/shrcnXcPJEb8G1brqpk36nIWTWe?share_link_type=qrcode";
+if(isMobile()){
+    // 手机：展示按钮，点击打开表单
+    document.body.innerHTML = `
+    <div class="mobile-box">
+        <div>手机浏览器需要新窗口打开</div>
+        <button class="open-btn" onclick="window.open('${formUrl}','_blank')">打开</button>
+    </div>
+    `;
+}else{
+    // 电脑端：直接加载iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = formUrl;
+    document.body.appendChild(iframe);
+}
+</script>
 </body>
 </html>
