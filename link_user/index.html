@@ -2,73 +2,404 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sunrise's blog · 友联工单系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="robots" content="noindex">
+<title>Sunrise's blog · 友链工单系统</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* ===== 设计令牌：与博客主题 styles/main.css 的 :root 保持一致 ===== */
+:root{
+    --primary:#2679cc;
+    --accent:#00c4b6;
+    --hover:#ff7242;
+    --text:#1f2d3d;
+    --text-body:#4c4948;
+    --text-meta:#858585;
+    --text-mute:#99a9bf;
+    /* 本页次级文字专用：白底对比度 4.8:1，满足正文 4.5:1 下限
+       （主题原 token --text-meta #858585 仅 3.9:1、--text-mute 仅 2.4:1，不可用于承载信息） */
+    --text-soft:#667085;
+    --border:#e6e8eb;
+    --body-bg:#f7f7f7;
+    --card-bg:rgba(255,255,255,.86);
+    --card-shadow:0 8px 30px rgba(31,38,73,.08);
+    --card-radius:12px;
+    --btn-radius:14px;
+    --blob-a:#ffd7e4;
+    --blob-b:#c8f1ff;
+    --btn-shadow:0 10px 24px rgba(38,121,204,.26);
+    /* 说明块：wash 底 + line 边框 + strong 加深字色，成对成套，不跨状态借用
+       strong 取比 --primary 更深一档 —— --primary 在 wash 上只有 4.2:1，12px 正文不达标 */
+    --info-wash:rgba(38,121,204,.07);
+    --info-line:rgba(38,121,204,.20);
+    --info-strong:#1d5fa3;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Lato,Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:Consolas,Menlo,"PingFang SC","Microsoft YaHei",monospace;
 }
-html,body{
-    width:100%;
-    height:100%;
+@media (prefers-color-scheme: dark){
+    :root{
+        --primary:#5fa9ff;
+        --accent:#2dd4bf;
+        --hover:#ffb38a;
+        --text:#e6edf3;
+        --text-body:#c9d1d9;
+        --text-meta:#8b949e;
+        --text-mute:#6e7681;
+        --text-soft:#9aa7b4;
+        --border:#30363d;
+        --body-bg:#0d1117;
+        --card-bg:rgba(22,27,34,.82);
+        --card-shadow:0 8px 30px rgba(0,0,0,.45);
+        --blob-a:#2a1e2c;
+        --blob-b:#1c2c40;
+        --btn-shadow:0 10px 24px rgba(0,0,0,.5);
+        --info-wash:rgba(95,169,255,.10);
+        --info-line:rgba(95,169,255,.26);
+        --info-strong:#5fa9ff;
+    }
 }
-iframe{
-    width:100%;
-    height:100%;
-    border:none;
-    display:block;
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%}
+html{-webkit-text-size-adjust:100%}
+body{
+    font-family:var(--font);
+    background:var(--body-bg);
+    color:var(--text);
+    overflow-x:hidden;
 }
-.mobile-box{
-    width:100%;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:20px;
+iframe{width:100%;height:100%;border:none;display:block}
+body.is-frame{overflow:hidden}
+body.is-frame .app,body.is-frame .bg{display:none}
+
+/* ===== 背景光晕 ===== */
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.blob{
+    position:absolute;display:block;border-radius:50%;
+    filter:blur(52px);opacity:.75;
 }
-.open-btn{
-    padding:14px 24px;
-    font-size:18px;
-    background:#2563eb;
+.blob.b1{
+    width:280px;height:280px;background:var(--blob-a);
+    top:-90px;left:-80px;animation:drift1 16s ease-in-out infinite;
+}
+.blob.b2{
+    width:320px;height:320px;background:var(--blob-b);
+    bottom:-120px;right:-110px;animation:drift2 19s ease-in-out infinite;
+}
+@keyframes drift1{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(26px,34px) scale(1.08)}
+}
+@keyframes drift2{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-30px,-24px) scale(1.06)}
+}
+
+/* ===== 布局 ===== */
+.app{
+    position:relative;z-index:1;
+    min-height:100vh;min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px 20px calc(24px + env(safe-area-inset-bottom));
+}
+.card{
+    width:100%;max-width:380px;
+    background:var(--card-bg);
+    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border:1px solid var(--border);
+    border-radius:var(--card-radius);
+    box-shadow:var(--card-shadow);
+    padding:34px 24px 26px;
+    text-align:center;
+    animation:rise .5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes rise{
+    from{opacity:0;transform:translateY(16px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ===== 图标 ===== */
+.icon{
+    width:68px;height:68px;margin:0 auto 18px;
+    border-radius:20px;display:grid;place-items:center;
+    background:linear-gradient(140deg,var(--blob-a),var(--blob-b));
+    color:var(--primary);
+}
+.icon svg{width:32px;height:32px;display:block}
+.icon.ok{
+    background:linear-gradient(140deg,var(--primary),var(--accent));
     color:#fff;
-    border:none;
+}
+/* 深色下粉蓝渐变会塌成一块暗色，改用淡色底让图标本身凸显 */
+@media (prefers-color-scheme: dark){
+    .icon{background:rgba(95,169,255,.14)}
+}
+
+/* ===== 文案 ===== */
+.title{
+    font-size:20px;font-weight:600;line-height:1.4;
+    letter-spacing:.2px;color:var(--text);
+}
+.desc{
+    margin-top:10px;
+    font-size:14px;line-height:1.75;color:var(--text-body);
+}
+.desc b{font-weight:600;color:var(--text)}
+
+/* 原因说明：不是告警，用 wash 底而非状态色，避免和提示语气混淆 */
+.note{
+    display:flex;gap:8px;align-items:flex-start;
+    margin-top:16px;padding:11px 12px;
+    text-align:left;
+    background:var(--info-wash);
+    border:1px solid var(--info-line);
+    border-radius:10px;
+}
+.note svg{width:15px;height:15px;flex:none;margin-top:2px;color:var(--info-strong)}
+.note p{font-size:12px;line-height:1.65;color:var(--text-body)}
+.note b{font-weight:600;color:var(--info-strong)}
+
+/* ===== 按钮 ===== */
+.btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;font-family:inherit;font-size:16px;font-weight:600;
+    cursor:pointer;text-decoration:none;
+    transition:transform .16s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease;
+}
+.btn svg{width:19px;height:19px;flex:none}
+.btn-primary{
+    margin-top:22px;height:52px;
+    color:#fff;border:none;border-radius:var(--btn-radius);
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    box-shadow:var(--btn-shadow);
+}
+.btn-primary:active{transform:translateY(1px) scale(.985);box-shadow:0 4px 12px rgba(38,121,204,.24)}
+.btn-ghost{
+    margin-top:12px;height:46px;
+    font-size:14px;font-weight:500;
+    color:var(--text-body);
+    background:transparent;
+    border:1px solid var(--border);border-radius:var(--btn-radius);
+}
+.btn-ghost:active{background:rgba(38,121,204,.06);transform:translateY(1px) scale(.99)}
+.btn-ghost svg{width:16px;height:16px}
+
+/* ===== 兜底链接 ===== */
+.tip{
+    margin-top:22px;padding-top:18px;
+    border-top:1px solid var(--border);
+    font-size:12px;line-height:1.6;color:var(--text-soft);
+}
+.url{
+    margin-top:8px;padding:10px 12px;
+    font-family:var(--mono);font-size:11px;line-height:1.6;
+    color:var(--text-soft);word-break:break-all;
+    background:rgba(127,127,127,.07);
     border-radius:8px;
-    cursor:pointer;
+    -webkit-user-select:all;user-select:all;
+}
+
+/* ===== 返回 ===== */
+.back{
+    display:inline-block;margin-top:20px;
+    font-size:13px;color:var(--text-soft);text-decoration:none;
+}
+.back:active{color:var(--primary)}
+
+/* ===== Toast ===== */
+.toast{
+    position:fixed;left:50%;z-index:9;
+    bottom:calc(30px + env(safe-area-inset-bottom));
+    transform:translate(-50%,14px);
+    padding:10px 20px;border-radius:999px;
+    font-size:13px;line-height:1;white-space:nowrap;
+    background:#1f2d3d;color:#fff;
+    box-shadow:0 8px 24px rgba(0,0,0,.22);
+    opacity:0;pointer-events:none;
+    transition:opacity .24s ease,transform .24s ease;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-color-scheme: dark){
+    .toast{background:#e6edf3;color:#0d1117;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+}
+
+/* ===== 小屏微调 ===== */
+@media (max-height:560px){
+    .card{padding:26px 20px 22px}
+    .icon{width:58px;height:58px;border-radius:17px;margin-bottom:14px}
+    .icon svg{width:27px;height:27px}
+    .title{font-size:18px}
+    .btn-primary{height:48px;margin-top:18px}
+    .tip{margin-top:16px;padding-top:14px}
+}
+@media (prefers-reduced-motion: reduce){
+    .card,.blob{animation:none!important}
+    .btn,.toast{transition:none!important}
 }
 </style>
 </head>
 <body>
+
+<div class="bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+
+<main class="app">
+
+    <!-- ① 自动跳转被拦截 -->
+    <section class="card" id="view-fail" hidden>
+        <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 4h5a1 1 0 0 1 1 1v5"/>
+                <path d="M20 4l-8.5 8.5"/>
+                <path d="M18.5 14.5V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2h3.5"/>
+            </svg>
+        </div>
+        <h1 class="title">未能自动打开</h1>
+        <p class="desc">点击下方按钮进入<b>友链工单系统</b>。</p>
+
+        <div class="note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6v.1"/>
+            </svg>
+            <p>浏览器限制<b>第三方 Cookie</b>，页面无法在站内内嵌显示，因此改为跳转外部链接打开。</p>
+        </div>
+
+        <a class="btn btn-primary" id="openLink" href="#" target="_blank" rel="noopener">
+            <span>打开友链工单系统</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h13"/><path d="M13 6l6 6-6 6"/>
+            </svg>
+        </a>
+
+        <button class="btn btn-ghost" id="copyBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="11" height="11" rx="2.4"/>
+                <path d="M5.5 15H5a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 5 3.5h8.5A1.5 1.5 0 0 1 15 5v.5"/>
+            </svg>
+            <span>复制链接</span>
+        </button>
+
+        <p class="tip">按钮无响应？长按下方链接复制，粘贴到系统浏览器打开</p>
+        <p class="url" id="urlText"></p>
+
+        <a class="back" data-blog href="#">← 返回博客</a>
+    </section>
+
+    <!-- ② 已在新标签页打开 -->
+    <section class="card" id="view-ok" hidden>
+        <div class="icon ok" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.5 12.5l5 5 10-11"/>
+            </svg>
+        </div>
+        <h1 class="title">已在新标签页打开</h1>
+        <p class="desc">没看到工单系统页面？<br>请检查浏览器标签栏，<br>或点击下方按钮重试。</p>
+
+        <a class="btn btn-primary" id="openLink2" href="#" target="_blank" rel="noopener">
+            <span>再次打开</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h13"/><path d="M13 6l6 6-6 6"/>
+            </svg>
+        </a>
+
+        <a class="back" data-blog href="#">← 返回博客</a>
+    </section>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
-function isMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-const formUrl = "https://sunrise-studio.feishu.cn/share/base/webpage/shrcnXcPJEb8G1brqpk36nIWTWe?share_link_type=qrcode";
-if(isMobile()){
-    let popup = window.open(formUrl, "_blank");
-    // 判断弹窗是否被浏览器拦截，失败则显示按钮
-    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-        document.body.innerHTML = `
-        <div class="mobile-box">
-            <div>自动跳转失败，请点击下方按钮打开系统</div>
-            <button class="open-btn" onclick="window.open('${formUrl}','_blank')">打开工单系统</button>
-        </div>
-        `;
-    } else {
-        // 弹窗成功打开，当前页面提示
-        document.body.innerHTML = `
-        <div class="mobile-box">
-            <div>工单系统已在新标签页打开</div>
-        </div>
-        `;
+(function () {
+    'use strict';
+
+    /* ====== 可配置项（换地址只改这两行） ====== */
+    var formUrl = "https://sunrise-studio.feishu.cn/share/base/webpage/shrcnXcPJEb8G1brqpk36nIWTWe";
+    var blogUrl = "https://wowtang.top/";
+    /* ======================================== */
+
+    var toastEl = document.getElementById('toast');
+    var toastTimer = null;
+
+    function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
     }
-}else{
-    const iframe = document.createElement('iframe');
-    iframe.src = formUrl;
-    document.body.appendChild(iframe);
-}
+
+    function show(name) {
+        document.getElementById('view-fail').hidden = (name !== 'fail');
+        document.getElementById('view-ok').hidden = (name !== 'ok');
+    }
+
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    /* 把地址注入到所有需要的节点 */
+    document.getElementById('openLink').href = formUrl;
+    document.getElementById('openLink2').href = formUrl;
+    document.getElementById('urlText').textContent = formUrl;
+
+    var blogLinks = document.querySelectorAll('[data-blog]');
+    for (var i = 0; i < blogLinks.length; i++) blogLinks[i].href = blogUrl;
+
+    /* 复制链接：clipboard 失败时退回 execCommand（部分 App 内置浏览器无 clipboard） */
+    document.getElementById('copyBtn').addEventListener('click', function () {
+        function legacyCopy() {
+            var ta = document.createElement('textarea');
+            ta.value = formUrl;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            ta.setSelectionRange(0, ta.value.length);
+            var ok = false;
+            try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+            document.body.removeChild(ta);
+            return ok;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(formUrl).then(function () {
+                toast('链接已复制');
+            }, function () {
+                toast(legacyCopy() ? '链接已复制' : '复制失败，请长按链接手动复制');
+            });
+        } else {
+            toast(legacyCopy() ? '链接已复制' : '复制失败，请长按链接手动复制');
+        }
+    });
+
+    /* 调试用：?state=fail / ?state=ok 可在桌面直接预览两种状态，不影响线上逻辑 */
+    var forced = (location.search.match(/[?&]state=(fail|ok)\b/) || [])[1];
+    if (forced) {
+        show(forced);
+        return;
+    }
+
+    if (isMobile()) {
+        // 手机端：尝试自动打开新标签页，被拦截则展示兜底页
+        var opened = false;
+        try {
+            var popup = window.open(formUrl, '_blank');
+            opened = !!(popup && !popup.closed && typeof popup.closed !== 'undefined');
+        } catch (e) {
+            opened = false;
+        }
+        show(opened ? 'ok' : 'fail');
+    } else {
+        // 桌面端：直接内嵌
+        var iframe = document.createElement('iframe');
+        iframe.src = formUrl;
+        iframe.setAttribute('title', '友链工单系统');
+        document.body.classList.add('is-frame');
+        document.body.appendChild(iframe);
+    }
+})();
 </script>
+
 </body>
 </html>
