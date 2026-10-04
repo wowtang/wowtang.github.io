@@ -1611,6 +1611,54 @@
       }
     });
   }
-  initLinkOut();
+  /* ------ 22. 邮箱订阅表单补全（侧栏订阅卡） ------
+     第三方（follow.it 等）真正专有的只有「接口地址」——follow.it 官方文档明确写着
+     邮箱输入框的 name 必须是 email，也就是说输入框和按钮本就该由主题提供。
+     三种贴法统一在这里收口：
+       ① 完整表单（邮箱框 + 提交钮都自带）→ 一律不动，尊重第三方原样
+       ② 只有 <form …> 壳（缺输入框或缺按钮）→ 补 method/target，再注入缺的那部分
+       ③ 只贴了 action 地址（纯文本）→ 用主题控件生成整张表单
+     判据取「有没有可填控件 / 提交钮」而不是「有没有 form」：粘贴的裸 <form> 会被浏览器
+     自动闭合，DOM 里 form 存在但为空，只看 form 会误判成"已完整"而补不上东西。 */
+  function initSubscribeForm() {
+    var FIELD_SEL = 'input[type="email"], input[type="text"], input[type="tel"], input[type="url"], input[type="search"], input:not([type]), textarea';
+    var SUBMIT_SEL = 'button:not([type="button"]), input[type="submit"], input[type="image"]';
+
+    function fieldHtml(field, ph) {
+      return '<input type="email" name="' + escapeHtml(field) + '" placeholder="' + escapeHtml(ph) +
+        '" autocomplete="email" spellcheck="false" required>';
+    }
+    function buttonHtml(btn) {
+      return '<button type="submit">' + escapeHtml(btn) + '</button>';
+    }
+
+    $$('.subscribe-form-box').forEach(function (box) {
+      var field = box.getAttribute('data-sub-field') || 'email';
+      var ph = box.getAttribute('data-sub-placeholder') || '你的邮箱地址';
+      var btn = box.getAttribute('data-sub-button') || '订阅';
+      var form = box.querySelector('form');
+
+      if (form) {
+        var hasField = !!form.querySelector(FIELD_SEL);
+        var hasSubmit = !!form.querySelector(SUBMIT_SEL);
+        if (hasField && hasSubmit) return;                       // ① 第三方完整表单，不碰
+        if (!form.getAttribute('method')) form.setAttribute('method', 'post');
+        if (!form.getAttribute('target')) form.setAttribute('target', '_blank');
+        form.insertAdjacentHTML('beforeend',                     // ② 只补缺的那部分
+          (hasField ? '' : fieldHtml(field, ph)) + (hasSubmit ? '' : buttonHtml(btn)));
+        return;
+      }
+
+      /* ③ 只贴了地址。要求是纯文本（不含任何标签）且能抠出 http(s) 链接才接手，
+         否则用户粘贴的「无 form 的自定义 embed」（纯 div / iframe 结构）会被误改。 */
+      var raw = box.innerHTML.trim();
+      if (raw.indexOf('<') !== -1) return;
+      var m = raw.match(/https?:\/\/[^\s"'<>]+/i);
+      if (!m) return;
+      box.innerHTML = '<form action="' + escapeHtml(m[0]) + '" method="post" target="_blank">' +
+        fieldHtml(field, ph) + buttonHtml(btn) + '</form>';
+    });
+  }
+  initSubscribeForm();
 
 })();

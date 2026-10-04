@@ -497,6 +497,89 @@ body.page-index #nav.nav-transparent #nav-right {
 /* welcome / announcement */
 .welcome-content, .announcement-content { font-size: 13px; color: var(--text-body); line-height: 1.8; }
 
+/* card-subscribe 邮箱订阅（表单式）
+   用户只粘贴第三方订阅表单 HTML，控件外观全部由下面这组规则接管。
+   不依赖第三方自带 class，因此用元素选择器 + 类型属性选择器覆盖裸 HTML。 */
+.card-subscribe .subscribe-desc {
+  font-size: 13px; color: var(--text-body); line-height: 1.8; margin: 0 0 14px;
+}
+.subscribe-form-box { font-size: 13px; color: var(--text-body); }
+.subscribe-form-box form { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.subscribe-form-box label { font-size: 12px; color: var(--text-meta); line-height: 1.6; }
+.subscribe-form-box p { margin: 0 0 8px; font-size: 13px; line-height: 1.8; }
+.subscribe-form-box img { max-width: 100%; height: auto; }
+.subscribe-form-box a { font-size: 12px; }
+.subscribe-form-box small { font-size: 11px; color: var(--text-meta); }
+
+/* 输入框：文本框 / 邮箱框 / 下拉，统一为站内玻璃感 */
+.subscribe-form-box input[type="text"],
+.subscribe-form-box input[type="email"],
+.subscribe-form-box input[type="search"],
+.subscribe-form-box input[type="tel"],
+.subscribe-form-box input:not([type]),
+.subscribe-form-box select {
+  width: 100%; padding: 11px 14px;
+  font-family: var(--body-font); font-size: 13px; line-height: 1.5;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(38, 121, 204, 0.22);
+  border-radius: calc(var(--card-radius) - 4px);
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.subscribe-form-box input[type="text"]::placeholder,
+.subscribe-form-box input[type="email"]::placeholder,
+.subscribe-form-box input[type="search"]::placeholder,
+.subscribe-form-box input[type="tel"]::placeholder,
+.subscribe-form-box input:not([type])::placeholder {
+  color: var(--text-mute);
+}
+.subscribe-form-box input[type="text"]:focus,
+.subscribe-form-box input[type="email"]:focus,
+.subscribe-form-box input[type="search"]:focus,
+.subscribe-form-box input[type="tel"]:focus,
+.subscribe-form-box input:not([type]):focus,
+.subscribe-form-box select:focus {
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(38, 121, 204, 0.15);
+}
+/* 复选框 / 单选框：保持原生尺寸，不被上面 100% 宽度带偏 */
+.subscribe-form-box input[type="checkbox"],
+.subscribe-form-box input[type="radio"] { width: auto; margin-right: 6px; vertical-align: middle; }
+
+/* 提交按钮：与站内「友链申请」按钮同一套主色→强调色渐变 */
+.subscribe-form-box button,
+.subscribe-form-box input[type="submit"],
+.subscribe-form-box input[type="button"] {
+  width: 100%; padding: 11px 16px;
+  font-family: var(--body-font); font-size: 13px; font-weight: 600; line-height: 1.5;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  border-radius: calc(var(--card-radius) - 4px);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(38, 121, 204, 0.28);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.subscribe-form-box button:hover,
+.subscribe-form-box input[type="submit"]:hover,
+.subscribe-form-box input[type="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(38, 121, 204, 0.4);
+}
+/* 表单块之间不收尾的 margin 由 flex gap 接管 */
+.subscribe-form-box form > *:last-child { margin-bottom: 0; }
+
+/* 底部小字隐私提示 */
+.card-subscribe .subscribe-note {
+  display: flex; align-items: flex-start; gap: 6px;
+  margin: 14px 0 0; padding-top: 10px;
+  border-top: 1px dashed var(--divider);
+  font-size: 11px; color: var(--text-meta); line-height: 1.6;
+}
+.card-subscribe .subscribe-note i { color: var(--accent); margin-top: 3px; flex-shrink: 0; }
+
 /* ------ 8. 文章列表 post-card ------ */
 #recent-posts { display: flex; flex-direction: column; gap: 18px; }
 .recent-post-items { display: flex; flex-direction: column; gap: 18px; }
@@ -1408,6 +1491,64 @@ body.page-index #nav.nav-transparent #nav-right {
 [data-theme="dark"] .welcome-content,
 [data-theme="dark"] .announcement-content {
   color: #c9d1d9 !important;
+}
+
+/* --- 邮箱订阅卡：深色下的输入框 / 按钮可读性（含防第三方自带浅色样式） --- */
+[data-theme="dark"] .card-subscribe .subscribe-desc {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .subscribe-form-box {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .subscribe-form-box label,
+[data-theme="dark"] .subscribe-form-box small {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .subscribe-form-box input[type="text"],
+[data-theme="dark"] .subscribe-form-box input[type="email"],
+[data-theme="dark"] .subscribe-form-box input[type="search"],
+[data-theme="dark"] .subscribe-form-box input[type="tel"],
+[data-theme="dark"] .subscribe-form-box input:not([type]),
+[data-theme="dark"] .subscribe-form-box select {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .subscribe-form-box input[type="text"]::placeholder,
+[data-theme="dark"] .subscribe-form-box input[type="email"]::placeholder,
+[data-theme="dark"] .subscribe-form-box input[type="search"]::placeholder,
+[data-theme="dark"] .subscribe-form-box input[type="tel"]::placeholder,
+[data-theme="dark"] .subscribe-form-box input:not([type])::placeholder {
+  color: #6e7681 !important;
+}
+[data-theme="dark"] .subscribe-form-box input[type="text"]:focus,
+[data-theme="dark"] .subscribe-form-box input[type="email"]:focus,
+[data-theme="dark"] .subscribe-form-box input[type="search"]:focus,
+[data-theme="dark"] .subscribe-form-box input[type="tel"]:focus,
+[data-theme="dark"] .subscribe-form-box input:not([type]):focus,
+[data-theme="dark"] .subscribe-form-box select:focus {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: #5fa9ff !important;
+  box-shadow: 0 0 0 3px rgba(95, 169, 255, 0.2) !important;
+}
+[data-theme="dark"] .subscribe-form-box button,
+[data-theme="dark"] .subscribe-form-box input[type="submit"],
+[data-theme="dark"] .subscribe-form-box input[type="button"] {
+  background: linear-gradient(135deg, #5fa9ff, #2dd4bf) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(95, 169, 255, 0.32) !important;
+}
+[data-theme="dark"] .subscribe-form-box button:hover,
+[data-theme="dark"] .subscribe-form-box input[type="submit"]:hover,
+[data-theme="dark"] .subscribe-form-box input[type="button"]:hover {
+  box-shadow: 0 6px 20px rgba(95, 169, 255, 0.45) !important;
+}
+[data-theme="dark"] .card-subscribe .subscribe-note {
+  color: #8b949e !important;
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="dark"] .card-subscribe .subscribe-note i {
+  color: #2dd4bf !important;
 }
 
 /* ========== 第三轮修复样式 ========== */
