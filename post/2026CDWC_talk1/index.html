@@ -543,7 +543,9 @@
   <div class="subscribe-form-box"
        data-sub-field="email"
        data-sub-placeholder="你的邮箱地址"
-       data-sub-button="订阅"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></div>
+       data-sub-button="订阅"
+       data-sub-tip-empty="请输入邮箱地址"
+       data-sub-tip-format="邮箱格式不正确，请检查后重试"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></form></div>
 
   
   <p class="subscribe-note"><i class="fa-solid fa-shield-halved"></i><span>不会向任何人分享你的邮箱地址。</span></p>
@@ -893,11 +895,11 @@ siteTime();
   
 <div id="rightside" class="rightside">
   <div id="rightside-config-hide">
-    <button class="rightside-btn" data-action="toggle-toc" title="目录" hidden id="rightside-toc"><i class="fa-solid fa-list"></i></button>
-    <button class="rightside-btn" data-action="toggle-theme" title="切换主题"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <button type="button" class="rightside-btn" data-action="toggle-toc" title="目录" hidden id="rightside-toc"><i class="fa-solid fa-list"></i></button>
+    <button type="button" class="rightside-btn" data-action="toggle-theme" title="切换主题"><i class="fa-solid fa-circle-half-stroke"></i></button>
   </div>
   
-  <button class="rightside-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" hidden><i class="fa-solid fa-angle-up"></i></button>
+  <button type="button" class="rightside-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" hidden><i class="fa-solid fa-angle-up"></i></button>
   
 </div>
 
@@ -1123,7 +1125,7 @@ siteTime();
   "navMenuShape": "icon",
   
   "navMenuIcons": "# 每行一条：匹配, 图标。分隔符可用 , ， | = 或 Tab；图标可只写 fa-bug 这样的短名\n/post/bigthings, fa-solid fa-timeline\n/post/feedback, fa-solid fa-bug",
-  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\n一起来找茬#%#/post/feedback/"
+  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\nSunrise;s blog 友联工单系统#%#/link_user/\n一起来找茬#%#/post/feedback/"
 }
   </script>
   <script>
@@ -1145,7 +1147,7 @@ siteTime();
     runtimeEl.innerText = diff >= 0 ? diff : 0;
   }
 })();
-// 加载超时兜底
+{# 加载超时兜底 #}
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
     const uv = document.getElementById('busuanzi_site_uv').textContent;

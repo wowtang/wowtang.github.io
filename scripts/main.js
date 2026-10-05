@@ -1695,10 +1695,72 @@
        ② 只有 <form …> 壳（缺输入框或缺按钮）→ 补 method/target，再注入缺的那部分
        ③ 只贴了 action 地址（纯文本）→ 用主题控件生成整张表单
      判据取「有没有可填控件 / 提交钮」而不是「有没有 form」：粘贴的裸 <form> 会被浏览器
-     自动闭合，DOM 里 form 存在但为空，只看 form 会误判成"已完整"而补不上东西。 */
+     自动闭合，DOM 里 form 存在但为空，只看 form 会误判成"已完整"而补不上东西。
+     ②③ 这两种「主题动过控件」的情况还会顺手接管校验（novalidate + 卡片内提示），
+     把浏览器原生的「请填写此字段。」浮层换掉；① 的原样表单不动它。 */
   function initSubscribeForm() {
     var FIELD_SEL = 'input[type="email"], input[type="text"], input[type="tel"], input[type="url"], input[type="search"], input:not([type]), textarea';
     var SUBMIT_SEL = 'button:not([type="button"]), input[type="submit"], input[type="image"]';
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    var msgSeq = 0;
+
+    /* 校验提示换成站内 UI：给 form 加 novalidate 关掉浏览器那个"请填写此字段。"浮层，
+       required / type=email 照旧保留（语义与无障碍提示都还在），改由这里自己校验、
+       在卡片里画自己的提示 —— 提示文案同样从 data-sub-* 读，不在 JS 里硬编码。
+       只在「主题动过这张表单」时接管；用户贴的完整第三方表单不碰。 */
+    function useOwnUi(box, form) {
+      var tipEmpty = box.getAttribute('data-sub-tip-empty') || '请输入邮箱地址';
+      var tipFormat = box.getAttribute('data-sub-tip-format') || '邮箱格式不正确，请检查后重试';
+      var input = null;
+      Array.prototype.some.call(form.elements, function (el) {
+        if (el.tagName === 'INPUT' && ['email', 'text', 'tel', 'url', 'search'].indexOf(el.type) !== -1) {
+          input = el;
+          return true;
+        }
+        return false;
+      });
+      if (!input) return;
+
+      form.setAttribute('novalidate', '');
+      msgSeq += 1;
+      var msgId = 'subscribe-msg-' + msgSeq;
+      box.insertAdjacentHTML('beforeend',
+        '<p class="subscribe-msg" id="' + msgId + '" role="alert" hidden>' +
+        '<i class="fa-solid fa-circle-exclamation"></i><span></span></p>');
+      var msg = box.lastElementChild;
+      var msgText = msg.querySelector('span');
+      var described = input.getAttribute('aria-describedby');
+      input.setAttribute('aria-describedby', described ? described + ' ' + msgId : msgId);
+
+      function setState(tip) {
+        msgText.textContent = tip || '';
+        msg.hidden = !tip;
+        if (tip) {
+          box.classList.add('is-invalid');
+          input.setAttribute('aria-invalid', 'true');
+        } else {
+          box.classList.remove('is-invalid');
+          input.removeAttribute('aria-invalid');
+        }
+      }
+
+      form.addEventListener('submit', function (ev) {
+        var value = String(input.value || '').trim();
+        var tip = '';
+        if (!value) tip = tipEmpty;
+        else if ((input.type === 'email' || /email/i.test(input.getAttribute('name') || '')) && !EMAIL_RE.test(value)) tip = tipFormat;
+        if (tip) {
+          ev.preventDefault();
+          setState(tip);
+          try { input.focus(); } catch (e) {}
+          return;
+        }
+        setState('');
+      });
+      input.addEventListener('input', function () {
+        if (box.classList.contains('is-invalid')) setState('');
+      });
+    }
 
     function fieldHtml(field, ph) {
       return '<input type="email" name="' + escapeHtml(field) + '" placeholder="' + escapeHtml(ph) +
@@ -1722,6 +1784,7 @@
         if (!form.getAttribute('target')) form.setAttribute('target', '_blank');
         form.insertAdjacentHTML('beforeend',                     // ② 只补缺的那部分
           (hasField ? '' : fieldHtml(field, ph)) + (hasSubmit ? '' : buttonHtml(btn)));
+        useOwnUi(box, form);
         return;
       }
 
@@ -1733,6 +1796,7 @@
       if (!m) return;
       box.innerHTML = '<form action="' + escapeHtml(m[0]) + '" method="post" target="_blank">' +
         fieldHtml(field, ph) + buttonHtml(btn) + '</form>';
+      useOwnUi(box, box.querySelector('form'));
     });
   }
   initSubscribeForm();

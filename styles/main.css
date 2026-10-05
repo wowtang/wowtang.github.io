@@ -725,6 +725,33 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 .card-subscribe .subscribe-note i { color: var(--accent); margin-top: 3px; flex-shrink: 0; }
 
+/* 表单校验提示：用站内 UI 替代浏览器原生气泡（"请填写此字段。"）。
+   JS 会给 form 加 novalidate 并自行校验，这里只管外观。
+   颜色只借站内既有的警示语义色 --warn（= --hover），**不新造令牌**，
+   所以 DESIGN.md / design-system.json 不用动；
+   文案本身保持正文色，避免把新的低对比文字引进审计白名单。 */
+.card-subscribe .subscribe-msg {
+  display: flex; align-items: flex-start; gap: 6px;
+  margin: 8px 0 0; font-size: 11px; color: var(--text-body); line-height: 1.6;
+}
+.card-subscribe .subscribe-msg i { color: var(--warn); margin-top: 2px; flex-shrink: 0; }
+.card-subscribe .subscribe-msg[hidden] { display: none; }
+/* 出错态：输入框换警示色描边 + 柔和光环（浓度从 --warn 派生，跟随站点配色）。
+   类名挂在 .subscribe-form-box 上（main.js 第 22 节 setState() 里 box.classList.add 的对象
+   就是这个容器），不是 .card-subscribe —— 挂错元素这条规则永远不会命中，
+   出错时边框会被下方 .subscribe-form-box input:focus 的 --primary 压住。
+   选择器写成 .card-subscribe .subscribe-form-box.is-invalid 是为了把权重抬到
+   比 input:focus 那条 (0,3,1) 更高，深色覆盖同理。 */
+.card-subscribe .subscribe-form-box.is-invalid input[type="email"],
+.card-subscribe .subscribe-form-box.is-invalid input[type="text"],
+.card-subscribe .subscribe-form-box.is-invalid input[type="tel"],
+.card-subscribe .subscribe-form-box.is-invalid input[type="search"],
+.card-subscribe .subscribe-form-box.is-invalid input:not([type]) {
+  border-color: var(--warn);
+  background: #fff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--warn) 18%, transparent);
+}
+
 /* ------ 8. 文章列表 post-card ------ */
 #recent-posts { display: flex; flex-direction: column; gap: 18px; }
 .recent-post-items { display: flex; flex-direction: column; gap: 18px; }
@@ -987,6 +1014,10 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 [data-theme="dark"] .flink-item { background: rgba(255, 255, 255, 0.06); }
 .flink-item:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
+/* 悬浮时站点名必须显式转白：.flink-name 是 h2，被 `h1..h6 { color: var(--text) }`（0,0,1）
+   直接命中自身，不继承父级 a 的 #fff —— 少了这条，悬浮时名字仍是黑的。
+   与 friend-feed 的 `.friend-feed-item:hover .friend-feed-title { color:#fff }` 同构。 */
+.flink-item:hover .flink-name { color: #fff; }
 .flink-avatar { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
 .flink-meta { min-width: 0; flex: 1; }
 .flink-name { margin: 0; font-size: 15px; font-weight: 700; }
@@ -1731,6 +1762,22 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 [data-theme="dark"] .card-subscribe .subscribe-note i {
   color: #2dd4bf !important;
+}
+/* 表单校验提示 · 深色（文案硬编码 #c9d1d9，警示色走 --warn = #ffb38a；
+   本文件的深色覆盖一律 !important + 硬编码，防被上方浅色规则或第三方内联样式压住） */
+[data-theme="dark"] .card-subscribe .subscribe-msg {
+  color: #c9d1d9 !important;
+}
+[data-theme="dark"] .card-subscribe .subscribe-msg i {
+  color: #ffb38a !important;
+}
+[data-theme="dark"] .card-subscribe .subscribe-form-box.is-invalid input[type="email"],
+[data-theme="dark"] .card-subscribe .subscribe-form-box.is-invalid input[type="text"],
+[data-theme="dark"] .card-subscribe .subscribe-form-box.is-invalid input[type="tel"],
+[data-theme="dark"] .card-subscribe .subscribe-form-box.is-invalid input[type="search"],
+[data-theme="dark"] .card-subscribe .subscribe-form-box.is-invalid input:not([type]) {
+  border-color: #ffb38a !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ffb38a 22%, transparent) !important;
 }
 
 /* ========== 第三轮修复样式 ========== */

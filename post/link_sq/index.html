@@ -288,8 +288,8 @@
       <div id="post-meta">
         <span class="post-meta-item"><i class="far fa-calendar-alt"></i> <time datetime="0001-01-01T04:51:33+08:00">Jan 01, 0001</time></span>
         
-        <span class="post-meta-item"><i class="far fa-clock"></i> 7 min read 分钟阅读</span>
-        <span class="post-meta-item"><i class="fa-solid fa-pen-nib"></i> 2741 字</span>
+        <span class="post-meta-item"><i class="far fa-clock"></i> 12 min read 分钟阅读</span>
+        <span class="post-meta-item"><i class="fa-solid fa-pen-nib"></i> 4523 字</span>
       </div>
     </div>
     
@@ -330,45 +330,90 @@
 </code></pre>
 <hr />
 <p>添加完成后，请点击下方按钮操作提交，使用电脑打开更方便</p>
-<!-- 按钮HTML -->
-<p><button class="apply-btn" onclick="window.location.href='/link_user/#apply'">立即申请</button></p>
+<!-- 按钮HTML：底色跟随主题主色 --primary，与站内「友链申请」「邮箱订阅」按钮同一套视觉语言 -->
+<div class="apply-cta">
+  <a class="apply-btn" href="/link_user/#apply">
+    <span>立即申请</span>
+    <svg class="apply-btn-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.2 8h10.6M8.9 3.4 13.5 8l-4.6 4.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</div>
 <style>
-.apply-btn {
-  padding: 16px 48px;
+/* 友链申请按钮 —— 纯色主色版
+   1. 底色就是 var(--primary)，一个字都没加：跟主题里其它 27 处主色按钮
+      （.tag-cloud-item:hover / .flink-item:hover / .rightside-btn:hover 等）
+      同一套写法，换主色时一起变。
+   2. 整条规则里没有任何 linear-gradient —— 前面两版试过 135deg 双色和 180deg
+      纵向调子，都判定「老气」。顶部那道内亮线（::before）也一并撤了，
+      它本身就是一层渐变，留着等于没去。
+   3. 唯一的派生色是 hover 的加深：color-mix(in srgb, var(--primary) 88%, #000)，
+      纯色相调整，不是新色相，也跟得上主色。
+   4. 文字是白字 #fff。实测白字在纯主色 #70B8FF 上是 2.10:1（低于 AA 的 4.5:1），
+      这是「拿纯主色当底」与「白字」之间固有的冲突，不是配错。
+      如果哪天看着发虚，把下面 --ab-ink-fix 从 100% 调到 65%（纯色相压深，仍然零渐变），
+      白字对比度实测回到 4.67:1，过 AA。档位表：100%→2.10、80%→3.24、70%→4.11、65%→4.67。
+      开关就一个数，别的都不用动。
+   5. 选择器带 .apply-cta 前缀提升一级特异性，用来压住 .post-content a /
+      .post-content a:hover —— 否则锚点会被正文链接样式染成主色字 + 虚线底边。 */
+.apply-cta {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 10px;
+}
+.apply-cta .apply-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 42px;
+  font-family: var(--body-font, sans-serif);
   font-size: 18px;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  color: #ffffff;
-  background: #3b82f6;
-  background: -webkit-linear-gradient(135deg, #3b82f6, #1d4ed8);
-  background: -o-linear-gradient(135deg, #3b82f6, #1d4ed8);
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  line-height: 1.15;
+  letter-spacing: 0.4px;
+  color: #fff;
+  text-decoration: none;
   border: none;
-  border-radius: 16px;
+  border-radius: 999px;
   cursor: pointer;
-  -webkit-box-shadow: 0 6px 18px rgba(29, 78, 216, 0.32);
-  box-shadow: 0 6px 18px rgba(29, 78, 216, 0.32);
-  -webkit-transition: all 0.28s ease;
-  -o-transition: all 0.28s ease;
-  transition: all 0.28s ease;
-  margin-left: 60px; /* 使用margin‑left实现按钮前面留白，不要改body */
+  --ab-ink-fix: 100%;
+  background: color-mix(in srgb, var(--primary, #2679cc) var(--ab-ink-fix), #000);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary, #2679cc) 32%, transparent);
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
 }
-.apply-btn:hover {
-  -webkit-transform: translateY(-3px);
-  -ms-transform: translateY(-3px);
+.apply-cta .apply-btn-arrow {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+.apply-cta .apply-btn:hover {
+  color: #fff;
+  background: color-mix(in srgb, var(--primary, #2679cc) 88%, #000);
   transform: translateY(-3px);
-  -webkit-box-shadow: 0 10px 26px rgba(29, 78, 216, 0.42);
-  box-shadow: 0 10px 26px rgba(29, 78, 216, 0.42);
-  background: -webkit-linear-gradient(135deg, #4f90f7, #2563eb);
-  background: -o-linear-gradient(135deg, #4f90f7, #2563eb);
-  background: linear-gradient(135deg, #4f90f7, #2563eb);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--primary, #2679cc) 42%, transparent);
 }
-.apply-btn:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  -webkit-box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
-  box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
+.apply-cta .apply-btn:hover .apply-btn-arrow { transform: translateX(4px); }
+.apply-cta .apply-btn:active {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--primary, #2679cc) 82%, #000);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #2679cc) 28%, transparent);
+}
+.apply-cta .apply-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary, #2679cc) 32%, transparent),
+              0 0 0 4px color-mix(in srgb, var(--primary, #2679cc) 34%, transparent);
+}
+[data-theme="dark"] .apply-cta .apply-btn { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); }
+[data-theme="dark"] .apply-cta .apply-btn:hover { box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); }
+[data-theme="dark"] .apply-cta .apply-btn:active { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55); }
+[data-theme="dark"] .apply-cta .apply-btn:focus-visible {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5),
+              0 0 0 4px color-mix(in srgb, var(--primary, #2679cc) 38%, transparent);
+}
+@media (max-width: 640px) {
+  .apply-cta { margin: 24px 0 8px; }
+  .apply-cta .apply-btn { width: 100%; justify-content: center; padding: 14px 20px; }
 }
 </style>
 <hr />
@@ -576,7 +621,9 @@
   <div class="subscribe-form-box"
        data-sub-field="email"
        data-sub-placeholder="你的邮箱地址"
-       data-sub-button="订阅"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></div>
+       data-sub-button="订阅"
+       data-sub-tip-empty="请输入邮箱地址"
+       data-sub-tip-format="邮箱格式不正确，请检查后重试"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></form></div>
 
   
   <p class="subscribe-note"><i class="fa-solid fa-shield-halved"></i><span>不会向任何人分享你的邮箱地址。</span></p>
@@ -926,11 +973,11 @@ siteTime();
   
 <div id="rightside" class="rightside">
   <div id="rightside-config-hide">
-    <button class="rightside-btn" data-action="toggle-toc" title="目录" hidden id="rightside-toc"><i class="fa-solid fa-list"></i></button>
-    <button class="rightside-btn" data-action="toggle-theme" title="切换主题"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <button type="button" class="rightside-btn" data-action="toggle-toc" title="目录" hidden id="rightside-toc"><i class="fa-solid fa-list"></i></button>
+    <button type="button" class="rightside-btn" data-action="toggle-theme" title="切换主题"><i class="fa-solid fa-circle-half-stroke"></i></button>
   </div>
   
-  <button class="rightside-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" hidden><i class="fa-solid fa-angle-up"></i></button>
+  <button type="button" class="rightside-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" hidden><i class="fa-solid fa-angle-up"></i></button>
   
 </div>
 
@@ -1156,7 +1203,7 @@ siteTime();
   "navMenuShape": "icon",
   
   "navMenuIcons": "# 每行一条：匹配, 图标。分隔符可用 , ， | = 或 Tab；图标可只写 fa-bug 这样的短名\n/post/bigthings, fa-solid fa-timeline\n/post/feedback, fa-solid fa-bug",
-  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\n一起来找茬#%#/post/feedback/"
+  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\nSunrise;s blog 友联工单系统#%#/link_user/\n一起来找茬#%#/post/feedback/"
 }
   </script>
   <script>
@@ -1178,7 +1225,7 @@ siteTime();
     runtimeEl.innerText = diff >= 0 ? diff : 0;
   }
 })();
-// 加载超时兜底
+{# 加载超时兜底 #}
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
     const uv = document.getElementById('busuanzi_site_uv').textContent;
