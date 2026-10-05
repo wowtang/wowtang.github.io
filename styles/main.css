@@ -9,6 +9,8 @@
   --primary: #2679cc;
   --accent: #00c4b6;
   --hover: #ff7242;
+  /* 警示色：站内唯一暖色的语义别名（外链风险提示用），改 --hover 会一并跟随 */
+  --warn: var(--hover);
   --code-fg: #f47466;
   --code-bg: rgba(27, 31, 35, 0.05);
   --text: #1f2d3d;
@@ -41,6 +43,7 @@
   --primary: #5fa9ff;
   --accent: #2dd4bf;
   --hover: #ffb38a;
+  --warn: var(--hover);
   --text: #e6edf3;
   --text-body: #c9d1d9;
   --text-meta: #8b949e;
@@ -58,6 +61,15 @@
   --sidebar-gradient: linear-gradient(60deg, #2a1e2c 0%, #1c2c40 100%);
   --code-bg: rgba(110, 118, 129, 0.18);
 }
+
+/* 站点配置文字色的深色兜底（治本行，勿删）
+   base.html 会把主题配置的「文字颜色」无条件注入为 <style id="liushen-theme-vars"> 里的
+   `:root{--text:…}`，且该 <style> 排在 main.css 之后。它与上面的 [data-theme="dark"] 同为
+   属性/伪类特异性 (0,1,0)，靠后者胜出 —— 于是深色下 --text 停留在浅色配置值（本站是纯黑），
+   全站 35 处 color: var(--text) 的标题类文字全部渲染成黑字。
+   这里把选择器加一级 html[…]（(0,1,1) > (0,1,0)）只修 --text 一个变量；
+   刻意不牵连 --primary / --accent / --card-radius —— 那几个被站点配置覆盖是预期行为（跟随换色）。 */
+html[data-theme="dark"] { --text: #e6edf3; }
 
 /* ------ 2. Reset & Base ------ */
 *, *::before, *::after { box-sizing: border-box; }
@@ -84,19 +96,19 @@ body {
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(38, 121, 204, 0.3);
+  background: color-mix(in srgb, var(--primary) 30%, transparent);
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: padding-box;
   transition: background .2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(38, 121, 204, 0.55);
+  background: color-mix(in srgb, var(--primary) 55%, transparent);
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-corner { background: transparent; }
 /* Firefox */
-* { scrollbar-width: thin; scrollbar-color: rgba(38, 121, 204, 0.3) transparent; }
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--primary) 30%, transparent) transparent; }
 /* 暗色模式 */
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
   background: rgba(95, 169, 255, 0.3);
@@ -223,7 +235,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
   min-width: 32px;
   min-height: 32px;
 }
-.menus_item .site-page:hover { background: rgba(38, 121, 204, 0.12); color: var(--primary); }
+.menus_item .site-page:hover { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
 /* 中间菜单图标按右侧操作区图标（#nav-right .site-page i）逐项对齐：
      字号 11px → 14px、不透明度 0.78 → 1、hover 底色 0.1 → 0.12。
    右侧是 32×32 纯图标圆按钮，中间是「图标+文字」胶囊，所以剩下的差异只有
@@ -308,6 +320,37 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
     padding: 0;
     justify-content: center;
   }
+
+  /* 3d. 折叠态悬浮提示：文字被收拢后（仅首字 / 仅图标）只剩图可看，用户无从判断含义，
+     悬停时在该按钮正下方浮出完整菜单名。
+     文案来源 = 模板 / JS 写进 .menus_item 的 data-tip 属性
+       （CSS 没有「读取另一个元素文本」的能力，只能把菜单名复制一份到属性里）。
+     只在 compact / icon 两档显示：full 档文字本就完整，再弹提示是噪音。
+     必须放开 overflow —— #menus 基础规则带 overflow:hidden（full 档用来裁超宽内容），
+     不放开的话 tooltip 一出胶囊边界就被裁掉；而 compact/icon 档内容远窄于 max-width，
+     放开不会导致任何溢出，是纯收益。
+     伪元素是绝对定位 → 不参与布局，按钮宽高/图标位置零变化（不影响上一轮的形态过渡）。
+     不做小尖角：按钮底沿到胶囊底沿只有 9px，箭头会压在毛玻璃边上，不如让提示框直接贴在
+     胶囊下沿（top:100%+10px ≈ 胶囊底沿 +1px），既干净又天然指向上方。 */
+  #menus.nav-shape-compact,
+  #menus.nav-shape-icon { overflow: visible; }
+
+  #menus.nav-shape-compact .menus_item[data-tip]::after,
+  #menus.nav-shape-icon .menus_item[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute; left: 50%; top: calc(100% + 10px);
+    transform: translateX(-50%) translateY(-4px);
+    padding: 5px 10px; border-radius: 8px;
+    background: var(--card-bg-solid); color: var(--text);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+    font-size: 12px; font-weight: 500; line-height: 1.4; white-space: nowrap;
+    opacity: 0; visibility: hidden; pointer-events: none; z-index: 6;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  #menus.nav-shape-compact .menus_item[data-tip]:hover::after,
+  #menus.nav-shape-icon .menus_item[data-tip]:hover::after {
+    opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+  }
 }
 
 .menus_item_child {
@@ -327,7 +370,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
   display: flex; align-items: center; padding: 8px 12px; border-radius: 6px;
   color: var(--text-body); font-size: 13px;
 }
-.menus_item_child .site-page.child:hover { background: rgba(38, 121, 204, 0.12); color: var(--primary); }
+.menus_item_child .site-page.child:hover { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
 
 /* 右侧操作卡片 · 宽度自适应按钮总宽，推到右边 */
 #nav-right {
@@ -343,9 +386,35 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
   transition: background .2s, color .2s;
   font-size: 14px;
 }
-#nav-right .site-page:hover { background: rgba(38, 121, 204, 0.12); color: var(--primary); }
+#nav-right .site-page:hover { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
 
-#toggle-menu { display: none; }
+/* 右侧操作区「跨断点显隐」的四个按钮：汉堡在窄屏出现，开往/十年之约/随机在窄屏收起。
+   改前这三处全是 display 硬切 —— 1 帧内完成，右卡宽度 118 ↔ 186 硬跳 68px，
+   同时 search / theme-switch 会被当成瞬移。现在统一改走可插值的三件套。
+
+   四个必须同时满足的条件（少一条过渡就不跑或跑歪）：
+     ① display 恒真 —— display 不可插值，改为 display:none 会退化成硬切；
+     ② width 显式给值 —— auto 不可插值，所以写 32px ↔ 0；
+     ③ white-space:nowrap + overflow:hidden —— 0 宽时图标是被裁掉，
+        而不是因为放不下而换行把整张卡片撑高一倍；
+     ④ visibility 一起过渡 —— 它在 0<t<1 期间恒为 visible，
+        所以淡出跑完才真正不可见、不可点击、不可聚焦（无障碍行为与 display:none 等价）。
+   与上一轮 #menus 的 991 断点同一套手法、同一时长曲线，两边观感一致。 */
+#nav-right > div { white-space: nowrap; overflow: hidden; }
+#travellings, #ten-years, #random {
+  display: block;
+  width: 32px;
+  opacity: 1;
+  visibility: visible;
+  transition: width .3s cubic-bezier(0.4, 0, 0.2, 1), opacity .3s ease, visibility .3s;
+}
+#toggle-menu {
+  display: flex;
+  width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: width .3s cubic-bezier(0.4, 0, 0.2, 1), opacity .3s ease, visibility .3s;
+}
 
 /* 首页全屏 Banner 时导航仍显示为悬浮毛玻璃卡片 */
 body.page-index #nav.nav-transparent {
@@ -389,7 +458,7 @@ body.page-index #nav.nav-transparent #nav-right {
   opacity: calc(var(--post-cover-dark) / 100 * 0.75);   /* 深色模式暗度 × 0.75，避免过黑 */
 }
 
-#site-info { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+#site-info { position: relative; z-index: 3; text-align: center; padding: 0 24px; }
 .info_title_avatar { margin-bottom: 24px; display: flex; justify-content: center; }
 .info_title_avatar #site-info-avatar { width: 110px; height: 110px; border-radius: 50%; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); animation: float 6s ease-in-out infinite; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -434,7 +503,7 @@ body.page-index #nav.nav-transparent #nav-right {
 #post-meta .sep { margin: 0 4px; opacity: 0.6; }
 
 /* 普通页面 #page-site-info */
-#page-site-info { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+#page-site-info { position: relative; z-index: 3; text-align: center; padding: 0 24px; }
 #page-site-info #site-title { font-size: clamp(28px, 4vw, 44px); margin-bottom: 8px; }
 #page-site-info #page-subtitle { color: #fff; opacity: 0.92; font-size: 15px; margin: 0; }
 .page-tag #page-site-info #site-title::before { content: "#"; }
@@ -442,7 +511,7 @@ body.page-index #nav.nav-transparent #nav-right {
 /* SVG 波浪 */
 .waves-area {
   position: absolute; bottom: -1px; left: 0; right: 0; height: 100px; overflow: hidden;
-  z-index: 2;
+  z-index: 2;   /* 必须低于 #site-info / #page-site-info 的 3：波浪是背景装饰，不得盖住标题与副标题 */
 }
 .waves-svg { width: 100%; height: 100%; display: block; min-height: 100px; }
 .waves-svg .parallax > use { animation: liushen-waves 18s cubic-bezier(.55, .5, .45, .5) infinite; }
@@ -550,7 +619,7 @@ body.page-index #nav.nav-transparent #nav-right {
   transition: background .2s ease, color .2s ease;
 }
 .card-category-list-link:hover, .card-archive-list-link:hover { background: rgba(255, 255, 255, 0.4); color: var(--primary); }
-.card-category-list-count, .card-archive-list-count { color: var(--text-meta); font-size: 11px; padding: 1px 6px; border-radius: 8px; background: rgba(38, 121, 204, 0.12); }
+.card-category-list-count, .card-archive-list-count { color: var(--text-meta); font-size: 11px; padding: 1px 6px; border-radius: 8px; background: color-mix(in srgb, var(--primary) 12%, transparent); }
 
 /* card-tag-cloud */
 .card-tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; line-height: 1.7; }
@@ -598,7 +667,7 @@ body.page-index #nav.nav-transparent #nav-right {
   font-family: var(--body-font); font-size: 13px; line-height: 1.5;
   color: var(--text);
   background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(38, 121, 204, 0.22);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
   border-radius: calc(var(--card-radius) - 4px);
   outline: none;
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
@@ -618,7 +687,7 @@ body.page-index #nav.nav-transparent #nav-right {
 .subscribe-form-box select:focus {
   border-color: var(--primary);
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(38, 121, 204, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 /* 复选框 / 单选框：保持原生尺寸，不被上面 100% 宽度带偏 */
 .subscribe-form-box input[type="checkbox"],
@@ -635,14 +704,14 @@ body.page-index #nav.nav-transparent #nav-right {
   border: none;
   border-radius: calc(var(--card-radius) - 4px);
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(38, 121, 204, 0.28);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 28%, transparent);
   transition: transform .25s ease, box-shadow .25s ease;
 }
 .subscribe-form-box button:hover,
 .subscribe-form-box input[type="submit"]:hover,
 .subscribe-form-box input[type="button"]:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(38, 121, 204, 0.4);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 /* 表单块之间不收尾的 margin 由 flex gap 接管 */
 .subscribe-form-box form > *:last-child { margin-bottom: 0; }
@@ -704,7 +773,7 @@ body.page-index #nav.nav-transparent #nav-right {
 .article-readmore {
   display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
   font-size: 13px; color: var(--primary); padding: 6px 14px; border-radius: 16px;
-  background: rgba(38, 121, 204, 0.08); transition: background .2s, color .2s, transform .2s;
+  background: color-mix(in srgb, var(--primary) 8%, transparent); transition: background .2s, color .2s, transform .2s;
 }
 .article-readmore:hover { background: var(--primary); color: #fff; transform: translateX(2px); }
 
@@ -751,6 +820,7 @@ body.page-index #nav.nav-transparent #nav-right {
   position: absolute; top: 8px; right: 8px;
   background: rgba(255, 255, 255, 0.08); color: #fff; border: none;
   padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;
+  font-family: var(--code-font);   /* button 元素不继承字体，不声明会落到 UA 默认 Arial */
   opacity: 0; transition: opacity .2s ease, background .2s ease;
 }
 .post-content pre:hover .code-copy { opacity: 1; }
@@ -758,14 +828,14 @@ body.page-index #nav.nav-transparent #nav-right {
 .post-content img { border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); display: block; margin: 16px auto; }
 .post-content table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
 .post-content th, .post-content td { border: 1px solid var(--border); padding: 8px 12px; }
-.post-content th { background: rgba(38, 121, 204, 0.1); font-weight: 600; }
+.post-content th { background: color-mix(in srgb, var(--primary) 10%, transparent); font-weight: 600; }
 .post-content ul, .post-content ol { padding-left: 24px; margin: 12px 0; }
 .post-content hr { border-top: 1px dashed var(--border); margin: 28px 0; }
 
 /* post-bottom */
 .post-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px dashed var(--divider); }
 .post-copyright {
-  background: rgba(38, 121, 204, 0.06); border-left: 4px solid var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, transparent); border-left: 4px solid var(--primary);
   border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 18px; font-size: 13px;
 }
 .post-copyright-list { list-style: none; margin: 0; padding: 0; }
@@ -776,7 +846,7 @@ body.page-index #nav.nav-transparent #nav-right {
 .post-tags i { color: var(--text-meta); margin-right: 4px; }
 .post-tag {
   display: inline-flex; padding: 4px 12px; border-radius: 14px;
-  background: rgba(38, 121, 204, 0.1); color: var(--primary); font-size: 12px;
+  background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); font-size: 12px;
   transition: background .2s, color .2s;
 }
 .post-tag:hover { background: var(--primary); color: #fff; }
@@ -808,6 +878,7 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 [data-theme="dark"] .related-posts-list a { background: rgba(255, 255, 255, 0.06); }
 .related-posts-list a:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
+.related-posts-list a small { font-size: 11px; opacity: 0.72; }   /* main.js 生成的相关推荐日期；<small> 默认 0.8333em，不声明会掉到 10.83px */
 
 /* 评论 */
 #post-comment { margin-top: 32px; padding: 24px; border-radius: 12px; background: rgba(255, 255, 255, 0.5); }
@@ -957,7 +1028,7 @@ body.page-index #nav.nav-transparent #nav-right {
   margin-bottom: 4px;
 }
 .heatmap-month {
-  font-size: 0.6563rem;
+  font-size: 0.6875rem;   /* = 11px，11px 是功能性文字下限（原 0.6563rem = 10.5px 踩线） */
   color: var(--text-meta);   /* chatgpt 原：var(--text-3)，liushen 用 meta 保持色值一致 */
   white-space: nowrap;
   overflow: visible;
@@ -986,7 +1057,7 @@ body.page-index #nav.nav-transparent #nav-right {
   width: 100%;              /* 照搬 chatgpt：宽度由 grid 列宽决定 */
   aspect-ratio: 1 / 1;     /* 照搬 chatgpt：高度 = 宽度，正方形 */
   border-radius: 2px;
-  background: rgba(38, 121, 204, 0.08);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
   box-sizing: border-box;
   min-width: 0;
   min-height: 0;
@@ -995,13 +1066,13 @@ body.page-index #nav.nav-transparent #nav-right {
 /* 颜色规则：用 data-level 属性选择器（完全照搬 chatgpt 规则，颜色沿用 liushen 原色系确保深浅色一致） */
 .heatmap-cell[data-level="-1"] { background: transparent; }           /* 未来日期 */
 .heatmap-cell[data-level="0"],
-.heatmap-legend-cell[data-level="0"] { background: rgba(38, 121, 204, 0.06); }
+.heatmap-legend-cell[data-level="0"] { background: color-mix(in srgb, var(--primary) 6%, transparent); }
 .heatmap-cell[data-level="1"],
-.heatmap-legend-cell[data-level="1"] { background: rgba(38, 121, 204, 0.25); }
+.heatmap-legend-cell[data-level="1"] { background: color-mix(in srgb, var(--primary) 25%, transparent); }
 .heatmap-cell[data-level="2"],
-.heatmap-legend-cell[data-level="2"] { background: rgba(38, 121, 204, 0.5); }
+.heatmap-legend-cell[data-level="2"] { background: color-mix(in srgb, var(--primary) 50%, transparent); }
 .heatmap-cell[data-level="3"],
-.heatmap-legend-cell[data-level="3"] { background: rgba(38, 121, 204, 0.78); }
+.heatmap-legend-cell[data-level="3"] { background: color-mix(in srgb, var(--primary) 78%, transparent); }
 .heatmap-cell[data-level="4"],
 .heatmap-legend-cell[data-level="4"] { background: var(--primary); }
 
@@ -1062,7 +1133,7 @@ body.page-index #nav.nav-transparent #nav-right {
 .footer-social { display: flex; gap: 8px; flex-wrap: wrap; }
 .footer-social .social-icon {
   width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(38, 121, 204, 0.1); color: var(--text-body);
+  background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--text-body);
   display: inline-flex; align-items: center; justify-content: center;
   transition: background .2s, color .2s;
 }
@@ -1113,7 +1184,7 @@ body.page-index #nav.nav-transparent #nav-right {
 .search-modal-body { max-height: 60vh; overflow-y: auto; padding: 8px; }
 .search-results { list-style: none; padding: 0; margin: 0; }
 .search-results li { padding: 10px 12px; border-radius: 8px; cursor: pointer; }
-.search-results li:hover, .search-results li.active { background: rgba(38, 121, 204, 0.08); }
+.search-results li:hover, .search-results li.active { background: color-mix(in srgb, var(--primary) 8%, transparent); }
 .search-results .title { font-weight: 600; color: var(--text); font-size: 14px; }
 .search-results .excerpt { font-size: 12px; color: var(--text-meta); margin-top: 4px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .search-results em { color: var(--primary); font-style: normal; font-weight: 700; }
@@ -1146,12 +1217,12 @@ body.page-index #nav.nav-transparent #nav-right {
   padding: 10px 14px; border-radius: 8px; color: var(--text-body);
   font-size: 14px; transition: background .2s ease, color .2s ease;
 }
-.mobile-nav-item:hover { background: rgba(38, 121, 204, 0.1); color: var(--primary); }
+.mobile-nav-item:hover { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
 .mobile-nav-item i { width: 18px; }
 .mobile-sidebar-footer { padding-top: 12px; border-top: 1px dashed var(--divider); display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .mobile-sidebar-footer .social-icon {
   width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(38, 121, 204, 0.1); color: var(--text-body);
+  background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--text-body);
   display: inline-flex; align-items: center; justify-content: center;
 }
 .mobile-sidebar-footer .social-icon:hover { background: var(--primary); color: #fff; }
@@ -1179,8 +1250,18 @@ body.page-index #nav.nav-transparent #nav-right {
     pointer-events: none;
     transform: translateX(-50%) scale(.94);
   }
-  #toggle-menu { display: flex; }
-  #travellings, #ten-years, #random { display: none; }
+  /* 右侧操作区同一套过渡：三按钮宽度收拢 + 淡出，汉堡展开 + 淡入。
+     只覆盖 width / opacity / visibility 三个属性，display 保持恒真（见文件上方的基础规则）。 */
+  #travellings, #ten-years, #random {
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  #toggle-menu {
+    width: 32px;
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1463,6 +1544,16 @@ body.page-index #nav.nav-transparent #nav-right {
 [data-theme="dark"] #nav-right .site-page:hover {
   background: rgba(95, 169, 255, 0.18) !important;
   color: #5fa9ff !important;
+}
+/* 折叠态悬浮提示 · 深色（2026-10-05 新增）
+   浅色用 var(--card-bg-solid)/var(--text) 就够，深色必须硬编码 + !important：
+   同目录里 `[data-theme="dark"] #nav .menus_item .site-page { color:#e6edf3 !important }`
+   这类规则特异度更高，伪元素一旦靠继承取色就会被带偏，所以显式写死。 */
+[data-theme="dark"] #menus.nav-shape-compact .menus_item[data-tip]::after,
+[data-theme="dark"] #menus.nav-shape-icon .menus_item[data-tip]::after {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* --- 问题2：全站文章标题 + 侧边栏小标题 纯黑 → 浅白 --- */
@@ -1941,14 +2032,19 @@ body.page-index #nav.nav-transparent #nav-right {
 /* ------ 24. 防止首屏闪屏（暗色优先） ------ */
 html.not-loaded body { transition: none !important; }
 
-/* 尊重系统「减少动效」：顶栏形态过渡（991 断点的淡入淡出、1280 断点的文字收拢）全部关闭。
-   其余 hover 之类的 .2s 微过渡保持不变，只掐掉这两处跨断点的形态动画。 */
+/* 尊重系统「减少动效」：顶栏形态过渡（991 断点的淡入淡出、1280 断点的文字收拢、
+   右侧操作区三按钮/汉堡的显隐）全部关闭。
+   其余 hover 之类的 .2s 微过渡保持不变，只掐掉这几处跨断点的形态动画。 */
 @media (prefers-reduced-motion: reduce) {
   #menus,
   .menus_items,
   #menus .menus_items > .menus_item > .site-page,
   #menus .menus_item .site-page i,
-  #menus .menus_items > .menus_item > .site-page > span {
+  #menus .menus_items > .menus_item > .site-page > span,
+  #travellings,
+  #ten-years,
+  #random,
+  #toggle-menu {
     transition: none !important;
   }
 }
@@ -1998,7 +2094,15 @@ html.not-loaded body { transition: none !important; }
 }
 
 /* ------ 28. 外链跳转风险提示模态框 ------ */
+/* 视觉语言：沿用本站浮层的遮罩（.search-modal 的 rgba(0,0,0,.5) + blur(4px)）与卡片底色
+   （--card-bg-solid），按钮用站内 999px 胶囊；
+   弹窗形态沿用原版 —— 居中对称 / 大留白 / 无描边 / 16px 圆角，靠阴影与背景分层。
+   · 唯一不跟令牌走的色：警示圆保留原版红渐变（用户指定）。 */
 .link-out-overlay {
+  /* 警示红：只服务本组件（定义在弹窗根上，不写进 :root 全局令牌、也不进 DESIGN.md 白名单）。
+     大圆的渐变与「目标地址」前的小图标共用这两档 —— 改这里两处一起跟随，别再写第二遍字面量。 */
+  --linkout-red: #ee5a5a;
+  --linkout-red-light: #ff6b6b;
   position: fixed;
   top: 0;
   left: 0;
@@ -2010,6 +2114,7 @@ html.not-loaded body { transition: none !important; }
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 24px;
   z-index: 9999;
   opacity: 0;
   visibility: hidden;
@@ -2022,158 +2127,230 @@ html.not-loaded body { transition: none !important; }
 }
 
 .link-out-modal {
-  max-width: 480px;
-  width: calc(100% - 40px);
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 40px 32px;
+  width: 100%;
+  max-width: 460px;
+  background: var(--card-bg-solid);
+  /* 无描边；圆角跟站内卡片走（--card-radius，默认 12px）；顶部留白特意加大，别让警示圆贴顶 */
+  border-radius: var(--card-radius);
+  padding: 46px 34px 30px;
   text-align: center;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
-  transform: scale(0.95);
-  transition: transform 0.2s ease;
-}
-
-[data-theme="dark"] .link-out-modal {
-  background: #161b22;
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .link-out-overlay.active .link-out-modal {
-  transform: scale(1);
+  transform: translateY(0) scale(1);
+}
+
+/* 标题区：大号警示圆在上，标题与副题在下，整组居中 */
+.link-out-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
 .link-out-icon {
+  flex: 0 0 auto;
   width: 72px;
   height: 72px;
-  margin: 0 auto 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(238, 90, 90, 0.35);
+  /* 原版警示红，按用户要求由渐变改为单色。色值取自 --linkout-red，见 .link-out-overlay 顶部。 */
+  background: var(--linkout-red);
+  color: #fff;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--linkout-red) 35%, transparent);
 }
 
 .link-out-icon i {
   font-size: 32px;
-  color: #fff;
+  line-height: 1;
+}
+
+.link-out-heading {
+  min-width: 0;
+  margin-top: 18px;
 }
 
 .link-out-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text);
-  margin: 0 0 10px;
+  margin: 0;
+  line-height: 1.4;
 }
 
-[data-theme="dark"] .link-out-title {
-  color: #e6edf3;
+.link-out-kicker {
+  font-size: 12px;
+  color: var(--text-meta);
+  margin: 6px 0 0;
+  line-height: 1.4;
 }
 
 .link-out-desc {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-body);
-  line-height: 1.7;
-  margin: 0 0 24px;
+  line-height: 1.95;
+  margin: 0 auto 20px;
+  max-width: 32em;
 }
 
-[data-theme="dark"] .link-out-desc {
-  color: #8b949e;
-}
-
+/* 目标地址：整块居中，内部文本左对齐（地址若居中会很难读） */
 .link-out-url {
-  background: rgba(0, 0, 0, 0.04);
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 28px;
+  background: var(--divider);
+  border-radius: calc(var(--card-radius) - 4px);
+  padding: 14px 16px;
+  margin: 0 auto 26px;
   text-align: left;
 }
 
-[data-theme="dark"] .link-out-url {
-  background: rgba(255, 255, 255, 0.06);
-}
-
+/* label 用 flex 居中：图标与文字按盒模型对齐，比 vertical-align 微调稳 */
 .link-out-url .url-label {
-  display: block;
+  display: flex;
+  align-items: center;
   font-size: 12px;
   color: var(--text-meta);
   margin-bottom: 4px;
 }
 
-.link-out-url .url-value {
+/* 「目标地址」前的小警示标识：与大圆同形同色（fa-triangle-exclamation），
+   不带底、尺寸跟标签文字一致，只为这一行补一个"注意"提示。
+   右间距 3px 是试出来的手感值，别随手调大。 */
+.link-out-url .url-label i {
+  flex: 0 0 auto;
+  font-size: 1em;
+  line-height: 1;
+  margin-right: 3px;
+  color: var(--linkout-red);
+}
+
+.link-out-url .url-domain {
   display: block;
-  font-size: 13px;
+  font-family: var(--code-font);
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text);
   word-break: break-all;
   line-height: 1.5;
 }
 
-[data-theme="dark"] .link-out-url .url-value {
-  color: #c9d1d9;
+.link-out-url .url-domain[hidden] {
+  display: none;
+}
+
+.link-out-url .url-value {
+  display: block;
+  font-size: 12px;
+  color: var(--text-meta);
+  word-break: break-all;
+  line-height: 1.6;
+  margin-top: 2px;
 }
 
 .link-out-actions {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .link-out-actions .btn {
-  padding: 10px 28px;
-  border-radius: 8px;
-  font-size: 14px;
+  min-width: 96px;
+  padding: 9px 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+              transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.link-out-actions .btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 次要按钮：静息描边，悬浮铺一层主色浓度底 */
 .link-out-actions .btn-cancel {
-  background: rgba(0, 0, 0, 0.05);
+  border-color: var(--border);
   color: var(--text-body);
 }
 
-[data-theme="dark"] .link-out-actions .btn-cancel {
-  background: rgba(255, 255, 255, 0.08);
-  color: #c9d1d9;
-}
-
 .link-out-actions .btn-cancel:hover {
-  background: rgba(0, 0, 0, 0.08);
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
 }
 
-[data-theme="dark"] .link-out-actions .btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
+/* 主要按钮：原版红渐变实心胶囊（用户指定 —— 不用主题蓝） */
 .link-out-actions .btn-confirm {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  background: linear-gradient(180deg, var(--linkout-red-light) 0%, var(--linkout-red) 100%);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(238, 90, 90, 0.3);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--linkout-red) 30%, transparent);
 }
 
 .link-out-actions .btn-confirm:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(238, 90, 90, 0.4);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--linkout-red) 42%, transparent);
 }
 
+/* 深色下补两处真正的差异（其余面板底 / 边框 / 分隔线 / 各级文字色一律走 var()，
+   由第 1 节兜底那条 `html[data-theme="dark"] { --text: #e6edf3 }` 保证解析正确 ——
+   不在组件里重复硬编码色值，免得站点换色板时这里变成第二处真相）。 */
+[data-theme="dark"] .link-out-modal {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+/* 警示圆的红渐变在深色下同样成立（旧版深色也没有单独覆盖），故此处刻意留空 ——
+   别顺手补 [data-theme="dark"] .link-out-icon，那会改掉用户指定的这块红。 */
+
 @media (max-width: 480px) {
-  .link-out-modal {
-    padding: 28px 22px;
+  .link-out-overlay {
+    align-items: flex-end;
+    padding: 16px;
   }
-  
+
+  .link-out-modal {
+    padding: 34px 22px 24px;
+  }
+
+  /* 小屏整体收一档，否则 360×640 下弹窗会顶满全屏（实测 598/640） */
+  .link-out-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .link-out-icon i {
+    font-size: 26px;
+  }
+
   .link-out-title {
     font-size: 18px;
   }
-  
+
   .link-out-actions {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
-  
+
   .link-out-actions .btn {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-out-overlay,
+  .link-out-modal,
+  .link-out-actions .btn {
+    transition: none;
   }
 }
 

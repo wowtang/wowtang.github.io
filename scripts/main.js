@@ -185,7 +185,9 @@
   $$('[data-action="toggle-mobile-menu"]').forEach(function (b) { b.addEventListener('click', openMobile); });
   $$('[data-action="close-mobile-menu"]').forEach(function (b) { b.addEventListener('click', closeMobile); });
 
-  /* ------ 9. 多级 dropdown 菜单（navMenuJson 非空时动态渲染） ------ */
+  /* ------ 9. 多级 dropdown 菜单（navMenuJson 非空时动态渲染） ------
+     注意：叶子项要写 data-tip，与 header.html 里静态菜单保持同一套「折叠态悬浮提示」。
+     带 children 的分组项不写 —— 它 hover 时弹的是下拉子菜单，再叠一个提示框就是打架。 */
   function renderMultiLevelMenus() {
     var raw = CFG.navMenuJson || '[]';
     if (!raw || raw === '[]') return;
@@ -219,6 +221,7 @@
         a.className = 'site-page';
         a.href = item.link || '#';
         a.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"></i><span> ' + escapeHtml(item.label) + '</span>';
+        if (item.label) wrap.setAttribute('data-tip', item.label);
         wrap.appendChild(a);
       }
       holder.appendChild(wrap);
@@ -1546,11 +1549,20 @@
     var siteDomain = window.location.hostname;
     var modal = null;
     var targetUrl = null;
+    var lastFocused = null;   // 关闭弹窗后把焦点还给触发它的链接
     
     // 解析白名单（支持换行符和逗号分隔）
+    // 条目兼容两种写法：裸域名（github.com）与完整网址（https://qr.alipay.com/xxx?y=1）
+    // 后者必须先收敛成 hostname，否则 hostname 比对永远不相等 → 白名单形同虚设。
     var whitelist = [];
     if (CFG.linkOutWhitelist) {
-      whitelist = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function(d) { return d.trim().toLowerCase(); }).filter(Boolean);
+      whitelist = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function (d) {
+        return d.trim().toLowerCase()
+          .replace(/^[a-z][a-z0-9+.-]*:\/\//, '') // 去掉协议头
+          .split('/')[0]                          // 去掉路径与查询串
+          .split(':')[0]                          // 去掉端口
+          .replace(/^\.+/, '');                   // 去掉前导点
+      }).filter(Boolean);
     }
     
     // 检查域名是否在白名单中
@@ -1566,23 +1578,36 @@
       return false;
     }
     
+    /* 弹窗结构：左对齐的「图标 + 标题 + 副题」头 / 正文说明 / 目标地址 / 按钮组。
+       标题行沿用 .item-headline 的视觉语言，按钮沿用站内 999px 胶囊 +
+       --primary 实心主按钮；文案取官方书面语，站点名读 CFG.siteName。 */
     function createModal() {
       modal = document.createElement('div');
       modal.className = 'link-out-overlay';
-      modal.innerHTML = 
-        '<div class="link-out-modal">' +
-          '<div class="link-out-icon">' +
-            '<i class="fa-solid fa-triangle-exclamation"></i>' +
+      var site = escapeHtml(CFG.siteName || '本站');
+      modal.innerHTML =
+        '<div class="link-out-modal" role="dialog" aria-modal="true"' +
+             ' aria-labelledby="link-out-title" aria-describedby="link-out-desc">' +
+          '<div class="link-out-head">' +
+            '<span class="link-out-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>' +
+            '<div class="link-out-heading">' +
+              '<h2 class="link-out-title" id="link-out-title">即将离开本站</h2>' +
+              '<p class="link-out-kicker">外部链接安全提示</p>' +
+            '</div>' +
           '</div>' +
-          '<h1 class="link-out-title">即将离开' + escapeHtml(CFG.siteName || '本站') + '</h1>' +
-          '<p class="link-out-desc">您即将离开' + escapeHtml(CFG.siteName || '本站') + '，目标地址不受我们控制，请注意您的账号和财产安全。</p>' +
+          '<p class="link-out-desc" id="link-out-desc">' +
+            '您即将离开「' + site + '」，前往本站之外的第三方网站。' +
+            '该网站不受本站控制，本站无法核实其内容的真实性与安全性，' +
+            '亦不对其隐私政策及后续行为承担责任。请您谨慎辨别，注意保护个人账号与财产安全。' +
+          '</p>' +
           '<div class="link-out-url">' +
-            '<span class="url-label">⚠️目标地址：</span>' +
+            '<span class="url-label"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>目标地址</span>' +
+            '<span class="url-domain" id="link-out-url-domain"></span>' +
             '<span class="url-value" id="link-out-url-value"></span>' +
           '</div>' +
           '<div class="link-out-actions">' +
-            '<button class="btn btn-cancel" id="link-out-cancel">返回</button>' +
-            '<button class="btn btn-confirm" id="link-out-confirm">访问</button>' +
+            '<button type="button" class="btn btn-cancel" id="link-out-cancel">返回本站</button>' +
+            '<button type="button" class="btn btn-confirm" id="link-out-confirm">继续访问</button>' +
           '</div>' +
         '</div>';
       
@@ -1609,17 +1634,34 @@
     function openModal(url) {
       targetUrl = url;
       if (!modal) createModal();
+      var host = '';
+      try { host = new URL(url).hostname; } catch (err) { host = ''; }
+      var domainEl = modal.querySelector('#link-out-url-domain');
+      domainEl.textContent = host;
+      domainEl.hidden = !host;   // 解析不出域名时不留空行
       modal.querySelector('#link-out-url-value').textContent = url;
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
+      lastFocused = document.activeElement;
+      var cancelBtn = modal.querySelector('#link-out-cancel');
+      if (cancelBtn) cancelBtn.focus();   // 默认焦点落在安全选项上
     }
 
     function closeModal() {
-      if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        targetUrl = null;
+      if (!modal) return;
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      targetUrl = null;
+      if (lastFocused && lastFocused.isConnected !== false &&
+          typeof lastFocused.focus === 'function') {
+        try { lastFocused.focus(); } catch (err) {}
       }
+      // 兜底：焦点仍留在弹窗内的按钮上（触发元素已移除 / 不接受 focus）时交还文档
+      if (modal.contains(document.activeElement) &&
+          typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+      lastFocused = null;
     }
     
     document.addEventListener('click', function (e) {
@@ -1643,6 +1685,8 @@
       }
     });
   }
+  initLinkOut();
+
   /* ------ 22. 邮箱订阅表单补全（侧栏订阅卡） ------
      第三方（follow.it 等）真正专有的只有「接口地址」——follow.it 官方文档明确写着
      邮箱输入框的 name 必须是 email，也就是说输入框和按钮本就该由主题提供。
