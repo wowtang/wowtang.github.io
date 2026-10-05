@@ -192,6 +192,12 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
   transform: translateX(-50%);
   padding: 0 10px;
   justify-content: center;
+  /* 绝对定位 + left:50% 时，shrink-to-fit 只按「右半边」可用宽算，
+     内容稍宽就会被硬夹到折行。改为先按内容取宽，再用 max-width 兜底。
+     392px = 2 × 右侧操作卡实测占位(≈196px) + 两侧 24px 外边距，
+     即「胶囊最宽不超过左右两张卡之间的对称余量」，宁可裁内容也不压邻居。 */
+  width: max-content;
+  max-width: calc(100% - 392px);
 }
 .menus_items { display: flex; gap: 0; align-items: center; height: 100%; }
 .menus_item { position: relative; }
@@ -206,32 +212,50 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 .menus_item:hover .site-page.group i.fa-chevron-down { transform: rotate(180deg); }
 
 /* ================================================================
-   nav-no-icon: 顶栏菜单图标隐藏 + 窄屏裁剪 + 宽屏展开动画
-   核心思路：CSS 默认裁剪到 1em（零闪烁，模板加类）
-            JS 负责屏宽变化时的 max-width 过渡动画
+   顶栏中间功能块 · 两个互相独立的维度
+     nav-icon-off              ← 配置 navIconShow=false：隐藏所有菜单图标
+     nav-shape-full/compact/icon ← 配置 navMenuShape：仅作用于窄屏 992–1280px
+   两维都由 CSS 静态决定，JS 完全不参与 → 无状态机、无跨断点竞态
    ================================================================= */
 
-/* 1. 隐藏菜单项文字前的第一个 <i>（菜单项图标） */
-#menus.nav-no-icon .site-page > i:first-child {
+/* 1. 图标开关：隐藏菜单项文字前的第一个 <i>
+      （同时覆盖 JS 用 navMenuJson 动态渲染出来的菜单项，无需 JS 再插内联样式） */
+#menus.nav-icon-off .site-page > i:first-child {
   display: none;
 }
 
-/* 2. 基础：所有 span 统一 inline-block + nowrap */
-#menus.nav-no-icon .menus_item .site-page span {
+/* 2. 文字容器：统一 inline-block + nowrap，为裁剪/隐藏做准备 */
+#menus .menus_item .site-page span {
   display: inline-block;
   white-space: nowrap;
   vertical-align: middle;
   overflow: hidden;
 }
 
-/* 3. 默认窄屏态：裁剪到 1em（模板加类后立即生效，零闪烁） */
-#menus.nav-no-icon:not(.nav-wide) .menus_item .site-page span {
-  max-width: 1em;
-}
+/* 3. 窄屏形态（992–1280px）。
+      ≤991px 时 #menus 整体 display:none 走移动抽屉，不在此列；
+      ≥1281px 一律完整文字。 */
+@media (min-width: 992px) and (max-width: 1280px) {
+  /* 3a. 完整文字：不裁剪（防折行靠上面 #menus 的 width/max-width 兜底） */
 
-/* 4. JS 激活宽屏态：提供 transition 属性，无 max-width 约束 */
-#menus.nav-no-icon.nav-wide .menus_item .site-page span {
-  transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 3b. 仅首字：裁剪到 1em */
+  #menus.nav-shape-compact .menus_item .site-page span {
+    max-width: 1em;
+  }
+
+  /* 3c. 仅图标：整段文字隐藏，只留图标 */
+  #menus.nav-shape-icon .menus_item .site-page span {
+    display: none;
+  }
+  /* 文字没了，图标右侧那 3px 间距和文字前的空格一起收掉，让图标居中；
+     但保留 8px 左右内边距，避免几个图标挤成一坨（原来 12px 太宽、0 太挤） */
+  #menus.nav-shape-icon .menus_item .site-page i {
+    margin-right: 0;
+  }
+  #menus.nav-shape-icon .menus_item .site-page {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 
 .menus_item_child {

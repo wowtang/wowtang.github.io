@@ -195,14 +195,13 @@
     var holder = $('.menus_items');
     if (!holder) return;
     holder.innerHTML = '';
-    var hideIcon = !CFG.navIconShow; // 当 navIconShow 为 false 时隐藏图标
     data.forEach(function (item) {
       var wrap = document.createElement('div');
       wrap.className = 'menus_item';
       if (item.children && item.children.length) {
         var trigger = document.createElement('span');
         trigger.className = 'site-page group';
-        trigger.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"' + (hideIcon ? ' style="display:none"' : '') + '></i><span> ' + escapeHtml(item.label) + '</span><i class="fas fa-chevron-down"></i>';
+        trigger.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"></i><span> ' + escapeHtml(item.label) + '</span><i class="fas fa-chevron-down"></i>';
         wrap.appendChild(trigger);
         var ul = document.createElement('ul');
         ul.className = 'menus_item_child';
@@ -211,7 +210,7 @@
           var a = document.createElement('a');
           a.className = 'site-page child';
           a.href = c.link || '#';
-          a.innerHTML = '<i class="fa-fw ' + (c.icon || 'fa-solid fa-circle') + '"' + (hideIcon ? ' style="display:none"' : '') + '></i><span> ' + escapeHtml(c.label) + '</span>';
+          a.innerHTML = '<i class="fa-fw ' + (c.icon || 'fa-solid fa-circle') + '"></i><span> ' + escapeHtml(c.label) + '</span>';
           li.appendChild(a); ul.appendChild(li);
         });
         wrap.appendChild(ul);
@@ -219,7 +218,7 @@
         var a = document.createElement('a');
         a.className = 'site-page';
         a.href = item.link || '#';
-        a.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"' + (hideIcon ? ' style="display:none"' : '') + '></i><span> ' + escapeHtml(item.label) + '</span>';
+        a.innerHTML = '<i class="fa-fw ' + (item.icon || 'fa-solid fa-bookmark') + '"></i><span> ' + escapeHtml(item.label) + '</span>';
         wrap.appendChild(a);
       }
       holder.appendChild(wrap);
@@ -228,171 +227,132 @@
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   renderMultiLevelMenus();
 
-  /* ------ 9a. 顶栏菜单图标 + 窄屏裁剪 + 宽屏展开动画 ------
-   核心思路：模板(header.html)直接带 nav-no-icon 类
-            → CSS 默认裁剪到 1em（零闪烁，首帧即正确）
-            → JS 仅负责屏宽变化时的 max-width 过渡动画
-   ------------------------------------------------------- */
-  var NAV_NARROW_BREAKPOINT = 1280;
+  /* ------ 9b. 顶栏菜单图标匹配（navMenuIcons 表 + 内置路径规则） ------
+     背景：站点菜单项渲染时图标一律回落 fa-bookmark，于是顶栏会排出一模一样的书签。
+     这里按「用户表 → 内置精确路径 → 末段路径 → 精确名称」依次匹配后替换图标。
+     两个约束：
+       1. 只替换仍然是兜底 fa-bookmark 的项 —— 不覆盖 navMenuJson 里显式写好的 icon；
+       2. 内置规则必须精确匹配：本站有 /post、/post/bigthings、/post/feedback 三项，
+          若用「包含匹配」后两项会先撞上 /post 拿到博客图标。
+     纯一次性初始化，不依赖视口/resize → 无竞态。
+     --------------------------------------------------------------- */
+  var NAV_ICON_RULES = {
+    '':           'fa-solid fa-house',
+    'index':      'fa-solid fa-house',
+    'post':       'fa-solid fa-newspaper',
+    'archives':   'fa-solid fa-archive',
+    'tags':       'fa-solid fa-tags',
+    'categories': 'fa-solid fa-folder-open',
+    'memos':      'fa-solid fa-comment-dots',
+    'links':      'fa-solid fa-link',
+    'about':      'fa-solid fa-address-card',
+    'search':     'fa-solid fa-magnifying-glass',
+    'message':    'fa-solid fa-comment',
+    'guestbook':  'fa-solid fa-comment'
+  };
+  var NAV_ICON_BY_NAME = {
+    '首页': 'fa-solid fa-house',
+    '博客': 'fa-solid fa-newspaper',
+    '文章': 'fa-solid fa-newspaper',
+    '归档': 'fa-solid fa-archive',
+    '标签': 'fa-solid fa-tags',
+    '分类': 'fa-solid fa-folder-open',
+    '闪念': 'fa-solid fa-comment-dots',
+    '友链': 'fa-solid fa-link',
+    '关于': 'fa-solid fa-address-card',
+    '留言': 'fa-solid fa-comment',
+    '搜索': 'fa-solid fa-magnifying-glass'
+  };
+  var NAV_ICON_FALLBACK = 'fa-bookmark';
+  var FA_STYLE_PREFIX = /(^|\s)fa-(solid|regular|brands|light|thin|duotone)(\s|$)/;
 
-  // 辅助：测量 span 在非裁剪状态下的自然宽度（同步操作，无可见闪烁）
-  function measureSpanWidth(span) {
-    var prevMax = span.style.maxWidth;
-    span.style.maxWidth = 'none';
-    var w = span.getBoundingClientRect().width;
-    span.style.maxWidth = prevMax;
-    return Math.ceil(w);
+  /* 补全图标类名：
+       写全了（fa-solid fa-x / fa-brands fa-x）→ 原样保留
+       少风格前缀（fa-clock）              → 补 fa-solid
+       少 fa- 前缀（pen）                  → 补成 fa-pen，再补 fa-solid
+     用户表里填什么都不至于渲染成空图标。 */
+  function navIconNormalize(raw) {
+    var s = String(raw == null ? '' : raw).trim().replace(/\s+/g, ' ');
+    if (!s) return '';
+    var parts = s.split(' ');
+    var out = [];
+    for (var i = 0; i < parts.length; i++) {
+      var t = parts[i];
+      if (!t) continue;
+      if (!/^fa-/.test(t)) t = 'fa-' + t;
+      out.push(t);
+    }
+    s = out.join(' ');
+    if (!FA_STYLE_PREFIX.test(s)) s = 'fa-solid ' + s;
+    return s;
   }
-
-  // 辅助：统一处理 transitionend 回调（所有 span 完成后才执行 cleanup）
-  function bindTransitionEnds(spans, callback) {
-    var countdown = spans.length;
-    for (var i = 0; i < spans.length; i++) {
-      spans[i].addEventListener('transitionend', function handler(e) {
-        if (e.propertyName !== 'max-width') return;
-        this.removeEventListener('transitionend', handler);
-        countdown--;
-        if (countdown <= 0) callback();
-      });
-    }
+  /* 把 href 归一化成一个不含首尾斜杠的路径：/post/about/ → post/about */
+  function navIconPath(href) {
+    var s = String(href == null ? '' : href).trim();
+    if (!s || s === '#' || s.indexOf('javascript:') === 0) return '';
+    s = s.split('#')[0].split('?')[0];
+    var abs = s.match(/^[a-zA-Z][\w+.-]*:\/\/[^/]*(\/.*)?$/);
+    if (abs) s = abs[1] || '/';
+    s = s.replace(/\/index\.html?$/i, '/').replace(/\.html?$/i, '');
+    return s.replace(/^\/+|\/+$/g, '').toLowerCase();
   }
-
-  // 切换窄屏/宽屏状态（简化版 - 避免 CSS/JS 状态冲突）
-  function setMenuNarrow(narrow) {
-    var menusEl = $('#menus');
-    if (!menusEl) return;
-    // 安全守卫：仅在模板标记的 nav-no-icon 模式下工作
-    if (!menusEl.classList.contains('nav-no-icon')) return;
-
-    // 收集所有菜单项 span，首次保存完整文本
-    var items = menusEl.querySelectorAll('.site-page');
-    var spanEls = [];
-    var i, item, span;
-    for (i = 0; i < items.length; i++) {
-      item = items[i];
-      span = item.querySelector('span');
-      if (!span) continue;
-      if (!span.hasAttribute('data-fulltext')) {
-        span.setAttribute('data-fulltext', span.textContent.trim());
-      }
-      spanEls.push(span);
-    }
-    if (spanEls.length === 0) return;
-
-    if (narrow) {
-      // —— 切换到窄屏（显示单字） ——
-      if (menusEl.classList.contains('nav-wide')) {
-        // 从宽屏收缩：添加 transition 动画
-        for (i = 0; i < spanEls.length; i++) {
-          spanEls[i].style.transition = 'max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-        }
-        // 强制 reflow
-        // eslint-disable-next-line no-unused-expressions
-        spanEls[0].offsetHeight;
-        // 触发收缩动画
-        for (i = 0; i < spanEls.length; i++) {
-          spanEls[i].style.maxWidth = '1em';
-        }
-        // 动画结束后清理
-        setTimeout(function () {
-          for (var j = 0; j < spanEls.length; j++) {
-            spanEls[j].style.transition = '';
-            spanEls[j].style.maxWidth = '';
-          }
-          menusEl.classList.remove('nav-wide');
-        }, 400);
-      }
-      // 补充 title 提示
-      var allItems = menusEl.querySelectorAll('.site-page');
-      for (i = 0; i < allItems.length; i++) {
-        var sp = allItems[i].querySelector('span');
-        if (sp) allItems[i].setAttribute('title', sp.getAttribute('data-fulltext'));
-      }
-
-    } else {
-      // —— 切换到宽屏（显示全文） ——
-      // 1. 先测量自然宽度（临时移除 max-width）
-      var targets = [];
-      for (i = 0; i < spanEls.length; i++) {
-        var prevMax = spanEls[i].style.maxWidth;
-        spanEls[i].style.maxWidth = 'none';
-        var w = spanEls[i].getBoundingClientRect().width;
-        spanEls[i].style.maxWidth = prevMax;
-        targets.push(Math.ceil(w));
-      }
-
-      // 2. 设置起始锁定点 + 添加 transition
-      for (i = 0; i < spanEls.length; i++) {
-        spanEls[i].style.transition = 'max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-        spanEls[i].style.maxWidth = '1em';
-      }
-
-      // 3. 添加 nav-wide 类（用于标识状态）
-      menusEl.classList.add('nav-wide');
-
-      // 4. 强制 reflow，确保 transition 已就绪
-      // eslint-disable-next-line no-unused-expressions
-      spanEls[0].offsetHeight;
-
-      // 5. 触发展开动画
-      for (i = 0; i < spanEls.length; i++) {
-        spanEls[i].style.maxWidth = targets[i] + 'px';
-      }
-
-      // 6. 动画结束后：移除 transition，但保持 maxWidth（这是关键！）
-      //    保持 inline style 避免 CSS 规则覆盖
-      setTimeout(function () {
-        for (var j = 0; j < spanEls.length; j++) {
-          spanEls[j].style.transition = '';
-          // 保持 maxWidth，不要清除！
-        }
-        // 移除 title 属性（宽屏不需要提示）
-        var allItems = menusEl.querySelectorAll('.site-page');
-        for (j = 0; j < allItems.length; j++) {
-          allItems[j].removeAttribute('title');
-        }
-      }, 400);
-    }
+  /* 用户表的「匹配」列同样要去掉首尾斜杠，否则填 /archives 永远匹配不上
+     （归一化后的路径是 archives，没有前导斜杠）。 */
+  function navIconKey(raw) {
+    return String(raw == null ? '' : raw).trim().split('#')[0].split('?')[0]
+      .replace(/^\/+|\/+$/g, '').toLowerCase();
   }
-
-  function initNavIcon() {
-    var menusEl = $('#menus');
-    if (!menusEl) return;
-
-    // 当前状态记录，避免重复动画
-    var currentNarrow = null;
-
-    // 注意：nav-no-icon 类已在模板(header.html)中根据配置添加
-    // 这里仅根据屏宽决定是否需要展开动画
-    if (menusEl.classList.contains('nav-no-icon')) {
-      currentNarrow = window.innerWidth <= NAV_NARROW_BREAKPOINT;
-      if (currentNarrow) {
-        // 窄屏：CSS 已原生裁剪到 1em，仅补充 title 提示
-        setMenuNarrow(true);
-      } else {
-        // 宽屏：CSS 默认裁剪 → JS 动画展开（reveal 效果，零闪烁）
-        setMenuNarrow(false);
-      }
+  function navIconLookup(link, name, table) {
+    var path = navIconPath(link);
+    var label = String(name == null ? '' : name).trim().toLowerCase();
+    var i, rule, rawKey, key, icon;
+    // 1) 用户表：路径或名称任一处「包含」即命中（顺序即优先级）
+    for (i = 0; i < table.length; i++) {
+      rule = table[i] || {};
+      rawKey = String(rule.match == null ? '' : rule.match).trim();
+      if (!rawKey) continue;
+      icon = navIconNormalize(rule.icon);
+      if (!icon) continue;
+      key = navIconKey(rawKey);
+      // 只写了「/」这类：只对首页生效
+      if (!key) { if (!path) return icon; continue; }
+      if (path.indexOf(key) !== -1 || label.indexOf(key) !== -1) return icon;
     }
-
-    // 窗口尺寸变化时动态切换（带防抖 + 状态变化检测）
-    var resizeTimer;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        if (!menusEl.classList.contains('nav-no-icon')) return;
-        var newNarrow = window.innerWidth <= NAV_NARROW_BREAKPOINT;
-        // 只有状态发生变化时才执行动画
-        if (newNarrow !== currentNarrow) {
-          currentNarrow = newNarrow;
-          setMenuNarrow(newNarrow);
-        }
-      }, 120);
+    // 2) 内置：精确路径
+    if (Object.prototype.hasOwnProperty.call(NAV_ICON_RULES, path)) return NAV_ICON_RULES[path];
+    // 3) 内置：末段路径（post/about → about）
+    var seg = path ? path.split('/').pop() : '';
+    if (seg && seg !== path && Object.prototype.hasOwnProperty.call(NAV_ICON_RULES, seg)) return NAV_ICON_RULES[seg];
+    // 4) 内置：精确名称（link 是外链时兜底）
+    if (Object.prototype.hasOwnProperty.call(NAV_ICON_BY_NAME, label)) return NAV_ICON_BY_NAME[label];
+    return '';
+  }
+  function applyNavMenuIcons() {
+    var table = Array.isArray(CFG.navMenuIcons) ? CFG.navMenuIcons : [];
+    // 顶栏菜单与移动抽屉是同一批 menus，模板里各自硬编码了一遍图标 → 一处逻辑管两处
+    $$('#menus .menus_item > .site-page, #mobile-nav-list .mobile-nav-item').forEach(function (el) {
+      var icon = el.querySelector('i');
+      if (!icon || icon.className.indexOf(NAV_ICON_FALLBACK) === -1) return;
+      var span = el.querySelector('span');
+      var hit = navIconLookup(el.getAttribute('href'), span ? span.textContent : '', table);
+      if (hit) icon.className = 'fa-fw ' + hit;
     });
   }
-  initNavIcon();
+  applyNavMenuIcons();
 
-  /* ------ 9b. 页脚导航（footerNavList 非空时动态渲染） ------ */
+  /* ------ 9a. 顶栏菜单图标 / 窄屏形态（纯 CSS，无 JS） ------
+   两个维度都由模板类 + CSS 静态决定，首帧即正确：
+     nav-icon-off            ← navIconShow=false
+     nav-shape-full/compact/icon ← navMenuShape（仅 992–1280px 生效）
+   旧实现在这里跑过一套 max-width 过渡状态机（measureSpanWidth /
+   bindTransitionEnds / setMenuNarrow / initNavIcon + 固定 setTimeout(400)），
+   它带来的收益只是 0.35s 的展开动画，代价却是一个真缺陷：
+   快速跨 1280 断点时，过期的计时器会清掉新一轮的类与内联样式，
+   宽屏下永久停在「一字」态。动画收益 << 状态机风险，故整体移除。
+   --------------------------------------------------------------- */
+
+
+  /* ------ 9c. 页脚导航（footerNavList 非空时动态渲染） ------ */
   function renderFooterNav() {
     var raw = CFG.footerNavList;
     if (!raw || !raw.trim()) return;
