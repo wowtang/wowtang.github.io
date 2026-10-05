@@ -359,7 +359,7 @@
     </div>
     <div class="card-info-counts">
       <div class="count-item">
-        <div class="headline">2</div>
+        <div class="headline" data-site-post-count>2</div>
         <div class="length-num">文章</div>
       </div>
       <div class="count-item">
@@ -561,7 +561,7 @@
   <div class="webinfo">
     <div class="webinfo-item">
       <span class="webinfo-label">文章</span>
-      <span class="webinfo-value">2</span>
+      <span class="webinfo-value" data-site-post-count>2</span>
     </div>
     <div class="webinfo-item">
       <span class="webinfo-label">标签</span>
@@ -833,7 +833,7 @@ siteTime();
     runtimeEl.innerText = diff >= 0 ? diff : 0;
   }
 })();
-{# 加载超时兜底 #}
+// 加载超时兜底
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
     const uv = document.getElementById('busuanzi_site_uv').textContent;

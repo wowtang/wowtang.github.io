@@ -747,6 +747,36 @@
   }
   initRuntime();
 
+  /* ------ 15b. 网站统计 - 全站文章总数（跨页一致） ------
+     模板层拿到的 posts 只是「当前页面」的：首页第 1 页 10 篇、第 2 页 3 篇、
+     标签页只有该标签的 1 篇 —— 所以侧栏那个「文章」会随手翻页 / 落地页变来变去。
+     做法借鉴 weibo 主题：数字交给客户端，用引擎构建时生成的站级索引
+     /api/search.json（内容 = 全站可见文章，条数与归档页一致）算总数。
+     模板仍渲染一个兜底值（partials/site-post-count.html），
+     所以禁 JS / 请求失败时不会掉成 "--"；session 内再缓存一次，翻页时数字不跳动。 */
+  function initPostCount() {
+    var els = $$('[data-site-post-count]');
+    if (!els.length) return;
+    var KEY = 'liushen-post-count';
+    var paint = function (n) {
+      els.forEach(function (el) { el.textContent = n; });
+    };
+    var cached = null;
+    try { cached = sessionStorage.getItem(KEY); } catch (e) {}
+    if (cached) paint(cached);            // 同一次会话里翻页：直接上缓存，先渲染为快
+
+    if (!window.fetch) return;            // 老浏览器：保留模板兜底值
+    fetch('/api/search.json', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!Array.isArray(d) || !d.length) return;
+        paint(d.length);
+        try { sessionStorage.setItem(KEY, String(d.length)); } catch (e) {}
+      })
+      .catch(function () {});
+  }
+  initPostCount();
+
   /* ------ 16. 随机文章 ------ */
   $$('[data-action="random-post"]').forEach(function (b) {
     b.addEventListener('click', function () {
