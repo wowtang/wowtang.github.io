@@ -202,12 +202,17 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
 .menus_items { display: flex; gap: 0; align-items: center; height: 100%; }
 .menus_item { position: relative; }
 .menus_item .site-page {
-  display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px;
+  display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 100px;
   font-size: 13px; color: var(--text); font-weight: 500;
   transition: background .2s ease, color .2s ease;
 }
-.menus_item .site-page:hover { background: rgba(38, 121, 204, 0.1); color: var(--primary); }
-.menus_item .site-page i { font-size: 11px; margin-right: 3px; opacity: 0.78; }
+.menus_item .site-page:hover { background: rgba(38, 121, 204, 0.12); color: var(--primary); }
+/* 中间菜单图标按右侧操作区图标（#nav-right .site-page i）逐项对齐：
+     字号 11px → 14px、不透明度 0.78 → 1、hover 底色 0.1 → 0.12。
+   右侧是 32×32 纯图标圆按钮，中间是「图标+文字」胶囊，所以剩下的差异只有
+   「整项高亮 vs 圆形高亮」——宽屏用全圆角胶囊（上面的 border-radius:100px），
+   窄屏「仅图标」档直接把菜单项做成 32×32 正圆 1:1 复刻（见下方 3c）。 */
+.menus_item .site-page i { font-size: 14px; margin-right: 3px; opacity: 1; }
 .menus_item .site-page.group i.fa-chevron-down { font-size: 9px; margin-left: 3px; transition: transform .2s ease; }
 .menus_item:hover .site-page.group i.fa-chevron-down { transform: rotate(180deg); }
 
@@ -243,18 +248,26 @@ h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 700; line-height: 1.5;
     max-width: 1em;
   }
 
-  /* 3c. 仅图标：整段文字隐藏，只留图标 */
+  /* 3c. 仅图标：整段文字隐藏，只留图标
+     这一档 1:1 复刻右侧 #nav-right 的图标按钮：
+       .site-page  32×32 / 正圆 / 无内边距 / 图标居中   ← 与 #nav-right .site-page 完全同值
+       .menus_items gap 2px                            ← 与 #nav-right 的 gap 同值
+     于是本档下中间区块和右侧操作区是同一套按钮语言（此前是 29.8×23 的圆角矩形胶囊）。 */
   #menus.nav-shape-icon .menus_item .site-page span {
     display: none;
   }
-  /* 文字没了，图标右侧那 3px 间距和文字前的空格一起收掉，让图标居中；
-     但保留 8px 左右内边距，避免几个图标挤成一坨（原来 12px 太宽、0 太挤） */
   #menus.nav-shape-icon .menus_item .site-page i {
     margin-right: 0;
   }
+  #menus.nav-shape-icon .menus_items {
+    gap: 2px;
+  }
   #menus.nav-shape-icon .menus_item .site-page {
-    padding-left: 8px;
-    padding-right: 8px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
   }
 }
 
@@ -1325,7 +1338,7 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 #nav.nav-text-dark .menus_item .site-page i {
   color: inherit !important;
-  opacity: 0.88;
+  opacity: 1; /* 与右侧 #nav-right .site-page i 对齐：不再单独压暗（原先 0.88） */
 }
 #nav.nav-text-dark #nav-right .site-page {
   color: #e6edf3 !important;
@@ -1370,7 +1383,7 @@ body.page-index #nav.nav-transparent #nav-right {
 }
 [data-theme="dark"] #nav .menus_item .site-page i {
   color: inherit !important;
-  opacity: 0.88;
+  opacity: 1; /* 与右侧 #nav-right .site-page i 对齐：不再单独压暗（原先 0.88） */
 }
 [data-theme="dark"] #nav-right .site-page {
   color: #e6edf3 !important;

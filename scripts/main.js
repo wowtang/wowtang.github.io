@@ -227,7 +227,7 @@
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   renderMultiLevelMenus();
 
-  /* ------ 9b. 顶栏菜单图标匹配（navMenuIcons 表 + 内置路径规则） ------
+  /* ------ 9b. 顶栏菜单图标匹配（navMenuIcons 规则 + 内置路径规则） ------
      背景：站点菜单项渲染时图标一律回落 fa-bookmark，于是顶栏会排出一模一样的书签。
      这里按「用户表 → 内置精确路径 → 末段路径 → 精确名称」依次匹配后替换图标。
      两个约束：
@@ -235,6 +235,10 @@
        2. 内置规则必须精确匹配：本站有 /post、/post/bigthings、/post/feedback 三项，
           若用「包含匹配」后两项会先撞上 /post 拿到博客图标。
      纯一次性初始化，不依赖视口/resize → 无竞态。
+     配置形态：原本是 array 表（两列），2026-10-05 改成 textarea 多行文本 ——
+     GP 后台的 array 增删入口是「行右上角 hover 才浮出的 ＋/－」，
+     列表非空时底部的「添加项目」按钮还会整体隐藏，实测用户找不到入口。
+     文本形态每行一条、直接换行即增删，无隐藏交互。旧的 array 值仍然兼容。
      --------------------------------------------------------------- */
   var NAV_ICON_RULES = {
     '':           'fa-solid fa-house',
@@ -327,8 +331,46 @@
     if (Object.prototype.hasOwnProperty.call(NAV_ICON_BY_NAME, label)) return NAV_ICON_BY_NAME[label];
     return '';
   }
+  /* 配置值吃两种形态：
+       ① textarea 字符串 —— 每行一条「匹配, 图标」，空行与 # 开头的注释行跳过；
+       ② 旧 array 表（{match,icon} 两列）—— 老站点配置继续可用，不必手动迁移。
+     分隔符取行内**最先出现**的一个：, ， | = 或 Tab。
+     整行没有任何分隔符时，退化成「第一个图标类名之前」切分，
+     于是「/post/bigthings fa-solid fa-timeline」这种只留一个空格的写法也能用。 */
+  var NAV_ICON_SEPS = [',', '，', '|', '=', '\t'];
+  var NAV_ICON_ICON_AT = /\s+(?=(?:fa[srb]?|fa-(?:solid|regular|brands|light|thin|duotone))\b)/;
+  function navIconSplitRule(line) {
+    var cut = -1, skip = 1, i, p;
+    for (i = 0; i < NAV_ICON_SEPS.length; i++) {
+      p = line.indexOf(NAV_ICON_SEPS[i]);
+      if (p >= 0 && (cut < 0 || p < cut)) { cut = p; skip = NAV_ICON_SEPS[i].length; }
+    }
+    if (cut >= 0) return [line.slice(0, cut), line.slice(cut + skip)];
+    var m = line.match(NAV_ICON_ICON_AT);
+    if (m) return [line.slice(0, m.index), line.slice(m.index + m[0].length)];
+    return [line, ''];
+  }
+  function navIconTable(raw) {
+    var out = [], i, j, line, pair;
+    if (Array.isArray(raw)) {                    // 旧 array 形态
+      for (i = 0; i < raw.length; i++) {
+        if (raw[i] && raw[i].match) out.push({ match: raw[i].match, icon: raw[i].icon });
+      }
+      return out;
+    }
+    if (typeof raw !== 'string') return out;
+    var lines = raw.split(/\r?\n/);
+    for (j = 0; j < lines.length; j++) {
+      line = lines[j].trim();
+      if (!line || line.charAt(0) === '#') continue;
+      pair = navIconSplitRule(line);
+      if (!pair[0].trim()) continue;
+      out.push({ match: pair[0].trim(), icon: pair[1].trim() });
+    }
+    return out;
+  }
   function applyNavMenuIcons() {
-    var table = Array.isArray(CFG.navMenuIcons) ? CFG.navMenuIcons : [];
+    var table = navIconTable(CFG.navMenuIcons);
     // 顶栏菜单与移动抽屉是同一批 menus，模板里各自硬编码了一遍图标 → 一处逻辑管两处
     $$('#menus .menus_item > .site-page, #mobile-nav-list .mobile-nav-item').forEach(function (el) {
       var icon = el.querySelector('i');
