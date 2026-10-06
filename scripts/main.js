@@ -180,8 +180,10 @@
 
   /* ------ 8. 移动菜单 / 抽屉 ------ */
   var mobile = $('#mobile-sidebar');
-  function openMobile() { if (mobile) { mobile.removeAttribute('hidden'); body.style.overflow = 'hidden'; } }
-  function closeMobile() { if (mobile) { mobile.setAttribute('hidden', ''); body.style.overflow = ''; } }
+  /* 开合走 .is-open 类，不再用 hidden 属性 —— display 硬切没有插值机会，过渡永远不触发。
+     CSS 侧用「visibility 延迟收起」保住无障碍等价（不可聚焦、退出无障碍树），不需要任何定时器。 */
+  function openMobile() { if (mobile) { mobile.classList.add('is-open'); body.style.overflow = 'hidden'; } }
+  function closeMobile() { if (mobile) { mobile.classList.remove('is-open'); body.style.overflow = ''; } }
   $$('[data-action="toggle-mobile-menu"]').forEach(function (b) { b.addEventListener('click', openMobile); });
   $$('[data-action="close-mobile-menu"]').forEach(function (b) { b.addEventListener('click', closeMobile); });
 
@@ -1766,14 +1768,26 @@
       return '<input type="email" name="' + escapeHtml(field) + '" placeholder="' + escapeHtml(ph) +
         '" autocomplete="email" spellcheck="false" required>';
     }
-    function buttonHtml(btn) {
-      return '<button type="submit">' + escapeHtml(btn) + '</button>';
+    /* 按钮文字后面挂一个 Font Awesome 图标。
+       图标类名是配置项、要拼进 class 属性，所以这里**不用 escapeHtml**（它会把引号转义成
+       实体、在 class 里就没意义了），改用白名单过滤：只放行 FA 类名真正用得到的
+       字母数字、连字符和空格，其余一律丢掉 —— 即便配置里塞了 `<img onerror=…>` 也只会
+       变成一串无害字符，且引号/尖括号进不来，拼不出新的属性或标签。
+       空值（用户把配置留空）→ 不输出图标，按钮只有文字。 */
+    function iconHtml(icon) {
+      var clean = String(icon == null ? '' : icon).replace(/[^A-Za-z0-9- ]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!clean) return '';
+      return '<i class="' + clean + '" aria-hidden="true"></i>';
+    }
+    function buttonHtml(btn, icon) {
+      return '<button type="submit">' + escapeHtml(btn) + iconHtml(icon) + '</button>';
     }
 
     $$('.subscribe-form-box').forEach(function (box) {
       var field = box.getAttribute('data-sub-field') || 'email';
       var ph = box.getAttribute('data-sub-placeholder') || '你的邮箱地址';
       var btn = box.getAttribute('data-sub-button') || '订阅';
+      var btnIcon = box.getAttribute('data-sub-button-icon') || '';
       var form = box.querySelector('form');
 
       if (form) {
@@ -1783,7 +1797,7 @@
         if (!form.getAttribute('method')) form.setAttribute('method', 'post');
         if (!form.getAttribute('target')) form.setAttribute('target', '_blank');
         form.insertAdjacentHTML('beforeend',                     // ② 只补缺的那部分
-          (hasField ? '' : fieldHtml(field, ph)) + (hasSubmit ? '' : buttonHtml(btn)));
+          (hasField ? '' : fieldHtml(field, ph)) + (hasSubmit ? '' : buttonHtml(btn, btnIcon)));
         useOwnUi(box, form);
         return;
       }
@@ -1795,7 +1809,7 @@
       var m = raw.match(/https?:\/\/[^\s"'<>]+/i);
       if (!m) return;
       box.innerHTML = '<form action="' + escapeHtml(m[0]) + '" method="post" target="_blank">' +
-        fieldHtml(field, ph) + buttonHtml(btn) + '</form>';
+        fieldHtml(field, ph) + buttonHtml(btn, btnIcon) + '</form>';
       useOwnUi(box, box.querySelector('form'));
     });
   }

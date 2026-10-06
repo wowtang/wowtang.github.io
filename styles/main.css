@@ -707,11 +707,40 @@ body.page-index #nav.nav-transparent #nav-right {
   box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 28%, transparent);
   transition: transform .25s ease, box-shadow .25s ease;
 }
+/* button 走 flex 才能让「文字 + 图标」并排居中；input[type=submit] 是替换元素，
+   内容由 value 决定，给它加 flex 无意义，所以只对 button 声明。 */
+.subscribe-form-box button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+}
 .subscribe-form-box button:hover,
 .subscribe-form-box input[type="submit"]:hover,
 .subscribe-form-box input[type="button"]:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+/* 按钮里的 FA 图标：静息时略微偏灰，悬浮时向右轻移并放大，像「飞出去」。
+   只动 transform/opacity/颜色 —— 不碰 box-shadow，免得和上面按钮自身的 hover 阴影打架。
+   尺寸用 em，跟着按钮字号走；.subscribe-form-box button 的 font-weight:600 会被
+   fa-solid 自己的 font-weight:900 覆盖，这里不必再写。 */
+.subscribe-form-box button > i {
+  font-size: .92em; opacity: .82;
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), opacity .3s ease;
+}
+.subscribe-form-box button:hover > i,
+.subscribe-form-box button:focus-visible > i {
+  transform: translateX(3px) scale(1.14);
+  opacity: 1;
+}
+/* 键盘聚焦也要看得见（主题其它按钮的既有惯例） */
+.subscribe-form-box button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+  outline-offset: 2px;
+}
+/* 尊重系统「减少动效」：关掉图标的飞出动效，只保留 opacity 变化作为悬浮反馈。 */
+@media (prefers-reduced-motion: reduce) {
+  .subscribe-form-box button > i { transition: opacity .2s ease; }
+  .subscribe-form-box button:hover > i,
+  .subscribe-form-box button:focus-visible > i { transform: none; }
 }
 /* 表单块之间不收尾的 margin 由 flex gap 接管 */
 .subscribe-form-box form > *:last-child { margin-bottom: 0; }
@@ -1223,21 +1252,27 @@ body.page-index #nav.nav-transparent #nav-right {
 .search-tip { text-align: center; color: var(--text-meta); padding: 24px; font-size: 13px; }
 
 /* ------ 20. 移动端抽屉 ------ */
+/* 开合开关从 hidden 属性换成 .is-open 类：display:none ↔ display:flex 是硬切，
+   浏览器不给不渲染的元素做过渡 —— 原来那两条 transition 从未生效
+   （2026-10-06 逐帧实测：开、关各 0 个中间帧，第 1 帧就已经在终点）。
+   收起时 visibility 延迟到面板滑完才变 hidden，与 display:none 在无障碍上等价
+   （子树退出无障碍树、无法聚焦），但保留了过渡插值的机会；整体不需要任何定时器。
+   动效值见 DESIGN.md「Layout · 过渡纪律」的抽屉条目。 */
 .mobile-sidebar {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; pointer-events: none;
+  visibility: hidden; transition: visibility 0s linear .34s;
 }
-.mobile-sidebar:not([hidden]) { pointer-events: auto; }
-.mobile-sidebar[hidden] { display: none; }
+.mobile-sidebar.is-open { pointer-events: auto; visibility: visible; transition-delay: 0s; }
 .mobile-sidebar-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); opacity: 0; transition: opacity .25s ease; }
-.mobile-sidebar:not([hidden]) .mobile-sidebar-backdrop { opacity: 1; }
+.mobile-sidebar.is-open .mobile-sidebar-backdrop { opacity: 1; }
 .mobile-sidebar-panel {
   position: relative; width: min(300px, 78%); height: 100%;
   background: var(--card-bg-solid); padding: 28px 22px 22px;
   display: flex; flex-direction: column; transform: translateX(-100%);
-  transition: transform .28s ease;
+  transition: transform .34s cubic-bezier(.22, 1, .36, 1);
 }
-.mobile-sidebar:not([hidden]) .mobile-sidebar-panel { transform: translateX(0); }
+.mobile-sidebar.is-open .mobile-sidebar-panel { transform: translateX(0); }
 .mobile-sidebar-header { text-align: center; padding-bottom: 16px; border-bottom: 1px dashed var(--divider); }
 .mobile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
 .mobile-site-name { font-size: 17px; margin: 8px 0 2px; }
@@ -1251,12 +1286,34 @@ body.page-index #nav.nav-transparent #nav-right {
 .mobile-nav-item:hover { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
 .mobile-nav-item i { width: 18px; }
 .mobile-sidebar-footer { padding-top: 12px; border-top: 1px dashed var(--divider); display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.mobile-sidebar-footer .social-icon {
+.mobile-sidebar-footer .social-icon,
+.mobile-sidebar-quick .social-icon {
   width: 32px; height: 32px; border-radius: 50%;
   background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--text-body);
   display: inline-flex; align-items: center; justify-content: center;
+  transition: color .2s ease;
 }
-.mobile-sidebar-footer .social-icon:hover { background: var(--primary); color: #fff; }
+.mobile-sidebar-footer .social-icon:hover,
+.mobile-sidebar-quick .social-icon:hover { background: var(--primary); color: #fff; }
+/* 快捷入口：只在窄屏（≤600px，即顶栏那三个按钮收起的那一档）出现 —— 桌面端顶栏本就
+   有这三个入口，抽屉里不该再重复一份（2026-10-06 用户要求）。可见性由第 21 节的 600
+   断点开（与 #travellings/#ten-years/#random 的收起规则互为一对），这里只放布局。
+   圆钮与上方社交图标同构（.social-icon 容器 + 内层 <i> glyph），字号由此继承 14px
+   （与社交图标一致）；小字单独 11px 且行高必须压到 1 —— 继承来的 22px 行高会在字
+   上下各藏 5.5px 空白，使「图标到文字」的肉眼间距变成 gap 的两倍（2026-10-06 实测）。 */
+.mobile-sidebar-quick { display: none; flex-wrap: wrap; gap: 18px; justify-content: center; padding: 14px 0 12px; }
+.mobile-sidebar-quick .quick-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-meta); }
+.mobile-sidebar-quick .quick-label { font-size: 11px; line-height: 1; }
+/* 打开时内容分三波跟上（头 → 菜单 → 底部/快捷入口），各比面板晚一点点，形成层次感。
+   延迟只写在 .is-open 上 —— 关闭时零延迟，收得干净。取样点见 probe29/probe32。 */
+.mobile-sidebar-header,
+.mobile-sidebar-nav,
+.mobile-sidebar-quick,
+.mobile-sidebar-footer { opacity: 0; transform: translateX(-12px); transition: opacity .3s ease, transform .3s ease; }
+.mobile-sidebar.is-open .mobile-sidebar-header { opacity: 1; transform: translateX(0); transition-delay: .04s; }
+.mobile-sidebar.is-open .mobile-sidebar-nav { opacity: 1; transform: translateX(0); transition-delay: .095s; }
+.mobile-sidebar.is-open .mobile-sidebar-quick,
+.mobile-sidebar.is-open .mobile-sidebar-footer { opacity: 1; transform: translateX(0); transition-delay: .165s; }
 
 /* empty-tip */
 .empty-tip { text-align: center; padding: 36px; color: var(--text-meta); }
@@ -1281,13 +1338,8 @@ body.page-index #nav.nav-transparent #nav-right {
     pointer-events: none;
     transform: translateX(-50%) scale(.94);
   }
-  /* 右侧操作区同一套过渡：三按钮宽度收拢 + 淡出，汉堡展开 + 淡入。
-     只覆盖 width / opacity / visibility 三个属性，display 保持恒真（见文件上方的基础规则）。 */
-  #travellings, #ten-years, #random {
-    width: 0;
-    opacity: 0;
-    visibility: hidden;
-  }
+  /* 汉堡展开 + 淡入。三按钮的「收起」已下移到 600px 档（见文件下方）。
+     汉堡必须留在 991 这一档：本档 #menus 已收起，它是这一段唯一的导航入口。 */
   #toggle-menu {
     width: 32px;
     opacity: 1;
@@ -1328,6 +1380,19 @@ body.page-index #nav.nav-transparent #nav-right {
   .post-content h1 { font-size: 20px; }
   .post-content h2 { font-size: 18px; }
   .article-readmore { font-size: 12px; padding: 5px 10px; }
+}
+
+/* 顶栏三按钮的「收起」断点：原在 991 档，2026-10-06 下移到 600px。
+   实测 768px 平板竖屏放得下全部 6 个按钮（可用宽 742px / 六键 422px），991 就收掉太早。
+   与抽屉快捷入口互为一对 —— 三按钮收起的档位，才是抽屉入口出现的档位，
+   所以 600~991 之间顶栏有这三项、抽屉里不重复，≤600 才反过来。 */
+@media (max-width: 600px) {
+  #travellings, #ten-years, #random {
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .mobile-sidebar-quick { display: flex; }
 }
 
 /* ------ 22. 字体小细节 ------ */
@@ -2092,6 +2157,17 @@ html.not-loaded body { transition: none !important; }
   #ten-years,
   #random,
   #toggle-menu {
+    transition: none !important;
+  }
+  /* 抽屉开合（第 20 节）同理：transition 一关，visibility 立即切换 = 不做动画，
+     与上面几处顶栏处理语义一致。 */
+  .mobile-sidebar,
+  .mobile-sidebar-backdrop,
+  .mobile-sidebar-panel,
+  .mobile-sidebar-header,
+  .mobile-sidebar-nav,
+  .mobile-sidebar-quick,
+  .mobile-sidebar-footer {
     transition: none !important;
   }
 }
