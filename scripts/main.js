@@ -178,14 +178,11 @@
     b.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   });
 
-  /* ------ 8. 移动菜单 / 抽屉 ------ */
-  var mobile = $('#mobile-sidebar');
-  /* 开合走 .is-open 类，不再用 hidden 属性 —— display 硬切没有插值机会，过渡永远不触发。
-     CSS 侧用「visibility 延迟收起」保住无障碍等价（不可聚焦、退出无障碍树），不需要任何定时器。 */
-  function openMobile() { if (mobile) { mobile.classList.add('is-open'); body.style.overflow = 'hidden'; } }
-  function closeMobile() { if (mobile) { mobile.classList.remove('is-open'); body.style.overflow = ''; } }
-  $$('[data-action="toggle-mobile-menu"]').forEach(function (b) { b.addEventListener('click', openMobile); });
-  $$('[data-action="close-mobile-menu"]').forEach(function (b) { b.addEventListener('click', closeMobile); });
+  /* ------ 8. 移动菜单 / 抽屉 ------
+     已整体迁到首屏内联块（partials/critical-inline.html 第 2 节）：汉堡与遮罩的
+     点击绑定必须早于 72KB 的 main.js 到货，否则弱网下点不动（probe35 实测）。
+     内联块把 openMobile / closeMobile 挂在 window.LIUSHEN_CRITICAL 上，
+     下面搜索弹窗的 Esc 处理器就是通过它关闭抽屉的。 */
 
   /* ------ 9. 多级 dropdown 菜单（navMenuJson 非空时动态渲染） ------
      注意：叶子项要写 data-tip，与 header.html 里静态菜单保持同一套「折叠态悬浮提示」。
@@ -231,161 +228,13 @@
   }
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   renderMultiLevelMenus();
+  // navMenuJson 非空时上面会重建顶栏菜单 DOM，图标一律回落兜底 fa-bookmark。
+  // 图标匹配规则已迁到首屏内联块（partials/critical-inline.html 第 1 节），
+  // 这里回调它再跑一次；它比本文件先执行，所以对象一定存在。
+  if (window.LIUSHEN_CRITICAL && window.LIUSHEN_CRITICAL.applyNavMenuIcons) {
+    window.LIUSHEN_CRITICAL.applyNavMenuIcons();
+  }
 
-  /* ------ 9b. 顶栏菜单图标匹配（navMenuIcons 规则 + 内置路径规则） ------
-     背景：站点菜单项渲染时图标一律回落 fa-bookmark，于是顶栏会排出一模一样的书签。
-     这里按「用户表 → 内置精确路径 → 末段路径 → 精确名称」依次匹配后替换图标。
-     两个约束：
-       1. 只替换仍然是兜底 fa-bookmark 的项 —— 不覆盖 navMenuJson 里显式写好的 icon；
-       2. 内置规则必须精确匹配：本站有 /post、/post/bigthings、/post/feedback 三项，
-          若用「包含匹配」后两项会先撞上 /post 拿到博客图标。
-     纯一次性初始化，不依赖视口/resize → 无竞态。
-     配置形态：原本是 array 表（两列），2026-10-05 改成 textarea 多行文本 ——
-     GP 后台的 array 增删入口是「行右上角 hover 才浮出的 ＋/－」，
-     列表非空时底部的「添加项目」按钮还会整体隐藏，实测用户找不到入口。
-     文本形态每行一条、直接换行即增删，无隐藏交互。旧的 array 值仍然兼容。
-     --------------------------------------------------------------- */
-  var NAV_ICON_RULES = {
-    '':           'fa-solid fa-house',
-    'index':      'fa-solid fa-house',
-    'post':       'fa-solid fa-newspaper',
-    'archives':   'fa-solid fa-archive',
-    'tags':       'fa-solid fa-tags',
-    'categories': 'fa-solid fa-folder-open',
-    'memos':      'fa-solid fa-comment-dots',
-    'links':      'fa-solid fa-link',
-    'about':      'fa-solid fa-address-card',
-    'search':     'fa-solid fa-magnifying-glass',
-    'message':    'fa-solid fa-comment',
-    'guestbook':  'fa-solid fa-comment'
-  };
-  var NAV_ICON_BY_NAME = {
-    '首页': 'fa-solid fa-house',
-    '博客': 'fa-solid fa-newspaper',
-    '文章': 'fa-solid fa-newspaper',
-    '归档': 'fa-solid fa-archive',
-    '标签': 'fa-solid fa-tags',
-    '分类': 'fa-solid fa-folder-open',
-    '闪念': 'fa-solid fa-comment-dots',
-    '友链': 'fa-solid fa-link',
-    '关于': 'fa-solid fa-address-card',
-    '留言': 'fa-solid fa-comment',
-    '搜索': 'fa-solid fa-magnifying-glass'
-  };
-  var NAV_ICON_FALLBACK = 'fa-bookmark';
-  var FA_STYLE_PREFIX = /(^|\s)fa-(solid|regular|brands|light|thin|duotone)(\s|$)/;
-
-  /* 补全图标类名：
-       写全了（fa-solid fa-x / fa-brands fa-x）→ 原样保留
-       少风格前缀（fa-clock）              → 补 fa-solid
-       少 fa- 前缀（pen）                  → 补成 fa-pen，再补 fa-solid
-     用户表里填什么都不至于渲染成空图标。 */
-  function navIconNormalize(raw) {
-    var s = String(raw == null ? '' : raw).trim().replace(/\s+/g, ' ');
-    if (!s) return '';
-    var parts = s.split(' ');
-    var out = [];
-    for (var i = 0; i < parts.length; i++) {
-      var t = parts[i];
-      if (!t) continue;
-      if (!/^fa-/.test(t)) t = 'fa-' + t;
-      out.push(t);
-    }
-    s = out.join(' ');
-    if (!FA_STYLE_PREFIX.test(s)) s = 'fa-solid ' + s;
-    return s;
-  }
-  /* 把 href 归一化成一个不含首尾斜杠的路径：/post/about/ → post/about */
-  function navIconPath(href) {
-    var s = String(href == null ? '' : href).trim();
-    if (!s || s === '#' || s.indexOf('javascript:') === 0) return '';
-    s = s.split('#')[0].split('?')[0];
-    var abs = s.match(/^[a-zA-Z][\w+.-]*:\/\/[^/]*(\/.*)?$/);
-    if (abs) s = abs[1] || '/';
-    s = s.replace(/\/index\.html?$/i, '/').replace(/\.html?$/i, '');
-    return s.replace(/^\/+|\/+$/g, '').toLowerCase();
-  }
-  /* 用户表的「匹配」列同样要去掉首尾斜杠，否则填 /archives 永远匹配不上
-     （归一化后的路径是 archives，没有前导斜杠）。 */
-  function navIconKey(raw) {
-    return String(raw == null ? '' : raw).trim().split('#')[0].split('?')[0]
-      .replace(/^\/+|\/+$/g, '').toLowerCase();
-  }
-  function navIconLookup(link, name, table) {
-    var path = navIconPath(link);
-    var label = String(name == null ? '' : name).trim().toLowerCase();
-    var i, rule, rawKey, key, icon;
-    // 1) 用户表：路径或名称任一处「包含」即命中（顺序即优先级）
-    for (i = 0; i < table.length; i++) {
-      rule = table[i] || {};
-      rawKey = String(rule.match == null ? '' : rule.match).trim();
-      if (!rawKey) continue;
-      icon = navIconNormalize(rule.icon);
-      if (!icon) continue;
-      key = navIconKey(rawKey);
-      // 只写了「/」这类：只对首页生效
-      if (!key) { if (!path) return icon; continue; }
-      if (path.indexOf(key) !== -1 || label.indexOf(key) !== -1) return icon;
-    }
-    // 2) 内置：精确路径
-    if (Object.prototype.hasOwnProperty.call(NAV_ICON_RULES, path)) return NAV_ICON_RULES[path];
-    // 3) 内置：末段路径（post/about → about）
-    var seg = path ? path.split('/').pop() : '';
-    if (seg && seg !== path && Object.prototype.hasOwnProperty.call(NAV_ICON_RULES, seg)) return NAV_ICON_RULES[seg];
-    // 4) 内置：精确名称（link 是外链时兜底）
-    if (Object.prototype.hasOwnProperty.call(NAV_ICON_BY_NAME, label)) return NAV_ICON_BY_NAME[label];
-    return '';
-  }
-  /* 配置值吃两种形态：
-       ① textarea 字符串 —— 每行一条「匹配, 图标」，空行与 # 开头的注释行跳过；
-       ② 旧 array 表（{match,icon} 两列）—— 老站点配置继续可用，不必手动迁移。
-     分隔符取行内**最先出现**的一个：, ， | = 或 Tab。
-     整行没有任何分隔符时，退化成「第一个图标类名之前」切分，
-     于是「/post/bigthings fa-solid fa-timeline」这种只留一个空格的写法也能用。 */
-  var NAV_ICON_SEPS = [',', '，', '|', '=', '\t'];
-  var NAV_ICON_ICON_AT = /\s+(?=(?:fa[srb]?|fa-(?:solid|regular|brands|light|thin|duotone))\b)/;
-  function navIconSplitRule(line) {
-    var cut = -1, skip = 1, i, p;
-    for (i = 0; i < NAV_ICON_SEPS.length; i++) {
-      p = line.indexOf(NAV_ICON_SEPS[i]);
-      if (p >= 0 && (cut < 0 || p < cut)) { cut = p; skip = NAV_ICON_SEPS[i].length; }
-    }
-    if (cut >= 0) return [line.slice(0, cut), line.slice(cut + skip)];
-    var m = line.match(NAV_ICON_ICON_AT);
-    if (m) return [line.slice(0, m.index), line.slice(m.index + m[0].length)];
-    return [line, ''];
-  }
-  function navIconTable(raw) {
-    var out = [], i, j, line, pair;
-    if (Array.isArray(raw)) {                    // 旧 array 形态
-      for (i = 0; i < raw.length; i++) {
-        if (raw[i] && raw[i].match) out.push({ match: raw[i].match, icon: raw[i].icon });
-      }
-      return out;
-    }
-    if (typeof raw !== 'string') return out;
-    var lines = raw.split(/\r?\n/);
-    for (j = 0; j < lines.length; j++) {
-      line = lines[j].trim();
-      if (!line || line.charAt(0) === '#') continue;
-      pair = navIconSplitRule(line);
-      if (!pair[0].trim()) continue;
-      out.push({ match: pair[0].trim(), icon: pair[1].trim() });
-    }
-    return out;
-  }
-  function applyNavMenuIcons() {
-    var table = navIconTable(CFG.navMenuIcons);
-    // 顶栏菜单与移动抽屉是同一批 menus，模板里各自硬编码了一遍图标 → 一处逻辑管两处
-    $$('#menus .menus_item > .site-page, #mobile-nav-list .mobile-nav-item').forEach(function (el) {
-      var icon = el.querySelector('i');
-      if (!icon || icon.className.indexOf(NAV_ICON_FALLBACK) === -1) return;
-      var span = el.querySelector('span');
-      var hit = navIconLookup(el.getAttribute('href'), span ? span.textContent : '', table);
-      if (hit) icon.className = 'fa-fw ' + hit;
-    });
-  }
-  applyNavMenuIcons();
 
   /* ------ 9a. 顶栏菜单图标 / 窄屏形态（纯 CSS，无 JS） ------
    两个维度都由模板类 + CSS 静态决定，首帧即正确：
@@ -454,7 +303,7 @@
   $$('[data-action="open-search"]').forEach(function (b) { b.addEventListener('click', openSearch); });
   $$('[data-action="close-search"]').forEach(function (b) { b.addEventListener('click', closeSearch); });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { closeSearch(); closeMobile(); }
+    if (e.key === 'Escape') { closeSearch(); if (window.LIUSHEN_CRITICAL) window.LIUSHEN_CRITICAL.closeMobile(); }
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault(); openSearch();
     }
@@ -1545,149 +1394,6 @@
   }
   initImageViewer();
 
-  /* ------ 19. 外链跳转风险提示（模态框） ------ */
-  function initLinkOut() {
-    if (!CFG.linkOutEnable) return;
-    var siteDomain = window.location.hostname;
-    var modal = null;
-    var targetUrl = null;
-    var lastFocused = null;   // 关闭弹窗后把焦点还给触发它的链接
-    
-    // 解析白名单（支持换行符和逗号分隔）
-    // 条目兼容两种写法：裸域名（github.com）与完整网址（https://qr.alipay.com/xxx?y=1）
-    // 后者必须先收敛成 hostname，否则 hostname 比对永远不相等 → 白名单形同虚设。
-    var whitelist = [];
-    if (CFG.linkOutWhitelist) {
-      whitelist = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function (d) {
-        return d.trim().toLowerCase()
-          .replace(/^[a-z][a-z0-9+.-]*:\/\//, '') // 去掉协议头
-          .split('/')[0]                          // 去掉路径与查询串
-          .split(':')[0]                          // 去掉端口
-          .replace(/^\.+/, '');                   // 去掉前导点
-      }).filter(Boolean);
-    }
-    
-    // 检查域名是否在白名单中
-    function isWhitelisted(hostname) {
-      hostname = hostname.toLowerCase();
-      for (var i = 0; i < whitelist.length; i++) {
-        var domain = whitelist[i];
-        // 支持子域名匹配：github.com 匹配 xxx.github.com
-        if (hostname === domain || hostname.endsWith('.' + domain)) {
-          return true;
-        }
-      }
-      return false;
-    }
-    
-    /* 弹窗结构：左对齐的「图标 + 标题 + 副题」头 / 正文说明 / 目标地址 / 按钮组。
-       标题行沿用 .item-headline 的视觉语言，按钮沿用站内 999px 胶囊 +
-       --primary 实心主按钮；文案取官方书面语，站点名读 CFG.siteName。 */
-    function createModal() {
-      modal = document.createElement('div');
-      modal.className = 'link-out-overlay';
-      var site = escapeHtml(CFG.siteName || '本站');
-      modal.innerHTML =
-        '<div class="link-out-modal" role="dialog" aria-modal="true"' +
-             ' aria-labelledby="link-out-title" aria-describedby="link-out-desc">' +
-          '<div class="link-out-head">' +
-            '<span class="link-out-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>' +
-            '<div class="link-out-heading">' +
-              '<h2 class="link-out-title" id="link-out-title">即将离开本站</h2>' +
-              '<p class="link-out-kicker">外部链接安全提示</p>' +
-            '</div>' +
-          '</div>' +
-          '<p class="link-out-desc" id="link-out-desc">' +
-            '您即将离开「' + site + '」，前往本站之外的第三方网站。' +
-            '该网站不受本站控制，本站无法核实其内容的真实性与安全性，' +
-            '亦不对其隐私政策及后续行为承担责任。请您谨慎辨别，注意保护个人账号与财产安全。' +
-          '</p>' +
-          '<div class="link-out-url">' +
-            '<span class="url-label"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>目标地址</span>' +
-            '<span class="url-domain" id="link-out-url-domain"></span>' +
-            '<span class="url-value" id="link-out-url-value"></span>' +
-          '</div>' +
-          '<div class="link-out-actions">' +
-            '<button type="button" class="btn btn-cancel" id="link-out-cancel">返回本站</button>' +
-            '<button type="button" class="btn btn-confirm" id="link-out-confirm">继续访问</button>' +
-          '</div>' +
-        '</div>';
-      
-      document.body.appendChild(modal);
-      
-      modal.querySelector('#link-out-cancel').addEventListener('click', closeModal);
-      modal.querySelector('#link-out-confirm').addEventListener('click', function() {
-        if (targetUrl) {
-          window.open(targetUrl, '_blank', 'noopener');
-          closeModal();
-        }
-      });
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeModal();
-      });
-      document.addEventListener('keydown', function onEsc(e) {
-        if (e.key === 'Escape') {
-          closeModal();
-          document.removeEventListener('keydown', onEsc);
-        }
-      });
-    }
-    
-    function openModal(url) {
-      targetUrl = url;
-      if (!modal) createModal();
-      var host = '';
-      try { host = new URL(url).hostname; } catch (err) { host = ''; }
-      var domainEl = modal.querySelector('#link-out-url-domain');
-      domainEl.textContent = host;
-      domainEl.hidden = !host;   // 解析不出域名时不留空行
-      modal.querySelector('#link-out-url-value').textContent = url;
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      lastFocused = document.activeElement;
-      var cancelBtn = modal.querySelector('#link-out-cancel');
-      if (cancelBtn) cancelBtn.focus();   // 默认焦点落在安全选项上
-    }
-
-    function closeModal() {
-      if (!modal) return;
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-      targetUrl = null;
-      if (lastFocused && lastFocused.isConnected !== false &&
-          typeof lastFocused.focus === 'function') {
-        try { lastFocused.focus(); } catch (err) {}
-      }
-      // 兜底：焦点仍留在弹窗内的按钮上（触发元素已移除 / 不接受 focus）时交还文档
-      if (modal.contains(document.activeElement) &&
-          typeof document.activeElement.blur === 'function') {
-        document.activeElement.blur();
-      }
-      lastFocused = null;
-    }
-    
-    document.addEventListener('click', function (e) {
-      var a = e.target.closest('a');
-      if (!a) return;
-      var href = a.href;
-      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
-      
-      try {
-        var url = new URL(href);
-        if (url.hostname && url.hostname !== siteDomain) {
-          // 检查白名单
-          if (isWhitelisted(url.hostname)) {
-            return; // 白名单域名，不提示
-          }
-          e.preventDefault();
-          openModal(href);
-        }
-      } catch (err) {
-        // 不是有效 URL，可能是相对路径，忽略
-      }
-    });
-  }
-  initLinkOut();
 
   /* ------ 22. 邮箱订阅表单补全（侧栏订阅卡） ------
      第三方（follow.it 等）真正专有的只有「接口地址」——follow.it 官方文档明确写着
