@@ -26,6 +26,9 @@
       --hairline-tertiary: #c9c9cf;
       --nav-active-text: #565fc4;
       --primary-strong: #565fc4;
+      --input-bg: #ffffff;
+      --input-border: #d5d5da;
+      --radius-md: 8px;
       --nav-active-bg: rgba(94, 106, 210, 0.12);
       --nav-hover-bg: rgba(0, 0, 0, 0.04);
       --success: #1a7f37;
@@ -58,6 +61,9 @@
       --hairline-tertiary: #3e3e44;
       --nav-active-text: #828fff;
       --primary-strong: #828fff;
+      --input-bg: #0f1011;
+      --input-border: #34343a;
+      --radius-md: 8px;
       --nav-active-bg: rgba(94, 106, 210, 0.16);
       --nav-hover-bg: rgba(255, 255, 255, 0.04);
       --success: #27a644;
@@ -537,13 +543,14 @@
     }
     #twikoo .tk-login .tk-password { margin-bottom: 16px; }
     #twikoo .tk-login .el-input-group__prepend {
-      background: rgba(38, 121, 204, 0.08); border-color: rgba(38, 121, 204, 0.2); color: var(--primary);
+      background: var(--surface-2); border-color: var(--input-border);
+      color: var(--ink-subtle);
     }
     #twikoo .tk-login .el-input__inner {
-      border-color: rgba(38, 121, 204, 0.2); color: var(--ink); background: rgba(255,255,255,0.6);
+      border-color: var(--input-border); color: var(--ink); background: var(--input-bg);
     }
     [data-theme="dark"] #twikoo .tk-login .el-input__inner {
-      background: rgba(255,255,255,0.05); border-color: rgba(95,169,255,0.2); color: var(--ink);
+      background: var(--input-bg); border-color: var(--input-border); color: var(--ink);
     }
     #twikoo .tk-login .el-input__inner:focus { border-color: var(--primary); }
     #twikoo .tk-login .el-button {
@@ -556,12 +563,41 @@
     #twikoo .tk-panel .el-button--primary { background: var(--primary); border-color: var(--primary); color: #fff; }
     #twikoo .tk-panel .el-button--primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
     #twikoo .tk-panel .el-button--text { color: var(--primary); }
+    /* 输入框 / 文本域 —— Linear 的 text-input，但浅色下做了两处本地化：
+       ① 底色用 --input-bg：浅色是纯白（原 surface-1 #f5f6f6 与页面白底仅差 1.03:1，
+          输入框看着"飘"在页面上，缺少可交互的实体感）；深色仍是 surface-1。
+       ② 边框用 --input-border（比 hairline 明确一档）—— 白底 + 清晰边框是大厂通行做法。
+       选择器同时写「带 .tk-panel」与「不带」两种：Twikoo 各版本的结构层数不一致，
+       只写一种会静默不命中（我踩过 —— 规则看着在、实际没生效）。 */
+    #twikoo .el-input__inner,
+    #twikoo .el-textarea__inner,
     #twikoo .tk-panel .el-input__inner,
     #twikoo .tk-panel .el-textarea__inner {
-      color: var(--ink) !important; background: var(--surface-1) !important; border-color: var(--hairline) !important;
+      color: var(--ink) !important;
+      background: var(--input-bg) !important;
+      border: 1px solid var(--input-border) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 10px 14px !important;
+      font-size: 14px !important;
+      line-height: 1.4 !important;
+      box-shadow: none !important;
+      transition: border-color 0.15s, box-shadow 0.15s !important;
     }
+    #twikoo .el-input__inner::placeholder,
+    #twikoo .el-textarea__inner::placeholder,
+    #twikoo .tk-panel .el-input__inner::placeholder,
+    #twikoo .tk-panel .el-textarea__inner::placeholder {
+      color: var(--ink-tertiary) !important;
+    }
+    /* 聚焦：加粗到 3px 光环（2px 在浅色白底上偏弱，看不出聚焦） */
+    #twikoo .el-input__inner:focus,
+    #twikoo .el-textarea__inner:focus,
     #twikoo .tk-panel .el-input__inner:focus,
-    #twikoo .tk-panel .el-textarea__inner:focus { border-color: var(--primary) !important; }
+    #twikoo .tk-panel .el-textarea__inner:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent) !important;
+      outline: none !important;
+    }
     #twikoo .tk-panel,
     #twikoo .tk-panel .tk-admin-config-title,
     #twikoo .tk-panel .tk-admin-config-desc { color: var(--ink) !important; }
@@ -585,25 +621,50 @@
     }
     #twikoo .tk-admin-comment-filter-keyword { flex: 1; min-width: 200px; }
     #twikoo .tk-admin-comment-filter-type { width: auto; min-width: 110px; }
-    #twikoo .tk-admin-comment-list { display: flex; flex-direction: column; gap: 10px; }
+    /* 列表容器 —— gap 归零：那 10px 是卡片时代给「有边框的卡片」留的间隙，
+       换成行 + border-bottom 后，间隙与分隔线重复，白占 10px/条。 */
+    #twikoo .tk-admin-comment-list { display: flex; flex-direction: column; gap: 0; }
+    /* 评论项 —— 行列表形态（Linear Issue List）：
+       去掉卡片背景/边框/圆角，改发丝线分隔。行是列表的基本单位，
+       卡片只用于仪表盘那种少量独立实体；几十条堆卡片会显著拉低密度。 */
     #twikoo .tk-admin-comment-item {
-      background: var(--surface-1); border: 1px solid var(--hairline);
-      border-radius: var(--radius); padding: 14px 16px;
-      transition: box-shadow 0.2s ease;
+      background: transparent; border: none; border-radius: 0;
+      border-bottom: 1px solid var(--hairline);
+      padding: 10px 4px;
+      transition: background 0.15s ease;
+    }
+    #twikoo .tk-admin-comment-item:hover {
+      background: color-mix(in srgb, var(--ink) 3%, transparent);
     }
     #twikoo .tk-admin-comment-item:hover { }
-    #twikoo .tk-admin-comment-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 14px; color: var(--ink-muted); margin-bottom: 8px; }
-    #twikoo .tk-admin-comment-meta .tk-avatar img, #twikoo .tk-admin-comment-meta .tk-avatar-img { width: 30px; height: 30px; border-radius: 50%; }
+    #twikoo .tk-admin-comment-meta {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+      font-size: 13px; line-height: 1.4; color: var(--ink-muted);
+      margin-bottom: 2px;
+    }
+    #twikoo .tk-admin-comment-meta .tk-avatar,
+    #twikoo .tk-admin-comment-meta .tk-avatar img,
+    #twikoo .tk-admin-comment-meta .tk-avatar-img {
+      display: inline-block; line-height: 0; vertical-align: middle;
+      width: 24px; height: 24px; border-radius: 50%;
+    }
     #twikoo .tk-admin-comment-meta a { color: var(--primary); }
     #twikoo .tk-admin-comment-meta .tk-time { color: var(--ink-subtle); font-size: 11px; cursor: pointer; transition: color 0.15s; }
     #twikoo .tk-admin-comment-meta .tk-time:hover { color: var(--primary); }
     #twikoo .tk-admin-comment-meta .tk-ip { color: var(--ink-subtle); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 11px; }
-    #twikoo .tk-content { padding: 4px 0 8px; color: var(--ink); }
-    #twikoo .tk-admin-actions { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; border-top: 1px solid var(--hairline); margin-bottom: 0 !important; }
-    /* 黑暗模式下修复评论项底部白线 */
-    [data-theme="dark"] #twikoo .tk-admin-comment-item {
-      border-bottom: none !important;
+    /* 正文 —— 去掉上下 padding：行布局里正文紧跟 meta，12px 是纯浪费 */
+    #twikoo .tk-content { padding: 0; color: var(--ink); }
+    /* 上/下边框都要显式清掉 —— 页面里另有一份裸类名
+       `.tk-admin-actions { border-bottom: 1px solid rgba(255,255,255,.5) }`，
+       只清 border-top 会留下一条半透明白线（浅色下近白、深色下突兀）。 */
+    #twikoo .tk-admin-actions {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      padding-top: 2px;
+      border-top: none; border-bottom: none;
+      margin-bottom: 0 !important;
     }
+    /* 黑暗模式下修复评论项底部白线 */
+    /* 深色下原本要抹掉卡片边框，现在行分隔线两主题共用 var(--hairline)，无需覆盖 */
     #twikoo .tk-pagination { margin-top: 6px; }
     /* 隐藏评论项中的回复输入框（由 Twikoo JS 点击回复时控制显隐） */
     #twikoo .tk-admin-comment-item .el-textarea,
@@ -642,8 +703,8 @@
       top: 0;
       bottom: 0;
       width: 2px;
-      background: var(--card-border, #e0e0e0);
-      border-radius: 4px;
+      background: var(--hairline);
+      border-radius: 2px;
     }
 
     /* 搜索无结果时的空状态提示 */
@@ -694,21 +755,18 @@
     }
 
     /* === 多级评论缩进显示（不移动 DOM 元素，通过 data-depth 实现树形缩进）=== */
-    #twikoo .tk-admin-comment-item[data-depth="1"] { margin-left: 44px !important; }
-    #twikoo .tk-admin-comment-item[data-depth="2"] { margin-left: 82px !important; }
-    #twikoo .tk-admin-comment-item[data-depth="3"] { margin-left: 120px !important; }
-    #twikoo .tk-admin-comment-item[data-depth="4"] { margin-left: 158px !important; }
-    #twikoo .tk-admin-comment-item[data-depth="5"] { margin-left: 196px !important; }
-    #twikoo .tk-admin-comment-item[data-depth="6"] { margin-left: 234px !important; }
+    #twikoo .tk-admin-comment-item[data-depth="1"] { margin-left: 32px !important; }
+    #twikoo .tk-admin-comment-item[data-depth="2"] { margin-left: 56px !important; }
+    #twikoo .tk-admin-comment-item[data-depth="3"] { margin-left: 80px !important; }
+    #twikoo .tk-admin-comment-item[data-depth="4"] { margin-left: 104px !important; }
+    #twikoo .tk-admin-comment-item[data-depth="5"] { margin-left: 128px !important; }
+    #twikoo .tk-admin-comment-item[data-depth="6"] { margin-left: 152px !important; }
     /* 过滤时隐藏不匹配的评论 */
     #twikoo .tk-admin-comment-item[data-hidden="true"] { display: none !important; }
-    /* 子评论卡片略微降低视觉权重 */
-    #twikoo .tk-admin-comment-item[data-depth="1"],
-    #twikoo .tk-admin-comment-item[data-depth="2"],
-    #twikoo .tk-admin-comment-item[data-depth="3"] {
-      box-shadow: none;
-      border-color: var(--divider, #e8e8e8);
-    }
+    /* 连接线统一用 --hairline。
+       原规则只给 depth 1~3 降权（靠 border-color），去卡片后 border 已不存在，
+       若照搬会让「1~3 层淡、4~6 层反而是全色」—— 层级越深越显眼，逻辑反了。
+       现在层级由缩进 + 统一浓度的连接线共同表达，不做额外降权。 */
 
     /* === 配置管理区 === */
     #twikoo .tk-admin-config { display: flex; flex-direction: column; gap: 12px; }
@@ -729,11 +787,18 @@
       font-size: 11px; color: var(--primary); transition: transform 0.2s; margin-right: 2px;
     }
     #twikoo .tk-admin-config-group[open] .tk-admin-config-group-title::before { transform: rotate(180deg); }
+    /* 配置行：标签列定宽 + 控件列自适应 + 描述列 + 变量名列。
+       行间靠 12px 留白分隔，不再每行画发丝线 —— 满屏横线把长列表切碎，
+       这是「不像大厂」的第二大来源（Linear 只在区块之间用 hairline）。 */
     #twikoo .tk-admin-config-item {
       display: grid !important;
-      grid-template-columns: 130px 1fr 1fr 160px !important;
-      align-items: center; gap: 8px;
-      padding: 8px 16px; border-top: 1px solid var(--hairline);
+      grid-template-columns: 148px minmax(0, 1fr) minmax(0, 1.1fr) 132px !important;
+      align-items: center; gap: 14px;
+      padding: 12px 16px; border-top: none;
+    }
+    /* 分隔改为「仅在分组标题下画一条」，与 Linear 的区块分割一致 */
+    #twikoo .tk-admin-config-item + .tk-admin-config-item {
+      border-top: 1px solid color-mix(in srgb, var(--hairline) 55%, transparent);
     }
     #twikoo .tk-admin-config-item:first-of-type { border-top: none; }
     /* 长内容（textarea 等）—— 单列堆叠布局 */
@@ -743,7 +808,7 @@
     }
     /* 布尔配置项 —— 输入列缩窄到开关宽度 */
     #twikoo .tk-admin-config-item.boolean-config {
-      grid-template-columns: 130px 48px 1fr 160px !important;
+      grid-template-columns: 148px 46px minmax(0, 1fr) 132px !important;
     }
     /* 中文短标题（JS 动态插入） */
     #twikoo .tk-config-short-title {
@@ -756,26 +821,130 @@
     /* 输入框区域 */
     #twikoo .tk-admin-config-input { order: 2; min-width: 0; }
     #twikoo .tk-admin-config-input .el-input__inner { width: 100%; }
+
+    /* 下拉框 —— 此前零覆盖，落回 Element 默认白底 + 灰色边框。
+       规格与 text-input 完全一致（Linear 规范里 select 与 input 同为表单控件）。 */
+    #twikoo .el-select .el-input__inner,
+    #twikoo .tk-panel .el-select .el-input__inner,
+    #twikoo .tk-panel .el-select__tags {
+      color: var(--ink) !important;
+      background: var(--input-bg) !important;
+      border: 1px solid var(--input-border) !important;
+      border-radius: var(--radius-md) !important;
+      font-size: 14px !important;
+    }
+    #twikoo .tk-panel .el-select .el-input__inner:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent) !important;
+    }
+    /* 下拉箭头 —— 把 Element 的字体图标（单薄的 v 字形、贴边太近）
+       换成 1.5px 描边 chevron，与大厂一致。用 :after 画，不依赖图标字体。 */
+    #twikoo .el-select .el-select__caret,
+    #twikoo .el-select .el-input__icon,
+    #twikoo .tk-panel .el-select .el-select__caret,
+    #twikoo .tk-panel .el-select .el-input__icon {
+      font-size: 0 !important;              /* 干掉原字体图标的字形 */
+      width: 14px !important; height: 14px !important;
+      position: relative !important;        /* ::after 的定位基准，必须有 */
+      right: auto !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    /* 箭头与右边缘的距离改由 suffix 控制 —— 直接改 caret 的 right
+       会和 Element 的绝对定位上下文打架。 */
+    #twikoo .el-select .el-input__suffix,
+    #twikoo .tk-panel .el-select .el-input__suffix {
+      right: 10px !important;
+      display: flex !important; align-items: center !important;
+      height: 100% !important;
+    }
+    #twikoo .el-select .el-select__caret::before,
+    #twikoo .tk-panel .el-select .el-select__caret::before { content: none !important; }
+    #twikoo .el-select .el-select__caret::after,
+    #twikoo .tk-panel .el-select .el-select__caret::after {
+      content: '' !important;
+      position: absolute !important; left: 50% !important; top: 50% !important;
+      width: 6px !important; height: 6px !important;
+      border-right: 1.5px solid var(--ink-tertiary) !important;
+      border-bottom: 1.5px solid var(--ink-tertiary) !important;
+      transform: translate(-50%, -65%) rotate(45deg) !important;
+      transition: transform 0.2s !important;
+    }
+    /* 展开时翻转（Element 会加 .is-reverse） */
+    #twikoo .el-select .el-select__caret.is-reverse::after,
+    #twikoo .tk-panel .el-select .el-select__caret.is-reverse::after {
+      transform: translate(-50%, -25%) rotate(225deg) !important;
+    }
+
+    /* ── 下拉弹层 ── 此前零覆盖，用的是 Element 默认（直角 + 深阴影 + 挤的选项行） */
+    #twikoo .el-select-dropdown,
+    #twikoo .tk-panel .el-select-dropdown {
+      background: var(--canvas) !important;
+      border: 1px solid var(--hairline-strong) !important;
+      border-radius: var(--radius-md) !important;
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 10%, transparent) !important;
+      padding: 4px !important;
+      margin-top: 4px !important;
+    }
+    #twikoo .el-select-dropdown .popper__arrow,
+    #twikoo .tk-panel .el-select-dropdown .popper__arrow { display: none !important; }
+    /* 深色下阴影必须用纯黑 —— 上面那条用的是 var(--ink)，
+       而深色主题的 --ink 是 #f7f8f8（白），照搬会变成「白色发光」，方向反了。 */
+    [data-theme="dark"] #twikoo .el-select-dropdown,
+    [data-theme="dark"] #twikoo .tk-panel .el-select-dropdown {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55) !important;
+    }
+    #twikoo .el-select-dropdown__item,
+    #twikoo .tk-panel .el-select-dropdown__item {
+      color: var(--ink-muted) !important;
+      font-size: 13px !important;
+      /* 同样不能用固定高度 —— 长选项折行会与下一项重叠 */
+      min-height: 32px !important; line-height: 1.45 !important;
+      padding: 6px 10px !important;
+      border-radius: var(--radius-sm) !important;
+      transition: background 0.12s, color 0.12s !important;
+      overflow-wrap: anywhere;
+    }
+    #twikoo .el-select-dropdown__item.hover,
+    #twikoo .el-select-dropdown__item:hover,
+    #twikoo .tk-panel .el-select-dropdown__item.hover,
+    #twikoo .tk-panel .el-select-dropdown__item:hover {
+      background: var(--surface-2) !important; color: var(--ink) !important;
+    }
+    #twikoo .el-select-dropdown__item.selected,
+    #twikoo .tk-panel .el-select-dropdown__item.selected {
+      color: var(--primary-strong) !important;
+      background: var(--accent-soft) !important;
+      font-weight: 500 !important;
+    }
+    /* placeholder（含 Element 给空值输入框加的 .is-empty 场景） */
+    #twikoo .el-select .el-input__inner::placeholder,
+    #twikoo .tk-panel .el-select .el-input__inner::placeholder {
+      color: var(--ink-tertiary) !important;
+    }
     #twikoo .tk-admin-config-item.long-content .tk-admin-config-input {
       width: 100%;
     }
-    /* 详细说明 */
+    /* 详细说明 —— Linear 的 text-input 里 description 紧随输入框，
+       字号 caption(11px)、ink-subtle，与字段名同档但不同色（靠字重/色区分）。 */
     #twikoo .tk-admin-config-desc {
-      order: 3; font-size: 11px; color: var(--ink-subtle);
-      min-width: 0; line-height: 1.5; margin-bottom: 0;
-      word-break: break-all;
+      order: 3; font-size: 12px; font-weight: 400; color: var(--ink-subtle);
+      min-width: 0; line-height: 1.6; margin-bottom: 0;
+      word-break: break-word;
     }
     #twikoo .tk-admin-config-item.long-content .tk-admin-config-desc {
       white-space: normal;
     }
-    /* 英文变量名徽章 */
+    /* 配置项**英文变量名**（注意：中文名字段名是 tk-config-short-title，不是这个）。
+       order:4 = 最后一列，与布尔行的列宽表对应（第2列 46px 是留给开关的，
+       变量名若抢到那一列会被 ellipsis 裁成 "SHOW..."）。
+       样式取 Linear 的纯文字形态：等宽字族（环境变量名有语义）+ ink，无底色/边框。 */
     #twikoo .tk-admin-config-title {
       order: 4; font-size: 11px; font-weight: 500;
       font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-      color: var(--primary); background: var(--accent-soft);
-      padding: 2px 7px; border-radius: 4px;
-      border: 1px solid rgba(38, 121, 204, 0.15);
-      word-break: break-all; text-align: center;
+      color: var(--ink); background: transparent;
+      padding: 0; border: none; border-radius: 0;
+      word-break: break-word; text-align: right;
     }
     [data-theme="dark"] #twikoo .tk-admin-config-title {
       border-color: rgba(95, 169, 255, 0.2);
@@ -852,59 +1021,85 @@
       left: calc(100% - 22px) !important;
     }
 
-    /* === 自定义可搜索下拉框 === */
+    /* === 自定义可搜索下拉框 ===
+       它与文本输入框（.el-input__inner）是同一类控件，视觉规格必须一致：
+       同高 40px、同底 --input-bg、同边 --input-border、同圆角 radius-md、同 focus 光环。
+       原来用 surface-2 + hairline + radius-sm + 32px，比输入框矮一截、底和边都更淡，
+       并排放时明显「不是一个体系」—— 这就是它看起来不够精致的主因。 */
     .custom-select {
       position: relative; width: 100%;
     }
     .custom-select-input {
-      width: 100%; height: 32px; padding: 0 28px 0 10px;
-      border: 1px solid var(--hairline); border-radius: var(--radius-sm);
-      background: var(--surface-2); color: var(--ink);
-      font-size: 14px; cursor: pointer;
-      transition: border-color 0.2s;
+      width: 100%; height: 40px; padding: 0 38px 0 14px;
+      border: 1px solid var(--input-border); border-radius: var(--radius-md);
+      background: var(--input-bg); color: var(--ink);
+      font-size: 14px; line-height: 1.4; cursor: pointer;
+      box-shadow: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .custom-select-input:hover { border-color: var(--primary-hover); }
+    .custom-select-input::placeholder { color: var(--ink-tertiary); }
+    .custom-select-input:hover { border-color: var(--primary); }
     .custom-select-input:focus {
       outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
     }
     .custom-select-arrow {
-      position: absolute; right: 8px; top: 50%;
+      position: absolute; right: 14px; top: 50%;
       transform: translateY(-50%);
-      color: var(--ink-subtle); font-size: 11px;
-      pointer-events: none; transition: transform 0.2s;
+      color: var(--ink-tertiary); font-size: 12px;
+      pointer-events: none;
+      transition: transform 0.2s, color 0.2s;
     }
-    .custom-select.open .custom-select-arrow { transform: translateY(-50%) rotate(180deg); }
+    .custom-select:hover .custom-select-arrow { color: var(--ink-muted); }
+    .custom-select.open .custom-select-arrow {
+      transform: translateY(-50%) rotate(180deg); color: var(--ink-muted);
+    }
     .custom-select-dropdown {
-      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-      background: var(--surface-3); border: 1px solid var(--hairline-strong);
-      border-radius: var(--radius-sm);
-      z-index: 100; max-height: 240px; overflow-y: auto;
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: var(--canvas); border: 1px solid var(--hairline-strong);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 10%, transparent);
+      z-index: 100; max-height: 320px; overflow-y: auto;
+      padding: 4px;
       display: none;
+    }
+    /* 深色下阴影必须纯黑 —— --ink 在深色主题是 #f7f8f8（白），照搬会变成「白色发光」 */
+    [data-theme="dark"] .custom-select-dropdown {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
     }
     .custom-select.open .custom-select-dropdown { display: block; }
     .custom-select-search {
-      position: sticky; top: 0; padding: 6px;
-      background: var(--surface-1); border-bottom: 1px solid var(--hairline);
+      position: sticky; top: 0; padding: 2px 2px 6px;
+      background: var(--canvas); border-bottom: 1px solid var(--hairline);
     }
     .custom-select-search input {
-      width: 100%; height: 28px; padding: 0 8px;
-      border: 1px solid var(--hairline); border-radius: var(--radius-sm);
-      background: var(--surface-2); color: var(--ink);
-      font-size: 11px;
+      width: 100%; height: 32px; padding: 0 10px;
+      border: 1px solid var(--input-border); border-radius: var(--radius-sm);
+      background: var(--input-bg); color: var(--ink);
+      font-size: 13px;
     }
+    .custom-select-search input::placeholder { color: var(--ink-tertiary); }
     .custom-select-search input:focus { outline: none; border-color: var(--primary); }
+    /* 选项行 —— 用 min-height + 行高倍数，绝不用固定 height。
+       本项目选项文案带中文说明（「initials（默认，自动生成神秘人物）」），
+       窄宽度或页面缩放时必然折行；固定高度会让第二行溢出并压住下一项。
+       min-height 保证单行时仍是 32px，多行时自动长高。 */
     .custom-select-option {
-      padding: 6px 12px; font-size: 11px; color: var(--ink);
-      cursor: pointer; transition: background 0.15s;
+      padding: 6px 10px; min-height: 32px;
+      font-size: 13px; line-height: 1.45; color: var(--ink-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      overflow-wrap: anywhere;
     }
-    .custom-select-option:hover { background: var(--accent-soft); }
+    .custom-select-option:hover { background: var(--surface-2); color: var(--ink); }
     .custom-select-option.selected {
-      background: var(--surface-2); color: var(--primary-hover); font-weight: 500;
+      background: var(--accent-soft); color: var(--primary-strong); font-weight: 500;
     }
     .custom-select-option.hidden { display: none; }
     .custom-select-empty {
-      padding: 12px; text-align: center;
-      font-size: 11px; color: var(--ink-subtle);
+      padding: 14px; text-align: center;
+      font-size: 12px; color: var(--ink-subtle);
     }
 
     /* === 自定义多选（标签式） === */
@@ -912,19 +1107,23 @@
       display: flex; flex-wrap: wrap; gap: 6px;
       padding: 4px 0;
     }
+    /* 清掉第一轮遗留的主色字面量 rgba(38,121,204,…)：主色早已换成 Linear 紫，
+       写死的蓝会让标签的边框与悬浮反馈跟整体脱节。 */
     .custom-multiselect-tag {
       display: inline-flex; align-items: center; gap: 4px;
-      padding: 2px 8px; font-size: 11px;
-      background: var(--surface-2); color: var(--primary-hover);
-      border: 1px solid rgba(38, 121, 204, 0.2);
-      border-radius: 12px; cursor: pointer;
-      transition: all 0.15s; user-select: none;
+      padding: 3px 10px; font-size: 12px;
+      background: var(--surface-2); color: var(--ink-muted);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 9999px; cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      user-select: none;
     }
     .custom-multiselect-tag:hover {
-      background: rgba(38, 121, 204, 0.15);
+      background: color-mix(in srgb, var(--primary) 10%, transparent);
+      color: var(--ink);
     }
     .custom-multiselect-tag.active {
-      background: var(--primary); color: #fff;
+      background: var(--primary); color: var(--on-primary);
       border-color: var(--primary);
     }
     .custom-multiselect-tag .check-icon {
@@ -1883,7 +2082,6 @@ to {
 .tk-admin-actions {
   display: flex;
   margin-bottom: 1em;
-  border-bottom: 1px solid rgba(255,255,255,0.5);
 }
 </style><style type="text/css">
 .tk-admin-config-groups {
@@ -3669,7 +3867,6 @@ to {
 .tk-admin-actions {
   display: flex;
   margin-bottom: 1em;
-  border-bottom: 1px solid rgba(255,255,255,0.5);
 }
 </style><style type="text/css">
 .tk-admin-config-groups {
