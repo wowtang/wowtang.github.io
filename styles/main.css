@@ -591,6 +591,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .footer-wrap{max-width:var(--content-max,1200px);margin-inline:auto;padding-inline:var(--sp-lg)}
 .footer-top{display:flex;align-items:center;gap:10px;color:var(--on-dark);margin-bottom:var(--sp-xl)}
 .footer-top .spike{color:var(--primary)}
+.footer-top .serif-md{color:inherit} /* 排版档位自带的 --fg 在浅色模式下是近黑，压回页脚的 on-dark */
 .footer-cols{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:var(--sp-xxl)}
 .footer h4{font-family:var(--font-body);font-size:12px;font-weight:500;letter-spacing:1.5px;
   text-transform:uppercase;color:var(--on-dark);margin-bottom:var(--sp-md)}

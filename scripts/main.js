@@ -1250,6 +1250,11 @@
     var iconUse = toggle.querySelector('use');
     var link = (panel.getAttribute('data-apply-link') || '').trim();
     var loaded = false;
+    /* 申请页标题：切到申请页时把友链区页头换成申请互链，返回时复原（用户 2026-10-17 要求） */
+    var head = toggle.closest('.band-head');
+    var eyebrowEl = head ? head.querySelector('.eyebrow') : null;
+    var titleEl = head ? head.querySelector('h2') : null;
+    var headSaved = null;
 
     function appendPageLink() {
       if (!link || !content || content.querySelector('.link-apply-page-link')) { return; }
@@ -1306,6 +1311,16 @@
       }
       if (label) { label.textContent = open ? '友链申请' : '返回友链'; }
       if (iconUse) { iconUse.setAttribute('href', open ? '#i-send' : '#i-left'); }
+      if (eyebrowEl && titleEl) {
+        if (!open) {
+          if (!headSaved) { headSaved = { eyebrow: eyebrowEl.textContent, title: titleEl.textContent }; }
+          eyebrowEl.textContent = 'Links · 友链申请';
+          titleEl.textContent = '申请互链';
+        } else if (headSaved) {
+          eyebrowEl.textContent = headSaved.eyebrow;
+          titleEl.textContent = headSaved.title;
+        }
+      }
       if (!open) {
         /* 友链区多视图互斥：开申请页时关掉朋友动态视图（对方监听同名事件自行收起） */
         document.dispatchEvent(new CustomEvent('claude:links-view', { detail: 'apply' }));
