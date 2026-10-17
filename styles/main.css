@@ -976,14 +976,17 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
    离场立即隐藏（hidden），入场走 opacity + 6px 上浮（panel-in，JS 重放）。 */
 #friend-feed-panel[hidden]{display:none}
 #friend-feed-panel.is-entering{animation:panel-in .24s cubic-bezier(.2,.7,.3,1) both}
-/* 骨架屏自身也要铺卡片栅格：它整体替换 .friend-feed 的内容，
-   不铺栅格的话 9 张卡会竖着堆成一列。列数与 .friend-feed 完全一致。 */
-.feed-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--sp-md)}
+/* 骨架屏是 .friend-feed 栅格里的整块子元素：若自身再铺栅格，只会占外层一格、
+   9 张卡竖着堆一列。display:contents 让骨架卡直接成为外层栅格的项目，
+   与 .feed-item 同列同隙；替换/重试时整块 innerHTML 照常工作。
+   （no-JS 时 noscript 里的 .feed-skeleton{display:none} 靠后覆盖，整组隐藏。） */
+.feed-skeleton{display:contents}
 /* 朋友动态：卡片墙（liushen 的卡片结构——头像/标题/名字·时间/两行摘要，
    表皮走 Claude 令牌：奶白面 + 细线 + 珊瑚 hover，不搬对方的半透明底与整卡填色）。
-   auto-fill 自适应列数：1440 三列、768 两列、360 单列，无需额外断点。 */
+   auto-fill 自适应列数：1440 三列、768 两列、360 单列，无需额外断点。
+   视图切换后头部已由标题替换承担，这里只留一段与 .link-grid 相当的呼吸距。 */
 .friend-feed{
-  margin-top:var(--sp-xxl);padding-top:var(--sp-xl);border-top:1px solid var(--line);
+  margin-top:var(--sp-lg);
   display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--sp-md);
 }
 .feed-item{

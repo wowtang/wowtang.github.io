@@ -1313,7 +1313,9 @@
       if (iconUse) { iconUse.setAttribute('href', open ? '#i-send' : '#i-left'); }
       if (eyebrowEl && titleEl) {
         if (!open) {
-          if (!headSaved) { headSaved = { eyebrow: eyebrowEl.textContent, title: titleEl.textContent }; }
+          /* 存基准文案而不是当前 DOM：切进来时头部可能正被朋友动态视图占用，
+             存当前值会把 feed 文案带进「复原」里 */
+          if (!headSaved) { headSaved = { eyebrow: 'Links · 友情链接', title: '一起写博客的人' }; }
           eyebrowEl.textContent = 'Links · 友链申请';
           titleEl.textContent = '申请互链';
         } else if (headSaved) {
@@ -1756,10 +1758,27 @@
     var feedToggle = $('#friend-feed-toggle');
     var feedPanel = $('#friend-feed-panel');
     var feedList = $('.link-grid') || $('#links-empty');
+    /* 头部文案随视图直接替换（用户要求：不出第二个标题） */
+    var headEyebrow = $('#links-eyebrow');
+    var headTitle = $('#links-title');
+    var headCount = $('#links-count');
+    var headStatus = $('#friend-feed-status');
     if (feedToggle && feedPanel && feedList) {
       var feedStarted = false;
       var feedLabel = feedToggle.querySelector('.feed-toggle-label');
       var feedIcon = feedToggle.querySelector('use');
+      function headToFeed() {
+        if (headEyebrow) { headEyebrow.textContent = 'Feed · 朋友动态'; }
+        if (headTitle) { headTitle.textContent = '他们最近写了什么'; }
+        if (headCount) { headCount.setAttribute('hidden', ''); }
+        if (headStatus) { headStatus.removeAttribute('hidden'); }
+      }
+      function headToLinks() {
+        if (headEyebrow) { headEyebrow.textContent = 'Links · 友情链接'; }
+        if (headTitle) { headTitle.textContent = '一起写博客的人'; }
+        if (headCount) { headCount.removeAttribute('hidden'); }
+        if (headStatus) { headStatus.setAttribute('hidden', ''); }
+      }
       function feedEnter(el) {
         el.classList.remove('is-entering');
         void el.offsetWidth;
@@ -1769,6 +1788,7 @@
       function feedReset() {
         feedToggle.setAttribute('aria-expanded', 'false');
         feedPanel.setAttribute('hidden', '');
+        headToLinks();
         if (feedLabel) { feedLabel.textContent = '朋友动态'; }
         if (feedIcon) { feedIcon.setAttribute('href', '#i-rss'); }
       }
@@ -1781,10 +1801,11 @@
           feedEnter(feedList);
           feedReset();
         } else {
-          /* 切到朋友动态：列表让位，首次切换才抓取 */
+          /* 切到朋友动态：列表让位、头部文案直接替换，首次切换才抓取 */
           document.dispatchEvent(new CustomEvent('claude:links-view', { detail: 'feed' }));
           feedList.setAttribute('hidden', '');
           feedPanel.removeAttribute('hidden');
+          headToFeed();
           feedEnter(feedPanel);
           feedToggle.setAttribute('aria-expanded', 'true');
           if (feedLabel) { feedLabel.textContent = '返回友链'; }

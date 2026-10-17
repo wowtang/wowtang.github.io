@@ -422,11 +422,13 @@
   <div class="wrap">
     <div class="band-head">
       <div>
-        <p class="eyebrow">Links · 友情链接</p>
-        <h2 class="display-lg">一起写博客的人</h2>
+        <p class="eyebrow" id="links-eyebrow">Links · 友情链接</p>
+        <h2 class="display-lg" id="links-title">一起写博客的人</h2>
       </div>
       <div class="band-head-actions">
-        <p class="caption">共 23 位</p>
+        
+        <p class="caption" id="links-count">共 23 位</p>
+        <p class="caption" id="friend-feed-status" role="status" aria-live="polite" hidden>正在加载…</p>
         
         
         <button type="button" class="btn btn-coral btn-sm" id="friend-feed-toggle" aria-expanded="false" aria-controls="friend-feed-panel">
@@ -459,14 +461,6 @@
     
     
     <div id="friend-feed-panel" hidden>
-      <div class="band-head">
-        <div>
-          <p class="eyebrow">Feed · 朋友动态</p>
-          <h2 class="display-lg">他们最近写了什么</h2>
-        </div>
-        <p class="caption" id="friend-feed-status" role="status" aria-live="polite">正在加载…</p>
-      </div>
-
       <div class="friend-feed" id="friend-feed" data-feed="friend" data-rss="https://wowtang.top/feed.xml
 https://twbk.cn/feed
 https://blog.002.hk/rss/feed.xml
