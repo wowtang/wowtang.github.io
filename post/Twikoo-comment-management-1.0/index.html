@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#faf9f5">
   <meta name="format-detection" content="telephone=no">
-  <meta name="generator" content="Gridea Pro · Liushen Theme">
+  <meta name="generator" content="Gridea Pro · Claude Theme">
   <meta name="generator" content="Gridea Pro 1.3.0-beta.2">
   <title>Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布 | Sunrise.博客 | Sunrise&#39;s blog</title>
   <meta name="description" content="Twikoo 评论管理后台 · 开源版
@@ -30,25 +30,25 @@ Github仓库：https://github.com/wowtang/Twik...">
 
   <link rel="stylesheet" href="/styles/main.css">
 
-  <style id="liushen-theme-vars">
+  
+  <style id="claude-theme-vars">
     :root{
-      --primary:#70B8FF;
-      --accent:#70B8FF;
-      --text:rgba(0, 0, 0, 0.86);
-      --card-radius:12px;
-      --body-font:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Lato, Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      --code-font:Consolas, Menlo, 'PingFang SC', 'Microsoft YaHei', monospace;
-      --sidebar-gradient:#ffffff;
-      --bg-image-light:url('/media/images/bg-light.svg');
-      --bg-image-dark:url('/media/images/bg-dark.svg');
-      --card-min-height:240px;
-      --card-max-height:440px;
-      --aside-width:260px;
+      
+      --primary:#cc785c;
+      /* 浅色面上承载白字的珊瑚面：自动压暗一档，保证 ≥4.5:1 */
+      --primary-active:color-mix(in srgb, #cc785c 78%, #000);
+      --coral-press:color-mix(in srgb, #cc785c 64%, #000);
+      --primary-disabled:color-mix(in srgb, #cc785c 22%, #fff);
+      
+      --accent-teal:#5db8a6;--accent:#5db8a6;
+      --font-body:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Lato, Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-mono:Consolas, Menlo, 'PingFang SC', 'Microsoft YaHei', monospace;
+      
       --content-max:1150px;
-      --post-cover-dark:35;
+      --rail-width:260px;
     }
   </style>
-  <style id="liushen-custom-css">/* 基础样式重置（减少默认差异） */
+  <style id="claude-custom-css">/* 基础样式重置（减少默认差异） */
 * {
   margin: 0;
   padding: 0;
@@ -99,10 +99,11 @@ Github仓库：https://github.com/wowtang/Twik...">
     display: none !important;
 }</style>
 
+  
   <script>
     (function(){
       var pref="auto";
-      try{var saved=localStorage.getItem('liushen-theme');if(saved)pref=saved;}catch(e){}
+      try{var saved=localStorage.getItem('claude-theme');if(saved)pref=saved;}catch(e){}
       var resolved=pref;
       if(pref==='auto'){var h=new Date().getHours();resolved=(h>=6&&h<18)?'light':'dark';}
       document.documentElement.setAttribute('data-theme',resolved);
@@ -133,159 +134,249 @@ Github仓库：https://github.com/wowtang/Twik...">
 <meta name="google-site-verification" content="V5VQilBzQxrLpECbYBTO-JAhUwpVUaXljbbRBFjyvbw" />
 <link rel="prefetch" as="image" href="https://www.blogsclub.org/badge/wowtang.top">
 </head>
-<body class="page-post type-post">
+<body class="page-post">
 
   
-  <div id="reading-progress" aria-hidden="true"><span></span></div>
+  <div class="progress-bar" id="reading-progress" aria-hidden="true"><span></span></div>
   
 
-  <div id="web-bg" aria-hidden="true"></div>
-  <div id="sun-moon-cover" aria-hidden="true"></div>
+  <div id="theme-cover" aria-hidden="true"></div>
+
+  
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
+  <defs><g id="_s" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></g></defs>
+
+  <symbol id="i-spike" viewBox="0 0 24 24"><path d="M12 2.5 13.7 9l6.5 1.7-6.5 1.7L12 19l-1.7-6.6L3.8 10.7 10.3 9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18.6 16.4l.8 2.6 2.6.8-2.6.8-.8 2.6-.8-2.6-2.6-.8 2.6-.8z" fill="currentColor" opacity=".75"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5z"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h3.6l2 2.4H19a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M11.6 3H20v8.4L11 20.4 3.6 13z"/><circle cx="16.2" cy="7.8" r="1.4"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9z"/><path d="M18.5 3.5l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z" fill="currentColor" opacity=".7" stroke="none"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1-1"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9.5 12 15.5 18 9.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1.4-4.2 4-6.2 7-6.2s5.6 2 7 6.2"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.6 7l8.4 6 8.4-6"/></symbol>
+  <symbol id="i-rss" viewBox="0 0 24 24"><path d="M5 19h.01"/><path d="M5 12.5A6.5 6.5 0 0 1 11.5 19"/><path d="M5 6.5A12.5 12.5 0 0 1 17.5 19"/><circle cx="5.6" cy="18.4" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path d="M9.2 20.4v-2.6c-3 .5-3.8-1.3-3.8-1.3-.5-1.3-1.2-1.7-1.2-1.7-1-.7 0-.7 0-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.4-.3-5-1.2-5-5.4 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 3 1.1a10.2 10.2 0 0 1 5.4 0c2.1-1.4 3-1.1 3-1.1.6 1.5.2 2.6.1 2.9.7.8 1.1 1.8 1.1 3 0 4.2-2.6 5.1-5 5.4.4.4.8 1.1.8 2.2v3.5"/></symbol>
+  <symbol id="i-telegram" viewBox="0 0 24 24"><path d="M20.5 4.2 3.9 10.6c-.9.4-.9.9-.1 1.1l4.1 1.3 1.6 4.8c.2.5.1.7.6.7.4 0 .6-.2.8-.4l2-1.9 4.1 3c.8.4 1.3.2 1.5-.7l2.7-12.5c.2-1-.4-1.5-1.2-1.2z"/><path d="M8.4 12.9 17 7.2"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-2 5.4-5.4 2 2-5.4z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5S14.4 18.1 12 20.5c-2.4-2.4-3.6-5.3-3.6-8.5S9.6 5.9 12 3.5z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3.5V6M16 3.5V6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12.5" y="8" width="3" height="9"/><rect x="18" y="14" width="3" height="3"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l6 4V5L7 9H5a1 1 0 0 0-1 1z"/><path d="M17 9.5a3.5 3.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M6 15H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M20 12.5c0 3.9-3.6 7-8 7a9.4 9.4 0 0 1-2.6-.4L5 21l1.2-3.3A6.6 6.6 0 0 1 4 12.5c0-3.9 3.6-7 8-7s8 3.1 8 7z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M4 6h3.5l9 12H20M20 6h-3.5l-2.2 2.9M4 18h3.5l2.2-2.9"/><path d="M17 3.5 20 6l-3 2.5M17 15.5 20 18l-3 2.5"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.4-7.5-9.4A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7.5 2.8c0 5-7.5 9.4-7.5 9.4z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8h.01"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5l1 2.2 2.4-.5 1.4 2 -.8 2.3 1.9 1.6-.9 2.3 1.6 1.8-1.4 2-2.3-.3-1.2 2-2.2-.6-1.9 1.4-1.9-1.4-2.2.6-1.2-2-2.3.3-1.4-2 1.6-1.8-.9-2.3 1.9-1.6-.8-2.3 1.4-2 2.4.5z"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-weibo" viewBox="0 0 24 24"><ellipse cx="10" cy="14.5" rx="7" ry="5"/><path d="M16.5 4.5c2.6 0 4.5 2 4.3 4.6"/><path d="M16.2 8c1.3 0 2.2 1 2.1 2.3"/></symbol>
+  <symbol id="i-bilibili" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="3"/><path d="M7 3.5l2.5 3M17 3.5l-2.5 3"/><path d="M9 11v3M15 11v3"/></symbol>
+  <symbol id="i-zhihu" viewBox="0 0 24 24"><path d="M5 4h9v6.5H5z"/><path d="M5 14h13"/><path d="M18 4v7M18 14l2.5-2.5M18 14l2.5 2.5"/></symbol>
+  <symbol id="i-qq" viewBox="0 0 24 24"><path d="M12 3.5c3.6 0 6 2.6 6 6.4 0 1.6.6 2.3 1.2 3.4.5.9-.3 1.7-1.3 1.4-.7 1.5-2.5 2.8-5.9 2.8s-5.2-1.3-5.9-2.8c-1 .3-1.8-.5-1.3-1.4.6-1.1 1.2-1.8 1.2-3.4 0-3.8 2.4-6.4 6-6.4z"/><circle cx="9.6" cy="10.4" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="10.4" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 3s4.5 3.6 4.5 8.2A4.5 4.5 0 0 1 12 21a4.5 4.5 0 0 1-4.5-9.8C7.5 8.6 12 3 12 3z"/><path d="M12 17.5c1.2 0 2-.8 2-1.9 0-1.4-2-2.9-2-2.9s-2 1.5-2 2.9c0 1.1.8 1.9 2 1.9z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.7 5.6 6.1.8-4.4 4.3 1.1 6.1L12 17.4l-5.5 2.9 1.1-6.1-4.4-4.3 6.1-.8z"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14.5 7.5 16.5 9.5"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9.5 6C6.5 7.5 5 9.8 5 13v5h5v-5H7.6c0-2 .7-3.4 2.1-4.4z"/><path d="M19 6c-3 1.5-4.5 3.8-4.5 7v5h5v-5h-2.4c0-2 .7-3.4 2.1-4.4z"/></symbol>
+  <symbol id="i-loader" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" opacity=".25"/><path d="M20.5 12a8.5 8.5 0 0 0-8.5-8.5"/></symbol>
+</svg>
+
 
   
   
   
   
   
-  
-  
 
   
-<div id="mobile-sidebar" class="mobile-sidebar">
-  <div class="mobile-sidebar-backdrop" data-action="close-mobile-menu"></div>
-  <aside class="mobile-sidebar-panel">
-    <header class="mobile-sidebar-header">
-      <img class="mobile-avatar" src="/images/avatar.png" alt="Sunrise.博客 | Sunrise&#39;s blog" onerror="this.onerror=null;this.src='/media/images/default-avatar.svg';">
-      <h3 class="mobile-site-name">Sunrise.博客 | Sunrise&#39;s blog</h3>
-      <p class="mobile-tagline">一个来自浙江的神秘人……</p>
-    </header>
-    <nav class="mobile-sidebar-nav" id="mobile-nav-list">
+<div class="overlay" id="mobile-sidebar">
+  <div class="scrim" data-action="close-mobile-menu"></div>
+  <aside class="drawer-panel" aria-label="站点菜单">
+    <div class="drawer-head">
+      <a class="brand" href="/">
+        <svg class="spike" aria-hidden="true"><use href="#i-spike"/></svg>
+        <span class="brand-word">Sunrise.博客 | Sunrise&#39;s blog</span>
+      </a>
+      <button type="button" class="icon-btn" data-action="close-mobile-menu" aria-label="关闭菜单">
+        <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+
+    <nav class="drawer-list" aria-label="导航">
       
         
-        <a href="/" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>首页</span></a>
+        <a href="/"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>首页</span></a>
         
-        <a href="/post" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>博客</span></a>
+        <a href="/post"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客</span></a>
         
-        <a href="/memos" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>闪念</span></a>
+        <a href="/memos"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>闪念</span></a>
         
-        <a href="/archives" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>归档</span></a>
+        <a href="/archives"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>归档</span></a>
         
-        <a href="/tags" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>标签</span></a>
+        <a href="/tags"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>标签</span></a>
         
-        <a href="/links" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>友链</span></a>
+        <a href="/links"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>友链</span></a>
         
-        <a href="/post/about" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>关于</span></a>
+        <a href="/post/about"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>关于</span></a>
         
-        <a href="/post/bigthings" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>博客日志</span></a>
+        <a href="/post/bigthings"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客日志</span></a>
         
-        <a href="/post/feedback" class="mobile-nav-item"><i class="fa-fw fa-solid fa-bookmark"></i><span>一起来找茬</span></a>
+        <a href="/post/feedback"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>一起来找茬</span></a>
         
       
     </nav>
-    
-    
-    <div class="mobile-sidebar-quick">
+
+    <div class="drawer-foot">
       
-      <a class="quick-item" href="https://www.travellings.cn/go.html" title="友链接力 - 随机开往" aria-label="随机开往" rel="nofollow noopener" target="_blank"><span class="social-icon"><i class="fa-solid fa-bus"></i></span><span class="quick-label">开往</span></a>
+      <div class="row-wrap">
+        
+        <a class="btn btn-ghost btn-sm" href="https://www.travellings.cn/go.html" rel="nofollow noopener" target="_blank">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-compass"/></svg>开往</a>
+        
+        
+        <a class="btn btn-ghost btn-sm" href="https://foreverblog.cn/go.html" rel="nofollow noopener" target="_blank">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-globe"/></svg>十年之约</a>
+        
+        
+        <button type="button" class="btn btn-ghost btn-sm" data-action="random-post">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-shuffle"/></svg>随机文章</button>
+        
+      </div>
       
-      
-      <a class="quick-item" href="https://foreverblog.cn/go.html" title="十年之约" aria-label="十年之约" rel="nofollow noopener" target="_blank"><span class="social-icon"><i class="fa-brands fa-nfc-symbol"></i></span><span class="quick-label">十年之约</span></a>
-      
-      
-      <a class="quick-item" href="javascript:void(0);" title="随机文章" aria-label="随机文章" data-action="random-post"><span class="social-icon"><i class="fa-solid fa-shuffle"></i></span><span class="quick-label">随机文章</span></a>
-      
+      <div class="socials">
+<a class="icon-btn" href="mailto:sunrise@wowtang.top" title="邮箱" aria-label="邮箱" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></a>
+
+
+
+<a class="icon-btn" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" aria-label="哔哩哔哩" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-bilibili"/></svg></a>
+<a class="icon-btn" href="https://www.zhihu.com/people/wei-681618" title="知乎" aria-label="知乎" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-zhihu"/></svg></a>
+<a class="icon-btn" href="/feed.xml" title="RSS" aria-label="RSS" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg></a>
+
+</div>
     </div>
-    
-    <footer class="mobile-sidebar-footer">
-      
-<a class="social-icon" href="mailto:sunrise@wowtang.top" title="Email" rel="noopener"><i class="fa-solid fa-envelope"></i></a>
-
-
-
-<a class="social-icon" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" rel="noopener" target="_blank"><i class="fa-brands fa-bilibili"></i></a>
-<a class="social-icon" href="https://www.zhihu.com/people/wei-681618" title="知乎" rel="noopener" target="_blank"><i class="fa-brands fa-zhihu"></i></a>
-<a class="social-icon" href="/feed.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
-
-    </footer>
   </aside>
 </div>
 
   
-<nav id="nav" class="nav-fixed">
-  <span id="blog-info">
-    <a class="nav-site-title" href="/" title="Sunrise.博客 | Sunrise&#39;s blog">
+
+
+
+
+
+
+<nav id="nav" class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/" title="Sunrise.博客 | Sunrise&#39;s blog">
       
-      <span class="site-name">Sunrise.博客 | Sunrise&#39;s blog</span>
+      <svg class="spike" aria-hidden="true"><use href="#i-spike"/></svg>
+      
+      
+      <span class="brand-word">Sunrise.博客 | Sunrise&#39;s blog</span>
     </a>
-  </span>
 
-  
-  <div id="menus" class="nav-shape-icon">
-    
-    <div class="menus_items visible">
-      
+    <div class="nav-menu nav-shape-icon" id="menus">
+      <div class="menus_items">
         
-          <div class="menus_item" data-tip="首页">
-            <a class="site-page" href="/"><i class="fa-fw fa-solid fa-bookmark"></i><span> 首页</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/" data-tip="首页">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>首页</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="博客">
-            <a class="site-page" href="/post"><i class="fa-fw fa-solid fa-bookmark"></i><span> 博客</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post" data-tip="博客">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="闪念">
-            <a class="site-page" href="/memos"><i class="fa-fw fa-solid fa-bookmark"></i><span> 闪念</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/memos" data-tip="闪念">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>闪念</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="归档">
-            <a class="site-page" href="/archives"><i class="fa-fw fa-solid fa-bookmark"></i><span> 归档</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/archives" data-tip="归档">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>归档</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="标签">
-            <a class="site-page" href="/tags"><i class="fa-fw fa-solid fa-bookmark"></i><span> 标签</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/tags" data-tip="标签">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>标签</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="友链">
-            <a class="site-page" href="/links"><i class="fa-fw fa-solid fa-bookmark"></i><span> 友链</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/links" data-tip="友链">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>友链</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="关于">
-            <a class="site-page" href="/post/about"><i class="fa-fw fa-solid fa-bookmark"></i><span> 关于</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post/about" data-tip="关于">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>关于</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="博客日志">
-            <a class="site-page" href="/post/bigthings"><i class="fa-fw fa-solid fa-bookmark"></i><span> 博客日志</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post/bigthings" data-tip="博客日志">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客日志</span>
+            </a>
           </div>
-        
-          <div class="menus_item" data-tip="一起来找茬">
-            <a class="site-page" href="/post/feedback"><i class="fa-fw fa-solid fa-bookmark"></i><span> 一起来找茬</span></a>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post/feedback" data-tip="一起来找茬">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>一起来找茬</span>
+            </a>
           </div>
+          
         
-      
+      </div>
     </div>
-  </div>
 
-  <div id="nav-right">
-    
-    <div id="travellings"><a class="site-page" href="https://www.travellings.cn/go.html" title="友链接力 - 随机开往" rel="nofollow noopener" target="_blank"><i class="fa-solid fa-bus fa-fw"></i></a></div>
-    
-    
-    <div id="ten-years"><a class="site-page" href="https://foreverblog.cn/go.html" title="十年之约" rel="nofollow noopener" target="_blank"><i class="fa-brands fa-nfc-symbol fa-fw"></i></a></div>
-    
-    
-    <div id="random"><a class="site-page" href="javascript:void(0);" title="随机文章" data-action="random-post"><i class="fa-solid fa-shuffle fa-fw"></i></a></div>
-    
-    
-    <div id="search-button"><span class="site-page social-icon search" data-action="open-search" title="搜索"><i class="fa-solid fa-magnifying-glass fa-fw"></i></span></div>
-    
-    <div id="theme-switch"><span class="site-page" data-action="toggle-theme" title="切换配色"><i class="fa-solid fa-circle-half-stroke fa-fw"></i></span></div>
-    <div id="toggle-menu"><span class="site-page" data-action="toggle-mobile-menu" title="展开菜单"><i class="fa-solid fa-bars fa-fw"></i></span></div>
+    <div class="nav-actions">
+      
+      <a class="icon-btn nav-extra" href="https://www.travellings.cn/go.html" title="友链接力 · 随机开往" aria-label="友链接力"
+         rel="nofollow noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></a>
+      
+      
+      <a class="icon-btn nav-extra" href="https://foreverblog.cn/go.html" title="十年之约" aria-label="十年之约"
+         rel="nofollow noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></a>
+      
+      
+      <button type="button" class="icon-btn" data-action="random-post" title="随机文章" aria-label="随机文章">
+        <svg class="ic" aria-hidden="true"><use href="#i-shuffle"/></svg></button>
+      
+      
+      <button type="button" class="icon-btn" data-action="open-search" title="搜索（Ctrl/⌘ + K）" aria-label="搜索">
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></button>
+      
+      <button type="button" class="icon-btn" data-action="toggle-theme" title="切换配色（跟随时间 / 浅色 / 深色）" aria-label="切换配色">
+        <svg class="ic" id="theme-icon" aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <button type="button" class="icon-btn nav-burger" data-action="toggle-mobile-menu" title="展开菜单" aria-label="展开菜单">
+        <svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
   </div>
 </nav>
 
 
-  <div id="body-wrap" class="wrap-default">
-    
   
   
   
@@ -294,48 +385,70 @@ Github仓库：https://github.com/wowtang/Twik...">
 
 
 
-  <header id="page-header" class="post-bg nav-fixed-spacer" style="background-image:url('/post-images/Twikoo-comment-management-1.0.png')">
-    <div id="post-info">
-      <h1 class="post-title">Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布</h1>
-      <div id="post-meta">
-        <span class="post-meta-item"><i class="far fa-calendar-alt"></i> <time datetime="2026-08-12T00:32:21+08:00">Aug 12, 2026</time></span>
+<div id="page-header" hidden></div>
+
+
+
+
+
+  <div class="body-shell">
+    <main class="layout page-main">
+      <div class="content">
         
-        <span class="post-meta-item"><i class="fas fa-tag"></i>
-          <a href="/tag/twikoo/">Twikoo</a><span class="sep">·</span><a href="/tag/ji-shu/">技术</a><span class="sep">·</span><a href="/tag/html/">html</a>
-        </span>
+<article class="post-detail" id="post" data-link="/post/Twikoo-comment-management-1.0/">
+
+  
+  <section class="band band-flush-bottom">
+    <div class="wrap">
+      <div class="article-head">
         
-        <span class="post-meta-item"><i class="far fa-clock"></i> 9 min read 分钟阅读</span>
-        <span class="post-meta-item"><i class="fa-solid fa-pen-nib"></i> 3442 字</span>
+        <div class="tags-row tags-row-center">
+          
+          <a class="pill" href="/tag/twikoo/">#Twikoo</a>
+          
+          <a class="pill" href="/tag/ji-shu/">#技术</a>
+          
+          <a class="pill" href="/tag/html/">#html</a>
+          
+        </div>
+        
+        <h1 class="display-lg">Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布</h1>
+        <p class="lead">Twikoo 评论管理后台 · 开源版
+一个开箱即用的 Twikoo 评论系统管理面板，原版UI较简陋，我们提供美观、响应式的后台界面，支持评论审核、配置管理、数据导入导出、深色主题等特性。无需额外安装，仅需一个 HTML 文件即可部署。
+Github仓库：https://github.com/wowtang/Twik...</p>
+        <div class="byline">
+          <span class="who">
+            
+            <span class="avatar-xs"><img src="/images/avatar.png" alt="" loading="lazy" class="avatar-img"></span>
+            
+            Sunrise.
+          </span>
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-cal"/></svg><time datetime="2026-08-12T00:32:21+08:00">Aug 12, 2026</time></span>
+          
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-pen"/></svg>更新于 Oct 04, 2026</span>
+          
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-clock"/></svg>9 min read 分钟</span>
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-chart"/></svg>3442 字</span>
+        </div>
       </div>
     </div>
-    
+  </section>
+
+  
+  <div class="wrap">
+    <div class="article-cover">
       
-<section class="main-hero-waves-area waves-area" aria-hidden="true">
-  <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
-    <defs>
-      <path id="liushen-gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path>
-    </defs>
-    <g class="parallax">
-      <use xlink:href="#liushen-gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7)"></use>
-      <use xlink:href="#liushen-gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)"></use>
-      <use xlink:href="#liushen-gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)"></use>
-      <use xlink:href="#liushen-gentle-wave" x="48" y="7" fill="#ffffff"></use>
-    </g>
-  </svg>
-</section>
+      <img src="/post-images/Twikoo-comment-management-1.0.png" alt="Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布" loading="lazy" decoding="async">
+      
+    </div>
+  </div>
 
-    
-  </header>
-
-
-
-
-    <main id="content-inner" class="layout layout-with-aside">
-      <div id="content" class="content">
-        
-<article id="post" class="post-detail" data-link="/post/Twikoo-comment-management-1.0/">
-  <div id="article-container" class="article-container post-content">
-    <h1 id="twikoo---">Twikoo 评论管理后台 · 开源版</h1>
+  
+  <div class="wrap mt-xxl">
+    <div class="post-layout">
+      <div class="post-main">
+        <div class="article-container post-content prose" id="article-container">
+          <h1 id="twikoo---">Twikoo 评论管理后台 · 开源版</h1>
 <p>一个开箱即用的 <strong>Twikoo 评论系统管理面板</strong>，原版UI较简陋，我们提供美观、响应式的后台界面，支持评论审核、配置管理、数据导入导出、深色主题等特性。<strong>无需额外安装</strong>，仅需一个 HTML 文件即可部署。</p>
 <p>Github仓库：<a href="https://github.com/wowtang/Twikoo-comment-management">https://github.com/wowtang/Twikoo-comment-management</a></p>
 <hr />
@@ -542,102 +655,82 @@ A：本面板仅作为前端界面，所有权限校验依赖 Twikoo 后端的�
 <!-- /grid -->
 <hr />
 
-  </div>
+        </div>
 
-  <div class="post-bottom">
-    <div class="post-copyright">
-      <ul class="post-copyright-list">
-        <li><strong>本文标题：</strong><span>Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布</span></li>
-        <li><strong>文章作者：</strong><span>Sunrise.</span></li>
-        <li><strong>发布时间：</strong><span>Aug 12, 2026</span></li>
         
         
-        <li><strong>最后更新：</strong><span>Oct 04, 2026</span></li>
+        <div class="panel mt-xxl">
+          <div class="panel-head">
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-info"/></svg>
+            <span class="eyebrow">版权与引用</span>
+          </div>
+          <ul class="meta-list">
+            <li><span>本文标题</span><b>Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布</b></li>
+            <li><span>文章作者</span><b>Sunrise.</b></li>
+            <li><span>发布时间</span><b>Aug 12, 2026</b></li>
+            
+            <li><span>最后更新</span><b>Oct 04, 2026</b></li>
+            
+            
+            <li><span>本文链接</span><b><a href="https://wowtang.top/post/Twikoo-comment-management-1.0/">https://wowtang.top/post/Twikoo-comment-management-1.0/</a></b></li>
+            
+            <li><span>版权声明</span><b>本博客所有文章除特别声明外，均默认采用<a href="https://wowtang.top/post/SScopyright" target="_blank" rel="noopener noreferrer">「SS版权声明」</a> 与 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">「CC BY-NC-SA 4.0」</a>许可协议</b></li>
+          </ul>
+        </div>
         
-        <li><strong>本文链接：</strong><a href="https://wowtang.top/post/Twikoo-comment-management-1.0/">https://wowtang.top/post/Twikoo-comment-management-1.0/</a></li>
-        <li><strong>版权声明：</strong><span>本博客所有文章除特别声明外，均默认采用<a href="https://wowtang.top/post/SScopyright" target="_blank" rel="noopener noreferrer">「SS版权声明」</a> 与 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">「CC BY-NC-SA 4.0」</a>许可协议</span></li>
-      </ul>
-    </div>
 
-    
-    <div class="post-tags">
-      <i class="fa-solid fa-tags"></i>
-      <a href="/tag/twikoo/" class="post-tag">#Twikoo</a><a href="/tag/ji-shu/" class="post-tag">#技术</a><a href="/tag/html/" class="post-tag">#html</a>
-    </div>
-    
-  </div>
+        
+        <div class="tags-row">
+          
+          <a class="pill" href="/tag/twikoo/">#Twikoo</a>
+          
+          <a class="pill" href="/tag/ji-shu/">#技术</a>
+          
+          <a class="pill" href="/tag/html/">#html</a>
+          
+        </div>
+        
 
-  
-<nav id="post-nav" class="post-nav" data-current="/post/Twikoo-comment-management-1.0/" aria-label="文章导航">
+        
+<nav class="post-nav" id="post-nav" data-current="/post/Twikoo-comment-management-1.0/" aria-label="相邻文章">
   <a class="post-nav-item prev" href="#" data-role="prev" hidden>
-    <span class="label"><i class="fa-solid fa-angle-left"></i> 上一篇</span>
-    <span class="title">--</span>
+    <span class="dir"><svg class="ic ic-s" aria-hidden="true"><use href="#i-left"/></svg>上一篇</span>
+    <span class="tt">—</span>
   </a>
   <a class="post-nav-item next" href="#" data-role="next" hidden>
-    <span class="label">下一篇 <i class="fa-solid fa-angle-right"></i></span>
-    <span class="title">--</span>
+    <span class="dir">下一篇<svg class="ic ic-s" aria-hidden="true"><use href="#i-right"/></svg></span>
+    <span class="tt">—</span>
   </a>
 </nav>
 
 
-  <div class="related-posts" id="related-posts" hidden>
-    <div class="related-posts-headline"><i class="fa-solid fa-link"></i><span>相关推荐</span></div>
-    <div class="related-posts-list" id="related-posts-list"></div>
-  </div>
+        <div class="related" id="related-posts" hidden>
+          <h2 class="display-sm">相关推荐</h2>
+          <div class="related-list" id="related-posts-list"></div>
+        </div>
 
+        
+<section class="comments" id="comments">
+  <h3 class="title-md title-row">
+    <svg class="ic" aria-hidden="true"><use href="#i-comment"/></svg>评论
+  </h3>
   
 
-
-  
-    <section id="post-comment" class="post-comment">
-  <div class="comment-headline">
-    <i class="fa-solid fa-comments"></i>
-    <span>评论</span>
-  </div>
+<div class="comment-box" data-comment-platform="twikoo">
   <style>
-  .tk-login-title {
-    position: relative;
-    visibility: hidden;
-    white-space: nowrap;
-  }
-  .tk-login-title::after {
-    content: "Sunrise's blog 评论管理";
-    position: absolute;
-    left: 0;
-    top: 0;
-    visibility: visible;
-    white-space: nowrap;
-  }
-  .tk-panel-title > div {
-    position: relative;
-    visibility: hidden;
-    white-space: nowrap;
-  }
-  .tk-panel-title > div::after {
-    content: "Sunrise's blog 评论管理面板";
-    position: absolute;
-    left: 0;
-    top: 0;
-    visibility: visible;
-    white-space: nowrap;
-  }
+    .tk-login-title{position:relative;visibility:hidden;white-space:nowrap}
+    .tk-login-title::after{content:"Sunrise.博客 | Sunrise&#39;s blog 评论管理";position:absolute;left:0;top:0;visibility:visible;white-space:nowrap}
+    .tk-panel-title > div{position:relative;visibility:hidden;white-space:nowrap}
+    .tk-panel-title > div::after{content:"Sunrise.博客 | Sunrise&#39;s blog 评论管理面板";position:absolute;left:0;top:0;visibility:visible;white-space:nowrap}
   </style>
   <div id="tcomment"></div>
   <script>
-  (function() {
+  (function () {
     function initTwikoo() {
-      if (!window.twikoo) return;
-      window.twikoo.init({
-        envId: 'https://twikoo.vercel.wowtang.top/',
-        el: '#tcomment',
-        lang: 'zh-CN',
-        path: window.location.pathname
-      });
+      if (!window.twikoo) { return; }
+      window.twikoo.init({ envId: 'https://twikoo.vercel.wowtang.top/', el: '#tcomment', lang: 'zh-CN', path: window.location.pathname });
     }
-    if (window.twikoo) {
-      initTwikoo();
-      return;
-    }
+    if (window.twikoo) { initTwikoo(); return; }
     var script = document.createElement('script');
     script.src = 'https://cdn.jsdmirror.com/npm/twikoo@1/dist/twikoo.all.min.js';
     script.async = true;
@@ -645,373 +738,443 @@ A：本面板仅作为前端界面，所有权限校验依赖 Twikoo 后端的�
     document.body.appendChild(script);
   })();
   </script>
+</div>
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
 </section>
 
-  
-
-
-
-</article>
-
       </div>
+
       
+
+
+<aside class="rail" id="rail-widgets" aria-label="文章侧栏">
   
-<aside id="aside-content" class="aside-content">
-  <div id="card-widget-wrap" class="card-widget-wrap">
+    
     <div data-widget="author" data-order="1">
-<div class="card-widget card-info">
-  <div class="card-content">
-    <div class="card-info-avatar">
-      <img class="avatar-img" src="/images/avatar.png" alt="Sunrise.博客 | Sunrise&#39;s blog" onerror="this.onerror=null;this.src='/media/images/default-avatar.svg';">
-    </div>
-    <div class="card-info-data">
-      <div class="author-info-name">Sunrise.</div>
-      <div class="author-info-description">心境自成天地，地狱可化作桃源，天堂也能沦为苦海。</div>
-    </div>
-    <div class="card-info-counts">
-      <div class="count-item">
-        <div class="headline" data-site-post-count>14</div>
-        <div class="length-num">文章</div>
-      </div>
-      <div class="count-item">
-        <div class="headline">14</div>
-        <div class="length-num">标签</div>
-      </div>
-      <div class="count-item">
-        <div class="headline" id="card-info-runtime">--</div>
-        <div class="length-num">天</div>
-      </div>
-    </div>
-    <div class="card-info-social">
+
+
+
+
+<section class="panel" data-widget="author" data-order="1" data-widget-name="author">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-user"/></svg>
+    <span class="eyebrow">作者</span>
+  </div>
+  <div class="author-id">
+    <span class="avatar" aria-hidden="true">
       
-<a class="social-icon" href="mailto:sunrise@wowtang.top" title="Email" rel="noopener"><i class="fa-solid fa-envelope"></i></a>
-
-
-
-<a class="social-icon" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" rel="noopener" target="_blank"><i class="fa-brands fa-bilibili"></i></a>
-<a class="social-icon" href="https://www.zhihu.com/people/wei-681618" title="知乎" rel="noopener" target="_blank"><i class="fa-brands fa-zhihu"></i></a>
-<a class="social-icon" href="/feed.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
-
+      <img src="/images/avatar.png" alt="Sunrise." class="avatar-img">
+      
+    </span>
+    <div>
+      <div class="author-name">Sunrise.</div>
+      <p class="body-sm mt-xxs">心境自成天地，地狱可化作桃源，天堂也能沦为苦海。</p>
     </div>
   </div>
+  <div class="socials">
+<a class="icon-btn" href="mailto:sunrise@wowtang.top" title="邮箱" aria-label="邮箱" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></a>
+
+
+
+<a class="icon-btn" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" aria-label="哔哩哔哩" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-bilibili"/></svg></a>
+<a class="icon-btn" href="https://www.zhihu.com/people/wei-681618" title="知乎" aria-label="知乎" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-zhihu"/></svg></a>
+<a class="icon-btn" href="/feed.xml" title="RSS" aria-label="RSS" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg></a>
+
 </div>
+  <div class="row-between">
+    <a class="btn btn-ghost btn-sm" href="/about/">关于我<svg class="ic ic-s" aria-hidden="true"><use href="#i-right"/></svg></a>
+    <p class="caption">已运行 <b id="card-info-runtime" data-since="2024-11-29">—</b> 天</p>
+  </div>
+</section>
 </div>
+  
+  
+  
     
     <div data-widget="announcement" data-order="3">
-<div class="card-widget card-announcement">
-  <div class="item-headline"><i class="fa-solid fa-bullhorn"></i><span>公告</span></div>
-  <div class="announcement-content">
-    
-    <p>开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏<br /><span>本博客所有文章除特别声明外，均默认采用<a href="https://wowtang.top/post/SScopyright" target="_blank" rel="noopener noreferrer">「SS版权声明」</a> 与 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">「CC BY-NC-SA 4.0」</a>许可协议。</span><br />每日一言：<span id="daily_sentence">每日哲思加载中……</span></p>
-  </div>
-</div>
-</div>
 
+
+<section class="panel" data-widget="announcement" data-order="3" data-widget-name="announcement">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-megaphone"/></svg>
+    <span class="eyebrow">公告</span>
+  </div>
+  <div class="serif-quote">开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏<br /><span>本博客所有文章除特别声明外，均默认采用<a href="https://wowtang.top/post/SScopyright" target="_blank" rel="noopener noreferrer">「SS版权声明」</a> 与 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">「CC BY-NC-SA 4.0」</a>许可协议。</span><br />每日一言：<span id="daily_sentence">每日哲思加载中……</span></div>
+</section>
+</div>
+  
+  
+    
+    <div data-widget="recent" data-order="4">
+
+
+
+
+  
+  
+
+
+<section class="panel" data-widget="recent" data-order="4" data-widget-name="recent">
+  
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-book"/></svg>
+    <span class="eyebrow">最新文章</span>
+  </div>
+  
+  <ul class="rank-list">
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+  </ul>
+</section>
+</div>
+  
+  
+  
+    
+    <div data-widget="tags" data-order="6">
+
+
+
+<section class="panel" data-widget="tags" data-order="6" data-widget-name="tags">
+  
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-tag"/></svg>
+    <span class="eyebrow">标签</span>
+  </div>
+  
+  <div class="tag-cloud">
+    
+      
+        
+        
+        <a class="pill" href="/tag/gridea/" title="Gridea (1)" data-count="1">Gridea</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/gridea-pro/" title="Gridea Pro (1)" data-count="1">Gridea Pro</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/qian-tan/" title="浅谈 (6)" data-count="6">浅谈</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/xin-wen/" title="新闻 (3)" data-count="3">新闻</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/2024/" title="2024 (1)" data-count="1">2024</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/say-goodbye/" title="Say Goodbye (2)" data-count="2">Say Goodbye</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/xian-yan-sui-yu/" title="闲言碎语 (1)" data-count="1">闲言碎语</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/2026/" title="2026 (1)" data-count="1">2026</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/2025/" title="2025 (1)" data-count="1">2025</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/gong-ju-tui-jian/" title="工具推荐 (1)" data-count="1">工具推荐</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/ji-shu/" title="技术 (2)" data-count="2">技术</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/zhong-kao/" title="中考 (1)" data-count="1">中考</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/twikoo/" title="Twikoo (1)" data-count="1">Twikoo</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/html/" title="html (1)" data-count="1">html</a>
+        
+      
+    
+  </div>
+</section>
+</div>
+  
+  
+  
+    
+    <div data-widget="webinfo" data-order="8">
+
+
+<section class="panel" data-widget="webinfo" data-order="8" data-widget-name="webinfo">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-chart"/></svg>
+    <span class="eyebrow">网站统计</span>
+  </div>
+  <div class="stat-grid">
+    <div>
+      <b data-site-post-count>13
+</b>
+      <span>文章</span>
+    </div>
+    <div>
+      <b>14</b>
+      <span>标签</span>
+    </div>
+    <div>
+      <b id="webinfo-runtime" data-since="2024-11-29">—</b>
+      <span>运行天数</span>
+    </div>
+    <div>
+      <b id="webinfo-busuanzi-pv">—</b>
+      <span>总访问</span>
+    </div>
+  </div>
+  <p class="caption">建站于 2024-11-29 · 访客 <b id="webinfo-busuanzi">—</b></p>
+</section>
+</div>
+  
+  
+    
+    <div data-widget="toc" data-order="2">
+      <section class="panel" id="toc-aside" data-widget="toc" data-order="2" data-widget-name="toc" hidden>
+        <div class="panel-head">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-list"/></svg>
+          <span class="eyebrow">目录</span>
+          <button class="icon-btn icon-btn-sm" type="button" data-action="toggle-toc" aria-expanded="true" aria-controls="rightside-toc" aria-label="折叠目录">
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </button>
+        </div>
+        <nav class="toc" id="rightside-toc" aria-label="文章目录">
+          <ol class="toc-list" id="toc-list"></ol>
+        </nav>
+      </section>
+    </div>
+  
+  
     
     <div data-widget="subscribe" data-order="3.5">
 
 
 
-<div class="card-widget card-subscribe">
-  <div class="item-headline"><i class="fa-solid fa-envelope-open-text"></i><span>订阅</span></div>
 
-  
-  <p class="subscribe-desc">输入邮箱，第一时间收到最新文章</p>
-  
 
-  
+
+
+
+
+
+
+
+
+
+
+<section class="panel" data-widget="subscribe" data-order="3.5" data-widget-name="subscribe">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-mail"/></svg>
+    <span class="eyebrow">订阅</span>
+  </div>
+  <p class="body-sm">输入邮箱，第一时间收到最新文章</p>
   <div class="subscribe-form-box"
        data-sub-field="email"
        data-sub-placeholder="你的邮箱地址"
        data-sub-button="订阅"
        data-sub-button-icon="fa-solid fa-paper-plane"
        data-sub-tip-empty="请输入邮箱地址"
-       data-sub-tip-format="邮箱格式不正确，请检查后重试"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></form></div>
-
+       data-sub-tip-format="邮箱格式不正确，请检查后重试">
+    <template class="sub-raw"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></template>
+    <form class="sub-form" id="sub-form" novalidate>
+      <span class="field">
+        <label class="eyebrow eyebrow-label" for="sub-email">邮箱地址</label>
+        <input class="sub-input" id="sub-email" type="email" name="email" placeholder="你的邮箱地址" autocomplete="email">
+      </span>
+      <button class="sub-btn" type="submit">订阅<svg class="ic ic-s" aria-hidden="true"><use href="#i-right"/></svg></button>
+      <p class="sub-tip" id="sub-tip" role="status" aria-live="polite"></p>
+    </form>
+  </div>
   
-  <p class="subscribe-note"><i class="fa-solid fa-shield-halved"></i><span>不会向任何人分享你的邮箱地址。</span></p>
+  <p class="caption">不会向任何人分享你的邮箱地址。</p>
   
+</section>
+
+
 </div>
-
-</div>
-
-    
-    
-      
-      
-        
-        
-          
-        
-      
-      
-      <div data-widget="recent" data-order="4">
-
-
-
-
-<div class="card-widget card-recent-post show-3">
-  <div class="item-headline"><i class="fa-solid fa-history"></i><span>最新文章</span></div>
-  <div class="aside-list">
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        <div class="aside-list-item">
-          
-          <a class="thumbnail no-cover" href="/post/ce-shi-wen-zhang/" title="测试文章"><i class="fa-solid fa-file-lines"></i></a>
-          
-          <div class="content">
-            <a class="title" href="/post/ce-shi-wen-zhang/" title="测试文章">测试文章</a>
-            <time class="date">Oct 06, 2026</time>
-          </div>
-        </div>
-        
-      
-        
-        <div class="aside-list-item">
-          
-          <a class="thumbnail no-cover" href="/post/litter_202609/" title="「站长信」202609 - 无题"><i class="fa-solid fa-file-lines"></i></a>
-          
-          <div class="content">
-            <a class="title" href="/post/litter_202609/" title="「站长信」202609 - 无题">「站长信」202609 - 无题</a>
-            <time class="date">Sep 27, 2026</time>
-          </div>
-        </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    <div class="aside-empty">暂无文章</div>
-  </div>
-</div>
-</div>
-    
-
-    
-    <div data-widget="tags" data-order="6">
-<div class="card-widget card-tags">
-  <div class="item-headline"><i class="fa-solid fa-tags"></i><span>标签云</span></div>
-  <div class="card-tag-cloud">
-    
-      
-        
-          
-          <a href="/tag/gridea/" title="Gridea (1)" class="tag-cloud-item" data-count="1">Gridea<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/gridea-pro/" title="Gridea Pro (1)" class="tag-cloud-item" data-count="1">Gridea Pro<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/qian-tan/" title="浅谈 (6)" class="tag-cloud-item" data-count="6">浅谈<sup>6</sup></a>
-        
-      
-        
-          
-          <a href="/tag/xin-wen/" title="新闻 (3)" class="tag-cloud-item" data-count="3">新闻<sup>3</sup></a>
-        
-      
-        
-          
-          <a href="/tag/2024/" title="2024 (1)" class="tag-cloud-item" data-count="1">2024<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/say-goodbye/" title="Say Goodbye (2)" class="tag-cloud-item" data-count="2">Say Goodbye<sup>2</sup></a>
-        
-      
-        
-          
-          <a href="/tag/xian-yan-sui-yu/" title="闲言碎语 (1)" class="tag-cloud-item" data-count="1">闲言碎语<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/2026/" title="2026 (1)" class="tag-cloud-item" data-count="1">2026<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/2025/" title="2025 (1)" class="tag-cloud-item" data-count="1">2025<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/gong-ju-tui-jian/" title="工具推荐 (1)" class="tag-cloud-item" data-count="1">工具推荐<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/ji-shu/" title="技术 (2)" class="tag-cloud-item" data-count="2">技术<sup>2</sup></a>
-        
-      
-        
-          
-          <a href="/tag/zhong-kao/" title="中考 (1)" class="tag-cloud-item" data-count="1">中考<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/twikoo/" title="Twikoo (1)" class="tag-cloud-item" data-count="1">Twikoo<sup>1</sup></a>
-        
-      
-        
-          
-          <a href="/tag/html/" title="html (1)" class="tag-cloud-item" data-count="1">html<sup>1</sup></a>
-        
-      
-    
-  </div>
-</div>
-</div>
-    
-    <div data-widget="webinfo" data-order="8">
-<div class="card-widget card-webinfo">
-  <div class="item-headline"><i class="fa-solid fa-chart-pie"></i><span>网站统计</span></div>
-  <div class="webinfo">
-    <div class="webinfo-item">
-      <span class="webinfo-label">文章</span>
-      <span class="webinfo-value" data-site-post-count>14</span>
-    </div>
-    <div class="webinfo-item">
-      <span class="webinfo-label">标签</span>
-      <span class="webinfo-value">14</span>
-    </div>
-    <div class="webinfo-item">
-      <span class="webinfo-label">分类</span>
-      <span class="webinfo-value">0</span>
-    </div>
-    <div class="webinfo-item">
-      <span class="webinfo-label">运行</span>
-      <div style="display:flex;align-items:center;gap:4px">
-        <span class="webinfo-value" id="webinfo-runtime" data-since="2024-11-29">--</span>
-        <span class="webinfo-unit">天</span>
-      </div>
-    </div>
-    <!-- cc新版ID，移除hidden -->
-    <div class="webinfo-item">
-      <span class="webinfo-label">访客</span>
-      <span class="webinfo-value" id="busuanzi_site_uv">--</span>
-    </div>
-    <div class="webinfo-item">
-      <span class="webinfo-label">浏览</span>
-      <span class="webinfo-value" id="busuanzi_site_pv">--</span>
-    </div>
-  </div>
-</div></div>
-    <div data-widget="toc" data-order="2">
-      <div id="toc-aside" class="toc-aside card-widget" hidden>
-        <div class="item-headline"><i class="fa-solid fa-list"></i><span>目录</span></div>
-        <ol id="toc-list" class="toc-list"></ol>
-      </div>
-    </div>
-  </div>
-  <script>
-    (function(){
-      var wrap = document.getElementById('card-widget-wrap');
-      if (!wrap) return;
-      
-      var stickyList = [];
-      
-      var items = Array.from(wrap.children);
-      items.sort(function(a, b){
-        var orderA = parseInt(a.getAttribute('data-order')) || 999;
-        var orderB = parseInt(b.getAttribute('data-order')) || 999;
-        return orderA - orderB;
-      });
-      wrap.innerHTML = '';
-      items.forEach(function(item){
-        var widgetName = item.getAttribute('data-widget');
-        var widgetEl = item.firstElementChild || item;
-        widgetEl.setAttribute('data-widget-name', widgetName);
-        widgetEl.setAttribute('data-order', item.getAttribute('data-order'));
-        if (stickyList.indexOf(widgetName) !== -1) {
-          widgetEl.classList.add('sticky-card');
-        }
-        wrap.appendChild(widgetEl);
-      });
-    })();
-  </script>
+  
 </aside>
+<script>
+(function () {
+  var rail = document.getElementById('rail-widgets');
+  if (!rail) { return; }
+  var parts = String("").split(','), sticky = [];
+  for (var k = 0; k < parts.length; k++) {
+    var n = parts[k].replace(/\s/g, '');
+    if (n) { sticky.push(n); }
+  }
+  var slots = [], i;
+  for (i = 0; i < rail.children.length; i++) {
+    if (rail.children[i].hasAttribute('data-widget')) { slots.push(rail.children[i]); }
+  }
+  slots.sort(function (a, b) {
+    return (parseInt(a.getAttribute('data-order'), 10) || 999) - (parseInt(b.getAttribute('data-order'), 10) || 999);
+  });
+  var frag = document.createDocumentFragment();
+  for (i = 0; i < slots.length; i++) {
+    var name = slots[i].getAttribute('data-widget');
+    var card = slots[i].firstElementChild || slots[i];
+    card.setAttribute('data-widget', name);
+    card.setAttribute('data-widget-name', name);
+    card.setAttribute('data-order', slots[i].getAttribute('data-order'));
+    if (sticky.indexOf(name) !== -1) { card.classList.add('is-sticky'); }
+    frag.appendChild(card);
+  }
+  rail.innerHTML = '';
+  rail.appendChild(frag);
+  var toc = document.getElementById('toc-aside');
+  if (toc && sticky.indexOf('toc') !== -1) { toc.classList.add('is-sticky'); }
+})();
+</script>
 
-    </main>
-
-    <footer id="footer">
-      
-<div class="footer-wrap">
-  <div class="footer-icons" aria-hidden="true">
-    <span class="footer-decoration"><i class="fa-solid fa-feather"></i></span>
+    </div>
   </div>
-  <div class="footer-content">
-    <div class="footer-info">
-      <p class="footer-site-name">Sunrise.博客 | Sunrise&#39;s blog</p>
-      <p class="footer-tagline">一个来自浙江的神秘人……</p>
-      <div class="footer-social">
-        
-<a class="social-icon" href="mailto:sunrise@wowtang.top" title="Email" rel="noopener"><i class="fa-solid fa-envelope"></i></a>
-
-
-
-<a class="social-icon" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" rel="noopener" target="_blank"><i class="fa-brands fa-bilibili"></i></a>
-<a class="social-icon" href="https://www.zhihu.com/people/wei-681618" title="知乎" rel="noopener" target="_blank"><i class="fa-brands fa-zhihu"></i></a>
-<a class="social-icon" href="/feed.xml" title="RSS" rel="noopener"><i class="fa-solid fa-rss"></i></a>
+</article>
 
       </div>
+      
+    </main>
+  </div>
+
+  
+<footer class="footer">
+  <div class="footer-wrap">
+    <div class="footer-top">
+      <svg class="spike" aria-hidden="true"><use href="#i-spike"/></svg>
+      <span class="serif-md">Sunrise.博客 | Sunrise&#39;s blog</span>
     </div>
-    <div class="footer-nav" id="footer-nav">
-      <a href="/">首页</a>
-      <a href="/archives/">归档</a>
-      <a href="/tags/">标签</a>
-      <a href="/categories/">分类</a>
-      <a href="/links/">友链</a>
-      <a href="/about/">关于</a>
-    </div>
-    
-    <div class="footer-extra">今日总访问量 <span id="busuanzi_today_pv">加载中...</span> 次 |
+
+    <div class="footer-cols">
+      <div class="footer-about">
+        <p>一个来自浙江的神秘人……</p>
+        <div class="socials">
+<a class="icon-btn" href="mailto:sunrise@wowtang.top" title="邮箱" aria-label="邮箱" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></a>
+
+
+
+<a class="icon-btn" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" aria-label="哔哩哔哩" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-bilibili"/></svg></a>
+<a class="icon-btn" href="https://www.zhihu.com/people/wei-681618" title="知乎" aria-label="知乎" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-zhihu"/></svg></a>
+<a class="icon-btn" href="/feed.xml" title="RSS" aria-label="RSS" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg></a>
+
+</div>
+      </div>
+
+      <div>
+        <h4>导航</h4>
+        <ul id="footer-nav">
+          <li><a href="/">首页</a></li>
+          <li><a href="/archives/">归档</a></li>
+          <li><a href="/tags/">标签</a></li>
+          <li><a href="/categories/">分类</a></li>
+          <li><a href="/links/">友链</a></li>
+          <li><a href="/about/">关于</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>更多</h4>
+        <ul>
+          <li><a href="/memos/">闪念</a></li>
+          <li><a href="/atom.xml">RSS 订阅</a></li>
+          <li><a href="https://www.travellings.cn/go.html" rel="nofollow noopener" target="_blank">友链接力</a></li>
+          <li><a href="https://foreverblog.cn/go.html" rel="nofollow noopener" target="_blank">十年之约</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>站点</h4>
+        
+        <div class="footer-extra">今日总访问量 <span id="busuanzi_today_pv">加载中...</span> 次 |
 	    今日总访客数 <span id="busuanzi_today_uv">加载中...</span> 人<br>
             本站总访问量 <span id="busuanzi_site_pv">加载中...</span> 次 | 
 	    本站总访客数 <span id="busuanzi_site_uv">加载中...</span> 人 | 
@@ -1064,44 +1227,64 @@ function siteTime() {
 setInterval(siteTime, 1000);
 siteTime();
 </script></div>
-    
-  </div>
-  <div class="footer-bottom">
-    <p class="footer-copyright">© 2024 - {YEAR} · Sunrise.</p>
-    <p class="footer-icp"><a href="https://icp.gov.moe/?keyword=20255556" target="_blank">萌ICP备20255556号</a></p>
-  </div>
-</div>
-
-    </footer>
-  </div>
-
-  
-<div id="rightside" class="rightside">
-  <div id="rightside-config-hide">
-    <button type="button" class="rightside-btn" data-action="toggle-toc" title="目录" hidden id="rightside-toc"><i class="fa-solid fa-list"></i></button>
-    <button type="button" class="rightside-btn" data-action="toggle-theme" title="切换主题"><i class="fa-solid fa-circle-half-stroke"></i></button>
-  </div>
-  
-  <button type="button" class="rightside-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" hidden><i class="fa-solid fa-angle-up"></i></button>
-  
-</div>
-
-
-
-  
-    
-<div id="search-modal" class="search-modal" hidden>
-  <div class="search-modal-backdrop" data-action="close-search"></div>
-  <div class="search-modal-panel">
-    <div class="search-modal-header">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input id="search-input" type="search" placeholder="搜索文章标题、标签、内容…" autocomplete="off" spellcheck="false">
-      <button class="search-modal-close" data-action="close-search" type="button" aria-label="关闭搜索"><i class="fa-solid fa-xmark"></i></button>
+        
+        <p class="footer-icp"><a href="https://icp.gov.moe/?keyword=20255556" target="_blank">萌ICP备20255556号</a></p>
+      </div>
     </div>
-    <div class="search-modal-body">
-      <ul id="search-results" class="search-results"></ul>
-      <div id="search-empty" class="search-empty" hidden>未找到匹配的内容</div>
-      <div id="search-tip" class="search-tip">输入关键词开始搜索，按 Esc 关闭</div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2024 - {YEAR} · Sunrise.</p>
+      <div class="meta">
+        <span>Built with Gridea Pro</span>
+        <span>Theme Claude</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  
+<div class="dock" id="rightside" aria-label="快捷操作">
+  
+  <button type="button" class="icon-btn" data-action="open-search" title="搜索" aria-label="搜索">
+    <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+  </button>
+  
+  
+  <button type="button" class="icon-btn" data-action="random-post" title="随机文章" aria-label="随机文章">
+    <svg class="ic" aria-hidden="true"><use href="#i-shuffle"/></svg>
+  </button>
+  
+  <button type="button" class="icon-btn" data-action="toggle-theme" title="切换配色" aria-label="切换配色">
+    <svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg>
+  </button>
+  
+  <button type="button" class="icon-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" aria-label="回到顶部" hidden>
+    <svg class="ic" aria-hidden="true"><use href="#i-up"/></svg>
+  </button>
+  
+</div>
+
+  
+    
+<div class="overlay" id="search-modal" hidden>
+  <div class="scrim" data-action="close-search"></div>
+  <div class="search-sheet" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-inner">
+      <div class="search-field">
+        <svg class="ic ic-l" aria-hidden="true"><use href="#i-search"/></svg>
+        <input class="search-input" id="search-input" type="search" placeholder="搜索文章、标签、正文…"
+               autocomplete="off" spellcheck="false" aria-label="搜索关键词">
+        <button class="icon-btn" type="button" data-action="close-search" aria-label="关闭搜索">
+          <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <ul class="search-results" id="search-results"></ul>
+      <div class="search-empty" id="search-empty" hidden>没有找到匹配的内容，换个关键词试试</div>
+      <p class="search-hint" id="search-tip">
+        <span>输入关键词开始搜索</span>
+        <span><kbd>/</kbd> 唤起 · <kbd>Esc</kbd> 关闭 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 打开</span>
+      </p>
     </div>
   </div>
 </div>
@@ -1110,179 +1293,154 @@ siteTime();
 <script id="search-index-data" type="application/json">
 {
   "posts": [
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        {
-          "title": "测试文章",
-          "link": "/post/ce-shi-wen-zhang/",
-          "date": "Oct 06, 2026",
-          "feature": "",
-          "tags": [],
-          "excerpt": "测试文章测试文章测试文章测试文章测试文章测试文章测试文章测试文章\n123123123321321321\n"
-        },
-        
-      
-        
-        {
-          "title": "「站长信」202609 - 无题",
-          "link": "/post/litter_202609/",
-          "date": "Sep 27, 2026",
-          "feature": "",
-          "tags": [],
-          "excerpt": "一封来自 Sunrise 的站长信\n见字如面。距离我上一次认认真真打理这个站点，已经过去一阵子了。趁着周末把想说的话写成一封信寄给你 —— 汇报一下这个夏天站点换的新模样，也有一件关于友链的小事想拜托各位。\n先请个假，但请别把我从友链里删掉\n嗨，我是 Sunrise。今年九月，我正式成了一名高一学生。课业的强度比我预想的要重得多，能留给博客的整块时间被切得很碎，所以接下来一段时间，这个站点大..."
-        },
-        
-      
-        
-        {
-          "title": "开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏",
-          "link": "/post/kai-shi-shang-gao-yi-liaoting-geng-yi-duan-shi-jiange-wei-hu-lian-zhan-chang-wu-xia-lian/",
-          "date": "Aug 27, 2026",
-          "feature": "",
-          "tags": [],
-          "excerpt": "开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏\n"
-        },
-        
-      
-        
-        {
-          "title": "「浅谈」时代峰峻造星乱象：低龄逐利之下，追星早已失了底线",
-          "link": "/post/sdfj/",
-          "date": "Aug 20, 2026",
-          "feature": "",
-          "tags": ["浅谈"],
-          "excerpt": "引言\n\n养成系追星的初衷，本是温柔陪伴、见证少年成长、汲取正向力量。但回看如今时代峰峻的饭圈生态，只剩下无休止的疯狂、越界与戾气。低龄化造星、未成年暧昧化玩梗、线下暴力冲突、无脑跟风对立，种种乱象层层叠加。我们不得不质问：资本无底线收割少年，粉丝无边界放纵狂热，到底是谁毁掉了追星本该有的纯粹？\n\n一、极致低龄造星：到底还要把年龄压到多低？\n时代峰峻主打的养成系，早已从“少年逐梦”变成了“幼龄..."
-        },
-        
-      
-        
-        {
-          "title": "Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布",
-          "link": "/post/Twikoo-comment-management-1.0/",
-          "date": "Aug 12, 2026",
-          "feature": "/post-images/Twikoo-comment-management-1.0.png",
-          "tags": ["Twikoo","技术","html"],
-          "excerpt": "Twikoo 评论管理后台 · 开源版\n一个开箱即用的 Twikoo 评论系统管理面板，原版UI较简陋，我们提供美观、响应式的后台界面，支持评论审核、配置管理、数据导入导出、深色主题等特性。无需额外安装，仅需一个 HTML 文件即可部署。\nGithub仓库：https://github.com/wowtang/Twikoo-comment-management\n\n:book: 项目简介\n本项..."
-        },
-        
-      
-        
-      
-        
-        {
-          "title": "「工具推荐」TRAE：字节跳动自研AI原生IDE编程软件（非广告）",
-          "link": "/post/ToolRec_trae1/",
-          "date": "Jul 21, 2026",
-          "feature": "/post-images/ToolRec_trae1.png",
-          "tags": ["工具推荐","Gridea","Gridea Pro","技术"],
-          "excerpt": "絮絮叨叨\n这个中考完的暑假，终于有时间来da\u0026rsquo;li（搭理、打理、……）我的博客网站。\n这个网站除了每年的“定时闹钟”「Good bye！YYYY」外，似乎已经“荒废”很久了，我一直以来的博客梦早已被学业、人际死死压在底下。如果不是雨云与西数多次发来域名续费提醒，我的域名早就过期失效，整个站点也会彻底从互联网里消失。\n前两天静下心打理博客时才恍然发现，我一直使用的原版Gridea框..."
-        },
-        
-      
-        
-        {
-          "title": "「闲言碎语」202607-中考后的胡思乱想",
-          "link": "/post/talking_202607/",
-          "date": "Jul 19, 2026",
-          "feature": "/post-images/talking_202607.png",
-          "tags": ["闲言碎语","2026","中考"],
-          "excerpt": "\n中考出分那天，我正躺在医院病房里，看着手机屏幕，我不知如何面对出分短信。\n\n曾经的一模、二模、很长一段时间里，我稳居班级前列，大大小小的考试稳居上游，我自己也早早规划好了高一的学习节奏、选课方向，甚至畅想过重点班里浓厚的学习氛围。我把那所理想高中当成了必然的归宿，以为一路稳步往前走，就不会有意外。\n可这次中考，我狠狠摔了一跤。发挥失常，各科分数都远低于日常模拟水准，特别是理科，排名断崖式下..."
-        },
-        
-      
-        
-        {
-          "title": "浅谈：一些关于今年华语辩论世界杯的看法",
-          "link": "/post/2026CDWC_talk1/",
-          "date": "Jul 19, 2026",
-          "feature": "/post-images/2026CDWC_talk1.jpg",
-          "tags": ["浅谈"],
-          "excerpt": "引言\n\n看了今年的2026CDWC，心生一些想法，和大家谈谈\n纯业外人士个人看法，如意见不同，敬请谅解！（求放过）\n\n高校锐评\n1. 清北\n最典型“正确但无聊”。全程套理论、堆框架、堆学术名词，四平八稳不敢冒险。打青年情绪题完全脱离普通人生活，高高在上、悬浮感极强。优点稳，缺点毫无灵气、毫无共情、毫无记忆点，赢比赛靠资历分，不靠观点赢人。\n2. 人大\n模板化最严重的学校。任何辩题最后都强行扯..."
-        },
-        
-      
-        
-        {
-          "title": "Good bye！2025",
-          "link": "/post/goodbye2025/",
-          "date": "Jan 01, 2026",
-          "feature": "/post-images/goodbye2025.png",
-          "tags": ["2025","Say Goodbye"],
-          "excerpt": "\n岁序更替，华章日新；凡是过往，皆为序章。愿今年所有的遗憾，都是明年惊喜的铺垫。2026，愿生活温暖顺遂，所求皆如愿，所行化坦途。\n\n"
-        },
-        
-      
-        
-        {
-          "title": "浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌",
-          "link": "/post/zhangdada/",
-          "date": "Jan 27, 2025",
-          "feature": "/post-images/zhangdada.png",
-          "tags": ["浅谈"],
-          "excerpt": "引言\n\n在信息传播光速化的当下，网红与明星的生活和工作细节被公众以放大镜审视。博主张大大，曾是抖音平台上极具话题性与流量的人物。他凭借着独特甚至略显夸张的直播风格，以及频繁制造出圈话题的能力，迅速积攒起庞大的粉丝基础，成为备受瞩目的网络红人。直播间里，他凭借与粉丝互动时的幽默风趣，或是对热点事件的犀利点评，吸引着大量观众驻足。然而，2024年一系列负面事件的爆发，如同一场突如其来的风暴，将他..."
-        },
-        
-      
-        
-        {
-          "title": "Good bye！2024",
-          "link": "/post/goodbye2024/",
-          "date": "Jan 01, 2025",
-          "feature": "/post-images/goodbye2024.png",
-          "tags": ["2024","Say Goodbye"],
-          "excerpt": "\n启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。\n\n"
-        },
-        
-      
-        
-        {
-          "title": "浅谈：为什么一张视频截图就能成为造谣的源头？",
-          "link": "/post/dyunamtzy/",
-          "date": "Dec 31, 2024",
-          "feature": "/post-images/dyunamtzy.png",
-          "tags": ["浅谈","新闻"],
-          "excerpt": "引言\n\n当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”，公众好奇心瞬间被点燃，谣言迅速扩散。此事背后成因复杂，且看我们深入探究，为何小小截图有这般扰乱舆论、颠覆真相之力。\n\n\r\n“截图谣..."
-        },
-        
-      
-        
-        {
-          "title": "浅谈：“3月10日邯郸初中生杀同学案”——令人痛心的悲剧与深刻反思",
-          "link": "/post/handanczsr/",
-          "date": "Dec 30, 2024",
-          "feature": "/post-images/handanczsr.png",
-          "tags": ["浅谈","新闻"],
-          "excerpt": "引言\n\n2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。\n\n\r\n案件详情\n13岁的张某某、李某与同班同学王某某因金钱方面的矛盾，关系逐渐紧张。张某某竟心生恶念，提议杀害王某某后平分其钱财，二人多次共谋，并由张某某选定废弃蔬菜大棚为作案地点，提前携带铁锹挖坑准备掩埋。当日下午，张某某以..."
-        },
-        
-      
-        
-        {
-          "title": "浅谈：博主“影子不会说谎”及其团队“自导自演”事件",
-          "link": "/post/yingzi/",
-          "date": "Dec 29, 2024",
-          "feature": "/post-images/yingzi.png",
-          "tags": ["浅谈","新闻"],
-          "excerpt": "前言\n\n在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘生活骗局、曝光不良现象，以看似真实、接地气的视频风格赢得了众多观众的信赖，一度被大家奉为正义的代言人。\n\n\r\n往事\n回首往昔，2024 年 9 月 23 ..."
-        }
-        
-      
-    
+    {
+      "title": "SS版权声明｜SS Copyright Statement",
+      "link": "/post/SScopyright/",
+      "date": "Oct 07, 2026",
+      "tags": [],
+      "excerpt": "中文版（Chinese Version）\n\nSS 版权声明（以下称“本声明”）\n版本号：v2.0 ｜ 发布日期：2026 年 10 月 7 日 ｜ 生效日期：自发布之日起\n制定主体：Sunrise.（本站运营者、著作权人）\n适用站点：Sunrise.博客（https://wowtang.top）及其镜像站点、订阅输出（RSS/Atom）与全部衍生分发渠道\n联系方式：sunrise@wowta...",
+      "hidden": true
+    },{
+      "title": "Sunrise's blog 友链互换",
+      "link": "/post/link_sq/",
+      "date": "Oct 07, 2026",
+      "tags": [],
+      "excerpt": "提交申请前，请申请方先行完成下列准备工作：\n\n已在贵站友链页面添加本站链接；\n已完整阅读下方《Sunrise\u0026rsquo;s blog 互链须知》全文。\n\n本站唯一官方申请渠道为友链工单系统：https://wowtang.top/link_user/，支持一站式的申请提交、进度查询与信息修改。\n本站信息\n- name: Sunrise.博客 | Sunrise's blog（建议从中英文选...",
+      "hidden": true
+    },{
+      "title": "🎯一起来“找茬”",
+      "link": "/post/feedback/",
+      "date": "Aug 22, 2026",
+      "tags": [],
+      "excerpt": "欢迎浏览本站的同时化身质检员！如果你发现网站存在页面bug、样式错位、文字笔误、交互不顺、体验别扭，或是有可以优化的小细节，都欢迎在评论区指出。\n大到布局错乱，小到一个错别字，任何想法都可以分享出来，帮助 Sunrise\u0026rsquo;s blog 一点点打磨得更好。\n",
+      "hidden": true
+    },{
+      "title": "Sunrise's blog 日志",
+      "link": "/post/bigthings/",
+      "date": "Jan 01, 0001",
+      "tags": [],
+      "excerpt": "2026\n8月\n\n2026-08-07 修复[url]/tag/[tag_name]中title site-title item-headline中标签名无法正常显示的bug。\n2026-08-07 更新外链警示弹窗。\n2026-08-07 “博客大事件”更名为“博客日志”。\n\n7月\n\n2026-07-21 博客增加“网站内友链申请”功能，在https://wowtang.top/post/...",
+      "hidden": true
+    },{
+      "title": "赞助列表",
+      "link": "/post/thanks/",
+      "date": "Jan 01, 0001",
+      "tags": [],
+      "excerpt": "\n\n\n姓名\n日期\n渠道\n金额\n\n\n\n\n**凡\n2025-3-8\n爱发电\n6.66\n\n\n**泽\n2025-6-11\n支付宝\n8.88\n\n\n**禾\n2026-1-10\n微信\n5.00\n\n\n**晚\n2026-5-16\n支付宝\n3.66\n\n\n**彬\n2026-7-11\nQQ\n5.55\n\n\n下一个会是你吗？\n-\n-\n-\n\n\n\n",
+      "hidden": true
+    },{
+      "title": "关于",
+      "link": "/post/about/",
+      "date": "Jan 01, 0001",
+      "tags": [],
+      "excerpt": "\n欢迎来到我的小站呀，很高兴遇见你！🤝\n\n🏠 关于本站\n一个来自浙江中学生的个人博客小站……\n👨‍💻 博主是谁\nSunrise.\n⛹ 兴趣爱好\n……刷抖音算嘛😁\n📬 联系我呀\nQQ：2468841720\nWeChat：Sunrise6218\nE-mail：sunrise@wowtang.top\n💰 投喂我呀\n⚡️爱发电投喂\n🔵支付宝跳转（手机访问网页可用）\n收款图片依次为：微信、支付宝、QQ...",
+      "hidden": true
+    },{
+      "title": "小工具（Sunrise.开发）",
+      "link": "/post/tools/",
+      "date": "Jan 01, 0001",
+      "tags": [],
+      "excerpt": "计算器\n",
+      "hidden": true
+    },{
+      "title": "「站长信」202609 - 无题",
+      "link": "/post/litter_202609/",
+      "date": "Sep 27, 2026",
+      "tags": [],
+      "excerpt": "一封来自 Sunrise 的站长信\n见字如面。距离我上一次认认真真打理这个站点，已经过去一阵子了。趁着周末把想说的话写成一封信寄给你 —— 汇报一下这个夏天站点换的新模样，也有一件关于友链的小事想拜托各位。\n先请个假，但请别把我从友链里删掉\n嗨，我是 Sunrise。今年九月，我正式成了一名高一学生。课业的强度比我预想的要重得多，能留给博客的整块时间被切得很碎，所以接下来一段时间，这个站点大...",
+      "hidden": false
+    },{
+      "title": "开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏",
+      "link": "/post/kai-shi-shang-gao-yi-liaoting-geng-yi-duan-shi-jiange-wei-hu-lian-zhan-chang-wu-xia-lian/",
+      "date": "Aug 27, 2026",
+      "tags": [],
+      "excerpt": "开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏\n",
+      "hidden": false
+    },{
+      "title": "「浅谈」时代峰峻造星乱象：低龄逐利之下，追星早已失了底线",
+      "link": "/post/sdfj/",
+      "date": "Aug 20, 2026",
+      "tags": ["浅谈"],
+      "excerpt": "引言\n\n养成系追星的初衷，本是温柔陪伴、见证少年成长、汲取正向力量。但回看如今时代峰峻的饭圈生态，只剩下无休止的疯狂、越界与戾气。低龄化造星、未成年暧昧化玩梗、线下暴力冲突、无脑跟风对立，种种乱象层层叠加。我们不得不质问：资本无底线收割少年，粉丝无边界放纵狂热，到底是谁毁掉了追星本该有的纯粹？\n\n一、极致低龄造星：到底还要把年龄压到多低？\n时代峰峻主打的养成系，早已从“少年逐梦”变成了“幼龄...",
+      "hidden": false
+    },{
+      "title": "Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布",
+      "link": "/post/Twikoo-comment-management-1.0/",
+      "date": "Aug 12, 2026",
+      "tags": ["Twikoo","技术","html"],
+      "excerpt": "Twikoo 评论管理后台 · 开源版\n一个开箱即用的 Twikoo 评论系统管理面板，原版UI较简陋，我们提供美观、响应式的后台界面，支持评论审核、配置管理、数据导入导出、深色主题等特性。无需额外安装，仅需一个 HTML 文件即可部署。\nGithub仓库：https://github.com/wowtang/Twikoo-comment-management\n\n:book: 项目简介\n本项...",
+      "hidden": false
+    },{
+      "title": "图片宫格布局测试",
+      "link": "/post/image-grid-test/",
+      "date": "Aug 11, 2026",
+      "tags": [],
+      "excerpt": "图片宫格布局测试\n这篇文章用于测试图片宫格功能。\n四宫格示例（2x2）\n\n\n\n\n\n\n\n九宫格示例（3x3）\n\n\n\n\n\n\n\n\n\n\n\n\n\n混合布局示例（上3下2）\n\n\n\n\n\n\n\n\n单张大图示例\n\n\n\n普通图片（不受影响）\n这是一段普通的文字，下面是一张不受宫格控制的图片：\n\n图片之后的文字。\n保持原始比例示例（使用 ~ 标记）\n在图片 alt 属性中添加 ~ 符号，该图片和同行所有图片都将保持原...",
+      "hidden": true
+    },{
+      "title": "「工具推荐」TRAE：字节跳动自研AI原生IDE编程软件（非广告）",
+      "link": "/post/ToolRec_trae1/",
+      "date": "Jul 21, 2026",
+      "tags": ["工具推荐","Gridea","Gridea Pro","技术"],
+      "excerpt": "絮絮叨叨\n这个中考完的暑假，终于有时间来da\u0026rsquo;li（搭理、打理、……）我的博客网站。\n这个网站除了每年的“定时闹钟”「Good bye！YYYY」外，似乎已经“荒废”很久了，我一直以来的博客梦早已被学业、人际死死压在底下。如果不是雨云与西数多次发来域名续费提醒，我的域名早就过期失效，整个站点也会彻底从互联网里消失。\n前两天静下心打理博客时才恍然发现，我一直使用的原版Gridea框...",
+      "hidden": false
+    },{
+      "title": "「闲言碎语」202607-中考后的胡思乱想",
+      "link": "/post/talking_202607/",
+      "date": "Jul 19, 2026",
+      "tags": ["闲言碎语","2026","中考"],
+      "excerpt": "\n中考出分那天，我正躺在医院病房里，看着手机屏幕，我不知如何面对出分短信。\n\n曾经的一模、二模、很长一段时间里，我稳居班级前列，大大小小的考试稳居上游，我自己也早早规划好了高一的学习节奏、选课方向，甚至畅想过重点班里浓厚的学习氛围。我把那所理想高中当成了必然的归宿，以为一路稳步往前走，就不会有意外。\n可这次中考，我狠狠摔了一跤。发挥失常，各科分数都远低于日常模拟水准，特别是理科，排名断崖式下...",
+      "hidden": false
+    },{
+      "title": "浅谈：一些关于今年华语辩论世界杯的看法",
+      "link": "/post/2026CDWC_talk1/",
+      "date": "Jul 19, 2026",
+      "tags": ["浅谈"],
+      "excerpt": "引言\n\n看了今年的2026CDWC，心生一些想法，和大家谈谈\n纯业外人士个人看法，如意见不同，敬请谅解！（求放过）\n\n高校锐评\n1. 清北\n最典型“正确但无聊”。全程套理论、堆框架、堆学术名词，四平八稳不敢冒险。打青年情绪题完全脱离普通人生活，高高在上、悬浮感极强。优点稳，缺点毫无灵气、毫无共情、毫无记忆点，赢比赛靠资历分，不靠观点赢人。\n2. 人大\n模板化最严重的学校。任何辩题最后都强行扯...",
+      "hidden": false
+    },{
+      "title": "Good bye！2025",
+      "link": "/post/goodbye2025/",
+      "date": "Jan 01, 2026",
+      "tags": ["2025","Say Goodbye"],
+      "excerpt": "\n岁序更替，华章日新；凡是过往，皆为序章。愿今年所有的遗憾，都是明年惊喜的铺垫。2026，愿生活温暖顺遂，所求皆如愿，所行化坦途。\n\n",
+      "hidden": false
+    },{
+      "title": "浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌",
+      "link": "/post/zhangdada/",
+      "date": "Jan 27, 2025",
+      "tags": ["浅谈"],
+      "excerpt": "引言\n\n在信息传播光速化的当下，网红与明星的生活和工作细节被公众以放大镜审视。博主张大大，曾是抖音平台上极具话题性与流量的人物。他凭借着独特甚至略显夸张的直播风格，以及频繁制造出圈话题的能力，迅速积攒起庞大的粉丝基础，成为备受瞩目的网络红人。直播间里，他凭借与粉丝互动时的幽默风趣，或是对热点事件的犀利点评，吸引着大量观众驻足。然而，2024年一系列负面事件的爆发，如同一场突如其来的风暴，将他...",
+      "hidden": false
+    },{
+      "title": "Good bye！2024",
+      "link": "/post/goodbye2024/",
+      "date": "Jan 01, 2025",
+      "tags": ["2024","Say Goodbye"],
+      "excerpt": "\n启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。\n\n",
+      "hidden": false
+    },{
+      "title": "浅谈：为什么一张视频截图就能成为造谣的源头？",
+      "link": "/post/dyunamtzy/",
+      "date": "Dec 31, 2024",
+      "tags": ["浅谈","新闻"],
+      "excerpt": "引言\n\n当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”，公众好奇心瞬间被点燃，谣言迅速扩散。此事背后成因复杂，且看我们深入探究，为何小小截图有这般扰乱舆论、颠覆真相之力。\n\n\r\n“截图谣...",
+      "hidden": false
+    },{
+      "title": "浅谈：“3月10日邯郸初中生杀同学案”——令人痛心的悲剧与深刻反思",
+      "link": "/post/handanczsr/",
+      "date": "Dec 30, 2024",
+      "tags": ["浅谈","新闻"],
+      "excerpt": "引言\n\n2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。\n\n\r\n案件详情\n13岁的张某某、李某与同班同学王某某因金钱方面的矛盾，关系逐渐紧张。张某某竟心生恶念，提议杀害王某某后平分其钱财，二人多次共谋，并由张某某选定废弃蔬菜大棚为作案地点，提前携带铁锹挖坑准备掩埋。当日下午，张某某以...",
+      "hidden": false
+    },{
+      "title": "浅谈：博主“影子不会说谎”及其团队“自导自演”事件",
+      "link": "/post/yingzi/",
+      "date": "Dec 29, 2024",
+      "tags": ["浅谈","新闻"],
+      "excerpt": "前言\n\n在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘生活骗局、曝光不良现象，以看似真实、接地气的视频风格赢得了众多观众的信赖，一度被大家奉为正义的代言人。\n\n\r\n往事\n回首往昔，2024 年 9 月 23 ...",
+      "hidden": false
+    }
   ]
 }
 </script>
@@ -1299,7 +1457,9 @@ siteTime();
   
   
   
-  <script id="liushen-config-data" type="application/json">
+  
+  
+  <script id="claude-config-data" type="application/json">
 {
   "domain": "https://wowtang.top",
   "siteName": "Sunrise.博客 | Sunrise's blog",
@@ -1317,328 +1477,335 @@ siteTime();
   "navMenuJson": "[]",
   "navIconShow": true,
   "navMenuShape": "icon",
-  
   "navMenuIcons": "# 每行一条：匹配, 图标。分隔符可用 , ， | = 或 Tab；图标可只写 fa-bug 这样的短名\n/post/bigthings, fa-solid fa-timeline\n/post/feedback, fa-solid fa-bug",
-  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\nSunrise's blog 友联工单系统#%#/link_user/\n一起来找茬#%#/post/feedback/"
+  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\nSunrise's blog 友联工单系统#%#/link_user/\n一起来找茬#%#/post/feedback/",
+  "friendFeedEnable": true,
+  "friendFeedRss": "https://wowtang.top/feed.xml\nhttps://twbk.cn/feed\nhttps://blog.002.hk/rss/feed.xml\nhttps://hehuang.site/index.xml\nhttps://xice.cx/atom.xml\nhttps://mojue88.com/feed\nhttps://blog.fyz666.xyz/atom.xml\nhttps://ilimeng.cn/feed/\nhttps://api.myblog.icu/api/public/rss?username=admin\nhttps://jingyuan-zheng.github.io/zh/index.xml\nhttps://xiaoxi.ac.cn/rss.xml\nhttps://www.s17.cn/rss.xml\nhttps://blog.blueke.top/rss.xml\nhttps://blog.oopss.top/blog/rss.xml\nhttps://rainzt.cn/rss.xml\nhttps://styunlen.cn/feed\nhttps://blog.demius.tech/rss.xml\nhttps://lcrworld.xyz/api/rss/feed/newrss\nhttps://liwanr.com/rss.xml"
 }
   </script>
   <script>
     (function(){
-      try { window.LIUSHEN_CONFIG = JSON.parse(document.getElementById('liushen-config-data').textContent); }
-      catch (e) { window.LIUSHEN_CONFIG = {}; }
+      try { window.CLAUDE_CONFIG = JSON.parse(document.getElementById('claude-config-data').textContent); }
+      catch (e) { window.CLAUDE_CONFIG = {}; }
     })();
   </script>
   
-  
+  <!-- ==========================================================================
+     critical-inline.html · 首屏关键交互（内联，零外部依赖）
+     弱网下 HTML 已渲染、/scripts/main.js（defer）还在路上的窗口里，这三件事
+     原本完全没有反应，搬到这里内联执行，首帧即可用：
+       ① 按 CLAUDE_CONFIG.navMenuIcons 给顶栏菜单项匹配内置 SVG 图标
+          （FontAwesome 类名或短名 → #i-xxx，见 DESIGN.md 第五节）
+       ② 移动抽屉开合（[data-action="toggle-mobile-menu" / "close-mobile-menu"]）
+       ③ 外链风险提示（CLAUDE_CONFIG.linkOutEnable / linkOutWhitelist）
+     硬约束：
+       · 必须排在 #claude-config-data 之后、main.js 之前（base.html 已按此顺序 include）；
+       · 本块内不得出现模板定界符（花括号百分号 / 双花括号 / 花括号井号），保持纯静态；
+       · 与 main.js 是两份独立作用域，改这里无需同步改 main.js；
+         main.js 若重建菜单 DOM，可回调 window.CLAUDE_CRITICAL.applyNavIcons()。
+     ========================================================================== -->
 <script>
 (function () {
   'use strict';
 
-  var CFG = window.LIUSHEN_CONFIG || {};
+  var CFG = window.CLAUDE_CONFIG || {};
+  var NS = 'http://www.w3.org/2000/svg';
+  var XLINK = 'http://www.w3.org/1999/xlink';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var root = document.documentElement;
   var body = document.body;
-  function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
 
-  /* ---------- 1. 顶栏菜单图标匹配 ----------
-     模板里菜单项图标一律回落 fa-bookmark，这里按「用户表 → 内置精确路径 →
-     末段路径 → 精确名称」依次匹配后替换；只替换仍是兜底书签的项，
-     不覆盖 navMenuJson 里显式写好的 icon。
-     内置规则必须精确匹配：本站有 /post、/post/bigthings、/post/feedback，
-     用「包含匹配」会让后两项先撞上 /post 拿到博客图标。 */
-  var NAV_ICON_RULES = {
-    '':           'fa-solid fa-house',
-    'index':      'fa-solid fa-house',
-    'post':       'fa-solid fa-newspaper',
-    'archives':   'fa-solid fa-archive',
-    'tags':       'fa-solid fa-tags',
-    'categories': 'fa-solid fa-folder-open',
-    'memos':      'fa-solid fa-comment-dots',
-    'links':      'fa-solid fa-link',
-    'about':      'fa-solid fa-address-card',
-    'search':     'fa-solid fa-magnifying-glass',
-    'message':    'fa-solid fa-comment',
-    'guestbook':  'fa-solid fa-comment'
-  };
-  var NAV_ICON_BY_NAME = {
-    '首页': 'fa-solid fa-house',
-    '博客': 'fa-solid fa-newspaper',
-    '文章': 'fa-solid fa-newspaper',
-    '归档': 'fa-solid fa-archive',
-    '标签': 'fa-solid fa-tags',
-    '分类': 'fa-solid fa-folder-open',
-    '闪念': 'fa-solid fa-comment-dots',
-    '友链': 'fa-solid fa-link',
-    '关于': 'fa-solid fa-address-card',
-    '留言': 'fa-solid fa-comment',
-    '搜索': 'fa-solid fa-magnifying-glass'
-  };
-  var NAV_ICON_FALLBACK = 'fa-bookmark';
-  var FA_STYLE_PREFIX = /(^|\s)fa-(solid|regular|brands|light|thin|duotone)(\s|$)/;
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
 
-  /* 补全图标类名：写全了原样保留 / 少风格前缀补 fa-solid / 少 fa- 前缀先补 fa- */
-  function navIconNormalize(raw) {
-    var s = String(raw == null ? '' : raw).trim().replace(/\s+/g, ' ');
-    if (!s) return '';
-    var parts = s.split(' ');
-    var out = [];
-    for (var i = 0; i < parts.length; i++) {
-      var t = parts[i];
-      if (!t) continue;
-      if (!/^fa-/.test(t)) t = 'fa-' + t;
-      out.push(t);
+  /* ---------- 图标解析：FA 类名 / 短名 / 内置 id → 内置 sprite id ---------- */
+  var ICONS = {
+    'house': 'i-spike', 'home': 'i-spike', 'index': 'i-spike', 'dashboard': 'i-spike', 'spa': 'i-spike',
+    'newspaper': 'i-book', 'book': 'i-book', 'blog': 'i-book', 'post': 'i-book', 'posts': 'i-book',
+    'article': 'i-book', 'file-lines': 'i-book', 'bookmark': 'i-book', 'read': 'i-book',
+    'archive': 'i-archive', 'box-archive': 'i-archive', 'timeline': 'i-archive', 'history': 'i-archive',
+    'folder': 'i-folder', 'folder-open': 'i-folder', 'folder-tree': 'i-folder', 'layer-group': 'i-folder',
+    'list': 'i-list', 'list-ul': 'i-list', 'bars': 'i-list',
+    'tag': 'i-tag', 'tags': 'i-tag', 'hashtag': 'i-tag',
+    'comment': 'i-comment', 'comments': 'i-comment', 'comment-dots': 'i-comment', 'message': 'i-comment',
+    'chat': 'i-comment',
+    'mail': 'i-mail', 'envelope': 'i-mail', 'envelope-open-text': 'i-mail',
+    'link': 'i-link', 'link-simple': 'i-link', 'chain': 'i-link', 'share': 'i-link', 'share-nodes': 'i-link',
+    'user': 'i-user', 'users': 'i-user', 'address-card': 'i-user', 'id-card': 'i-user',
+    'circle-user': 'i-user', 'address-book': 'i-user',
+    'search': 'i-search', 'magnifying-glass': 'i-search', 'rss': 'i-rss',
+    'github': 'i-github', 'telegram': 'i-telegram', 'paper-plane': 'i-telegram',
+    'compass': 'i-compass', 'location-arrow': 'i-compass',
+    'globe': 'i-globe', 'earth': 'i-globe', 'language': 'i-globe', 'map': 'i-globe',
+    'calendar': 'i-cal', 'calendar-days': 'i-cal', 'calendar-check': 'i-cal',
+    'clock': 'i-clock', 'stopwatch': 'i-clock', 'hourglass': 'i-clock',
+    'chart': 'i-chart', 'chart-simple': 'i-chart', 'chart-pie': 'i-chart', 'chart-line': 'i-chart',
+    'chart-column': 'i-chart', 'chart-bar': 'i-chart', 'signal': 'i-chart', 'gauge': 'i-chart',
+    'bullhorn': 'i-megaphone', 'megaphone': 'i-megaphone', 'volume-high': 'i-megaphone',
+    'copy': 'i-copy', 'clone': 'i-copy',
+    'check': 'i-check', 'circle-check': 'i-check', 'shield-halved': 'i-check',
+    'eye': 'i-eye', 'info': 'i-info', 'circle-info': 'i-info',
+    'grid': 'i-grid', 'th': 'i-grid', 'table-cells': 'i-grid',
+    'gear': 'i-settings', 'cog': 'i-settings', 'sliders': 'i-settings', 'wrench': 'i-settings',
+    'external-link': 'i-external', 'up-right-from-square': 'i-external',
+    'arrow-up-right-from-square': 'i-external', 'link-out': 'i-external',
+    'weibo': 'i-weibo', 'bilibili': 'i-bilibili', 'zhihu': 'i-zhihu', 'qq': 'i-qq',
+    'fire': 'i-fire', 'flame': 'i-fire', 'hot': 'i-fire', 'star': 'i-star',
+    'pen': 'i-pen', 'pencil': 'i-pen', 'edit': 'i-pen', 'feather': 'i-pen',
+    'quote-left': 'i-quote', 'quote-right': 'i-quote',
+    'heart': 'i-heart', 'shuffle': 'i-shuffle', 'random': 'i-shuffle', 'arrows-rotate': 'i-shuffle',
+    'chevron-down': 'i-chevron', 'angle-down': 'i-chevron', 'caret-down': 'i-chevron',
+    'arrow-right': 'i-right', 'arrow-left': 'i-left', 'arrow-up': 'i-up', 'arrow-down': 'i-down',
+    'sparkles': 'i-sparkle', 'wand-magic-sparkles': 'i-sparkle', 'star-of-life': 'i-sparkle'
+  };
+  var HINTS = [
+    ['folder', 'i-folder'], ['archive', 'i-archive'], ['tag', 'i-tag'], ['hashtag', 'i-tag'],
+    ['house', 'i-spike'], ['home', 'i-spike'], ['comment', 'i-comment'], ['chat', 'i-comment'],
+    ['message', 'i-comment'], ['envelope', 'i-mail'], ['mail', 'i-mail'], ['search', 'i-search'],
+    ['link', 'i-link'], ['user', 'i-user'], ['card', 'i-user'], ['book', 'i-book'],
+    ['newspaper', 'i-book'], ['read', 'i-book'], ['calendar', 'i-cal'], ['clock', 'i-clock'],
+    ['time', 'i-clock'], ['chart', 'i-chart'], ['stat', 'i-chart'], ['bullhorn', 'i-megaphone'],
+    ['megaphone', 'i-megaphone'], ['rss', 'i-rss'], ['github', 'i-github'], ['telegram', 'i-telegram'],
+    ['globe', 'i-globe'], ['compass', 'i-compass'], ['star', 'i-star'], ['fire', 'i-fire'],
+    ['heart', 'i-heart'], ['eye', 'i-eye'], ['info', 'i-info'], ['list', 'i-list'], ['grid', 'i-grid'],
+    ['cog', 'i-settings'], ['gear', 'i-settings'], ['external', 'i-external'], ['pen', 'i-pen'],
+    ['quote', 'i-quote'], ['copy', 'i-copy'], ['check', 'i-check'], ['shuffle', 'i-shuffle'],
+    ['sparkle', 'i-sparkle']
+  ];
+  var FA_STYLE = /^(fa|fas|far|fab|fal|fat|fad|fa-solid|fa-regular|fa-brands|fa-light|fa-thin|fa-duotone|fa-sharp)$/;
+
+  function resolveIcon(name) {
+    var s = String(name == null ? '' : name).toLowerCase().replace(/[^a-z0-9-]+/g, ' ').trim();
+    if (!s) { return 'i-link'; }
+    if (/^i-[a-z0-9-]+$/.test(s)) { return s; }
+    var parts = s.split(/\s+/), out = [], i, t;
+    for (i = 0; i < parts.length; i++) {
+      t = parts[i];
+      if (!t || FA_STYLE.test(t)) { continue; }
+      out.push(t.replace(/^fa-/, ''));
     }
-    s = out.join(' ');
-    if (!FA_STYLE_PREFIX.test(s)) s = 'fa-solid ' + s;
-    return s;
-  }
-  /* 把 href 归一化成不含首尾斜杠的路径：/post/about/ → post/about */
-  function navIconPath(href) {
-    var s = String(href == null ? '' : href).trim();
-    if (!s || s === '#' || s.indexOf('javascript:') === 0) return '';
-    s = s.split('#')[0].split('?')[0];
-    var abs = s.match(/^[a-zA-Z][\w+.-]*:\/\/[^/]*(\/.*)?$/);
-    if (abs) s = abs[1] || '/';
-    s = s.replace(/\/index\.html?$/i, '/').replace(/\.html?$/i, '');
-    return s.replace(/^\/+|\/+$/g, '').toLowerCase();
-  }
-  /* 用户表的「匹配」列同样去掉首尾斜杠，否则填 /archives 永远匹配不上 */
-  function navIconKey(raw) {
-    return String(raw == null ? '' : raw).trim().split('#')[0].split('?')[0]
-      .replace(/^\/+|\/+$/g, '').toLowerCase();
-  }
-  function navIconLookup(link, name, table) {
-    var path = navIconPath(link);
-    var label = String(name == null ? '' : name).trim().toLowerCase();
-    var i, rule, rawKey, key, icon;
-    // 1) 用户表：路径或名称任一处「包含」即命中（顺序即优先级）
-    for (i = 0; i < table.length; i++) {
-      rule = table[i] || {};
-      rawKey = String(rule.match == null ? '' : rule.match).trim();
-      if (!rawKey) continue;
-      icon = navIconNormalize(rule.icon);
-      if (!icon) continue;
-      key = navIconKey(rawKey);
-      if (!key) { if (!path) return icon; continue; }
-      if (path.indexOf(key) !== -1 || label.indexOf(key) !== -1) return icon;
+    var slug = out.join('-');
+    if (!slug) { return 'i-link'; }
+    if (ICONS[slug]) { return ICONS[slug]; }
+    var tail = slug.split('-').pop();
+    if (ICONS[tail]) { return ICONS[tail]; }
+    for (i = 0; i < HINTS.length; i++) {
+      if (slug.indexOf(HINTS[i][0]) !== -1) { return HINTS[i][1]; }
     }
-    // 2) 内置：精确路径
-    if (Object.prototype.hasOwnProperty.call(NAV_ICON_RULES, path)) return NAV_ICON_RULES[path];
-    // 3) 内置：末段路径（post/about → about）
-    var seg = path ? path.split('/').pop() : '';
-    if (seg && seg !== path && Object.prototype.hasOwnProperty.call(NAV_ICON_RULES, seg)) return NAV_ICON_RULES[seg];
-    // 4) 内置：精确名称（link 是外链时兜底）
-    if (Object.prototype.hasOwnProperty.call(NAV_ICON_BY_NAME, label)) return NAV_ICON_BY_NAME[label];
-    return '';
+    return 'i-link';
   }
-  /* 配置值吃两种形态：textarea 字符串（每行「匹配, 图标」）与旧 array 表。
-     分隔符取行内最先出现的一个：, ， | = 或 Tab；整行无分隔符时退化成
-     「第一个图标类名之前」切分。 */
-  var NAV_ICON_SEPS = [',', '，', '|', '=', '\t'];
-  var NAV_ICON_ICON_AT = /\s+(?=(?:fa[srb]?|fa-(?:solid|regular|brands|light|thin|duotone))\b)/;
-  function navIconSplitRule(line) {
+
+  /* ---------- 用户规则表：兼容 textarea 字符串与 array ---------- */
+  var SEPS = [',', '\uFF0C', '|', '=', '\t'];
+  function splitRule(line) {
     var cut = -1, skip = 1, i, p;
-    for (i = 0; i < NAV_ICON_SEPS.length; i++) {
-      p = line.indexOf(NAV_ICON_SEPS[i]);
-      if (p >= 0 && (cut < 0 || p < cut)) { cut = p; skip = NAV_ICON_SEPS[i].length; }
+    for (i = 0; i < SEPS.length; i++) {
+      p = line.indexOf(SEPS[i]);
+      if (p >= 0 && (cut < 0 || p < cut)) { cut = p; skip = SEPS[i].length; }
     }
-    if (cut >= 0) return [line.slice(0, cut), line.slice(cut + skip)];
-    var m = line.match(NAV_ICON_ICON_AT);
-    if (m) return [line.slice(0, m.index), line.slice(m.index + m[0].length)];
+    if (cut >= 0) { return [line.slice(0, cut), line.slice(cut + skip)]; }
     return [line, ''];
   }
-  function navIconTable(raw) {
+  function ruleTable(raw) {
     var out = [], i, j, line, pair;
-    if (Array.isArray(raw)) {
+    if (Object.prototype.toString.call(raw) === '[object Array]') {
       for (i = 0; i < raw.length; i++) {
-        if (raw[i] && raw[i].match) out.push({ match: raw[i].match, icon: raw[i].icon });
+        if (raw[i] && raw[i].match) { out.push({ match: raw[i].match, icon: raw[i].icon }); }
       }
       return out;
     }
-    if (typeof raw !== 'string') return out;
+    if (typeof raw !== 'string') { return out; }
     var lines = raw.split(/\r?\n/);
     for (j = 0; j < lines.length; j++) {
       line = lines[j].trim();
-      if (!line || line.charAt(0) === '#') continue;
-      pair = navIconSplitRule(line);
-      if (!pair[0].trim()) continue;
+      if (!line || line.charAt(0) === '#') { continue; }
+      pair = splitRule(line);
+      if (!pair[0].trim()) { continue; }
       out.push({ match: pair[0].trim(), icon: pair[1].trim() });
     }
     return out;
   }
-  function applyNavMenuIcons() {
-    var table = navIconTable(CFG.navMenuIcons);
-    // 顶栏菜单与移动抽屉是同一批 menus，模板里各自硬编码了一遍图标 → 一处逻辑管两处
-    $$('#menus .menus_item > .site-page, #mobile-nav-list .mobile-nav-item').forEach(function (el) {
-      var icon = el.querySelector('i');
-      if (!icon || icon.className.indexOf(NAV_ICON_FALLBACK) === -1) return;
-      var span = el.querySelector('span');
-      var hit = navIconLookup(el.getAttribute('href'), span ? span.textContent : '', table);
-      if (hit) icon.className = 'fa-fw ' + hit;
+  function pathOf(href) {
+    var s = String(href == null ? '' : href).trim();
+    if (!s || s === '#' || s.indexOf('javascript:') === 0) { return ''; }
+    s = s.split('#')[0].split('?')[0];
+    var abs = s.match(/^[a-zA-Z][\w+.-]*:\/\/[^/]*(\/.*)?$/);
+    if (abs) { s = abs[1] || '/'; }
+    return s.replace(/\/index\.html?$/i, '/').replace(/\.html?$/i, '').replace(/^\/+|\/+$/g, '').toLowerCase();
+  }
+  function keyOf(raw) {
+    return String(raw == null ? '' : raw).trim().split('#')[0].split('?')[0].replace(/^\/+|\/+$/g, '').toLowerCase();
+  }
+  function lookup(table, href, label) {
+    var path = pathOf(href), name = String(label == null ? '' : label).trim().toLowerCase(), i, key;
+    for (i = 0; i < table.length; i++) {
+      key = keyOf(table[i].match);
+      if (!key) { continue; }
+      if ((path && path.indexOf(key) !== -1) || (name && name.indexOf(key) !== -1)) {
+        return resolveIcon(table[i].icon);
+      }
+    }
+    return '';
+  }
+
+  /* 没配 navMenuIcons 时的兜底：按路径猜一个内置图标，避免所有菜单都顶同一本书 */
+  function defaultNavIcon(href) {
+    var h = String(href || '').toLowerCase();
+    if (h === '/' || h === '' || /\/(index|home)\b/.test(h)) { return 'i-spike'; }
+    if (h.indexOf('archive') !== -1) { return 'i-archive'; }
+    if (h.indexOf('tag') !== -1) { return 'i-tag'; }
+    if (h.indexOf('categor') !== -1) { return 'i-folder'; }
+    if (h.indexOf('link') !== -1) { return 'i-link'; }
+    if (h.indexOf('memo') !== -1 || h.indexOf('moment') !== -1) { return 'i-sparkle'; }
+    if (h.indexOf('about') !== -1) { return 'i-info'; }
+    if (h.indexOf('comment') !== -1) { return 'i-comment'; }
+    if (h.indexOf('post') !== -1) { return 'i-book'; }
+    return 'i-book';
+  }
+
+  function applyNavIcons() {
+    var table = ruleTable(CFG.navMenuIcons);
+    $$('.menus_items a, .nav-menu a, .nav-drop-panel a, .drawer-list a').forEach(function (a) {
+      var svg = a.querySelector('svg.ic');
+      var label = a.querySelector('span') ? a.querySelector('span').textContent : a.textContent;
+      var id = lookup(table, a.getAttribute('href'), label) || defaultNavIcon(a.getAttribute('href'));
+      if (!id) { return; }
+      if (!svg) {
+        svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', 'ic');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.appendChild(document.createElementNS(NS, 'use'));
+        a.insertBefore(svg, a.firstChild);
+      }
+      var use = svg.querySelector('use');
+      if (!use) { use = document.createElementNS(NS, 'use'); svg.appendChild(use); }
+      use.setAttribute('href', '#' + id);
+      use.setAttributeNS(XLINK, 'xlink:href', '#' + id);
     });
   }
-  applyNavMenuIcons();
+  applyNavIcons();
 
-  /* ---------- 2. 移动抽屉开合 ----------
-     开合走 .is-open 类，不再用 hidden 属性 —— display 硬切没有插值机会，过渡永远不触发。
-     CSS 侧用「visibility 延迟收起」保住无障碍等价（不可聚焦、退出无障碍树），不需要定时器。 */
-  var mobile = $('#mobile-sidebar');
-  function openMobile() { if (mobile) { mobile.classList.add('is-open'); body.style.overflow = 'hidden'; } }
-  function closeMobile() { if (mobile) { mobile.classList.remove('is-open'); body.style.overflow = ''; } }
+  /* ---------- 移动抽屉开合（.is-open；滚动锁走 html.no-scroll） ---------- */
+  function drawerEl() {
+    return document.getElementById('mobile-sidebar')
+        || document.querySelector('[data-drawer]')
+        || ($('.drawer-panel') ? $('.drawer-panel').parentNode : null);
+  }
+  function openMobile() {
+    var d = drawerEl();
+    if (!d) { return; }
+    d.classList.add('is-open');
+    d.removeAttribute('hidden');
+    root.classList.add('no-scroll');
+    body.style.overflow = 'hidden';
+  }
+  function closeMobile() {
+    var d = drawerEl();
+    if (!d) { return; }
+    d.classList.remove('is-open');
+    root.classList.remove('no-scroll');
+    body.style.overflow = '';
+  }
   $$('[data-action="toggle-mobile-menu"]').forEach(function (b) { b.addEventListener('click', openMobile); });
   $$('[data-action="close-mobile-menu"]').forEach(function (b) { b.addEventListener('click', closeMobile); });
+  var drawer = drawerEl();
+  if (drawer) {
+    $$('.scrim', drawer).forEach(function (s) { s.addEventListener('click', closeMobile); });
+  }
 
-  /* ---------- 3. 外链风险提示 ----------
-     站内链接与白名单域名直接放行；其余外链拦下并弹确认窗。
-     白名单条目兼容裸域名与完整网址两种写法（后者先收敛成 hostname，
-     否则 hostname 比对永远不相等 → 白名单形同虚设）。 */
+  /* ---------- 外链风险提示（站内 / 白名单直接放行） ---------- */
   function initLinkOut() {
-    if (!CFG.linkOutEnable) return;
-    var siteDomain = window.location.hostname;
-    var modal = null;
-    var targetUrl = null;
-    var lastFocused = null;   // 关闭弹窗后把焦点还给触发它的链接
-
-    var whitelist = [];
+    if (!CFG.linkOutEnable) { return; }
+    var here = window.location.hostname;
+    var modal = null, url = null, last = null;
+    var allow = [];
     if (CFG.linkOutWhitelist) {
-      whitelist = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function (d) {
+      allow = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function (d) {
         return d.trim().toLowerCase()
-          .replace(/^[a-z][a-z0-9+.-]*:\/\//, '') // 去掉协议头
-          .split('/')[0]                          // 去掉路径与查询串
-          .split(':')[0]                          // 去掉端口
-          .replace(/^\.+/, '');                   // 去掉前导点
+          .replace(/^[a-z][a-z0-9+.-]*:\/\//, '')
+          .split('/')[0].split(':')[0].replace(/^\.+/, '');
       }).filter(Boolean);
     }
-
-    // 支持子域名匹配：github.com 匹配 xxx.github.com
-    function isWhitelisted(hostname) {
-      hostname = hostname.toLowerCase();
-      for (var i = 0; i < whitelist.length; i++) {
-        var domain = whitelist[i];
-        if (hostname === domain || hostname.endsWith('.' + domain)) return true;
+    function whitelisted(host) {
+      host = host.toLowerCase();
+      for (var i = 0; i < allow.length; i++) {
+        if (host === allow[i] || host.indexOf('.' + allow[i], host.length - allow[i].length - 1) !== -1) { return true; }
       }
       return false;
     }
-
-    /* 弹窗结构：左对齐的「图标 + 标题 + 副题」头 / 正文说明 / 目标地址 / 按钮组。
-       标题行沿用 .item-headline 的视觉语言，按钮沿用站内 999px 胶囊 +
-       --primary 实心主按钮；文案取官方书面语，站点名读 CFG.siteName。 */
-    function createModal() {
-      modal = document.createElement('div');
-      modal.className = 'link-out-overlay';
+    function build() {
       var site = escapeHtml(CFG.siteName || '本站');
+      modal = document.createElement('div');
+      modal.className = 'overlay';
+      modal.id = 'link-out-modal';
       modal.innerHTML =
-        '<div class="link-out-modal" role="dialog" aria-modal="true"' +
-             ' aria-labelledby="link-out-title" aria-describedby="link-out-desc">' +
-          '<div class="link-out-head">' +
-            '<span class="link-out-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>' +
-            '<div class="link-out-heading">' +
-              '<h2 class="link-out-title" id="link-out-title">即将离开本站</h2>' +
-              '<p class="link-out-kicker">外部链接安全提示</p>' +
-            '</div>' +
+        '<div class="scrim" data-link-out="cancel"></div>' +
+        '<div class="modal-wrap"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="link-out-title">' +
+          '<svg class="ic ic-l" aria-hidden="true"><use href="#i-external"></use></svg>' +
+          '<h3 id="link-out-title">即将离开本站</h3>' +
+          '<p>你正在前往「' + site + '」之外的第三方网站。该网站不受本站控制，' +
+            '亦不对其内容与隐私政策负责，请谨慎辨别。</p>' +
+          '<div class="domain" id="link-out-url"></div>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-link-out="cancel">返回本站</button>' +
+            '<button type="button" class="btn btn-coral btn-sm" data-link-out="go">继续访问</button>' +
           '</div>' +
-          '<p class="link-out-desc" id="link-out-desc">' +
-            '您即将离开「' + site + '」，前往本站之外的第三方网站。' +
-            '该网站不受本站控制，本站无法核实其内容的真实性与安全性，' +
-            '亦不对其隐私政策及后续行为承担责任。请您谨慎辨别，注意保护个人账号与财产安全。' +
-          '</p>' +
-          '<div class="link-out-url">' +
-            '<span class="url-label"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>目标地址</span>' +
-            '<span class="url-domain" id="link-out-url-domain"></span>' +
-            '<span class="url-value" id="link-out-url-value"></span>' +
-          '</div>' +
-          '<div class="link-out-actions">' +
-            '<button type="button" class="btn btn-cancel" id="link-out-cancel">返回本站</button>' +
-            '<button type="button" class="btn btn-confirm" id="link-out-confirm">继续访问</button>' +
-          '</div>' +
-        '</div>';
-
+        '</div></div>';
       document.body.appendChild(modal);
-
-      modal.querySelector('#link-out-cancel').addEventListener('click', closeModal);
-      modal.querySelector('#link-out-confirm').addEventListener('click', function () {
-        if (targetUrl) {
-          window.open(targetUrl, '_blank', 'noopener');
-          closeModal();
-        }
-      });
       modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
+        var act = e.target.getAttribute ? e.target.getAttribute('data-link-out') : null;
+        if (act === 'cancel') { shut(); }
+        if (act === 'go' && url) { window.open(url, '_blank', 'noopener'); shut(); }
       });
       document.addEventListener('keydown', function onEsc(e) {
-        if (e.key === 'Escape') {
-          closeModal();
-          document.removeEventListener('keydown', onEsc);
-        }
+        if (e.key === 'Escape') { shut(); document.removeEventListener('keydown', onEsc); }
       });
     }
-
-    function openModal(url) {
-      targetUrl = url;
-      if (!modal) createModal();
-      var host = '';
-      try { host = new URL(url).hostname; } catch (err) { host = ''; }
-      var domainEl = modal.querySelector('#link-out-url-domain');
-      domainEl.textContent = host;
-      domainEl.hidden = !host;   // 解析不出域名时不留空行
-      modal.querySelector('#link-out-url-value').textContent = url;
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      lastFocused = document.activeElement;
-      var cancelBtn = modal.querySelector('#link-out-cancel');
-      if (cancelBtn) cancelBtn.focus();   // 默认焦点落在安全选项上
+    function show(href) {
+      url = href;
+      if (!modal) { build(); }
+      $('.domain', modal).textContent = href;
+      modal.classList.add('is-open');
+      root.classList.add('no-scroll');
+      last = document.activeElement;
+      var first = $('[data-link-out="cancel"]', modal);
+      if (first) { first.focus(); }
     }
-
-    function closeModal() {
-      if (!modal) return;
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-      targetUrl = null;
-      if (lastFocused && lastFocused.isConnected !== false &&
-          typeof lastFocused.focus === 'function') {
-        try { lastFocused.focus(); } catch (err) {}
-      }
-      // 兜底：焦点仍留在弹窗内的按钮上（触发元素已移除 / 不接受 focus）时交还文档
-      if (modal.contains(document.activeElement) &&
-          typeof document.activeElement.blur === 'function') {
-        document.activeElement.blur();
-      }
-      lastFocused = null;
+    function shut() {
+      if (!modal) { return; }
+      modal.classList.remove('is-open');
+      root.classList.remove('no-scroll');
+      url = null;
+      if (last && typeof last.focus === 'function') { try { last.focus(); } catch (e) {} }
+      last = null;
     }
-
     document.addEventListener('click', function (e) {
-      var a = e.target.closest('a');
-      if (!a) return;
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) { return; }
       var href = a.href;
-      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
-
+      if (!href || href.indexOf('#') === 0 || href.indexOf('javascript:') === 0) { return; }
       try {
-        var url = new URL(href);
-        if (url.hostname && url.hostname !== siteDomain) {
-          if (isWhitelisted(url.hostname)) return;   // 白名单域名，不提示
+        var u = new URL(href);
+        if (u.hostname && u.hostname !== here && !whitelisted(u.hostname)) {
           e.preventDefault();
-          openModal(href);
+          show(href);
         }
-      } catch (err) {
-        // 不是有效 URL，可能是相对路径，忽略
-      }
+      } catch (err) { /* 相对路径，忽略 */ }
     });
   }
   initLinkOut();
 
-  /* ---------- 4. 暴露给 main.js 的接口 ----------
-     · applyNavMenuIcons：main.js 的 renderMultiLevelMenus()（navMenuJson 非空时）会重建
-       顶栏菜单 DOM，重建出来的图标又是兜底 fa-bookmark —— 图标规则已迁到本内联块，
-       main.js 自己不再持有，所以重建之后回调这里再跑一次。
-     · openMobile / closeMobile：抽屉开关整体归本块管；main.js 只有一处需要用到
-       （搜索弹窗的 Esc 处理器要顺手关掉抽屉）。
-     本块先于 main.js 执行，所以 main.js 用的时候这个对象一定已经存在。 */
-  window.LIUSHEN_CRITICAL = {
-    applyNavMenuIcons: applyNavMenuIcons,
+  /* ---------- 暴露给 main.js（菜单重建后重跑图标匹配 / 搜索 Esc 关抽屉） ---------- */
+  window.CLAUDE_CRITICAL = {
+    resolveIcon: resolveIcon,
+    applyNavIcons: applyNavIcons,
     openMobile: openMobile,
     closeMobile: closeMobile
   };
-
 })();
 </script>
 
@@ -1655,16 +1822,18 @@ siteTime();
     runtimeEl.innerText = diff >= 0 ? diff : 0;
   }
 })();
-{# 加载超时兜底 #}
+// 加载超时兜底：新版 busuanzi.cc 服务请求失败时不会动 DOM，槽位会一直停在初始占位符上。
+// 判据必须是「仍是占位符」，不能是 '--'（那是旧版 ibruce.info 服务的失败标记，本服务不产生）。
+// 8s 与 main.js 的同步超时对齐，弱网下不误判。
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
-    const uv = document.getElementById('busuanzi_site_uv').textContent;
-    const pv = document.getElementById('busuanzi_site_pv').textContent;
-    if(uv === '--' || pv === '--'){
-      document.getElementById('busuanzi_site_uv').innerText = '加载失败';
-      document.getElementById('busuanzi_site_pv').innerText = '加载失败';
-    }
-  }, 3000);
+    ['busuanzi_today_pv','busuanzi_today_uv','busuanzi_site_pv','busuanzi_site_uv','busuanzi_page_pv'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      const v = (el.textContent || '').trim();
+      if(v === '' || v === '加载中...'){ el.innerText = '—'; }
+    });
+  }, 8000);
 })
 </script>
   <script>function loadDailySentence(){
@@ -1686,6 +1855,6 @@ window.addEventListener('load', ()=>{
 }
 document.addEventListener("DOMContentLoaded",loadDailySentence);</script>
   
-<script>console.log("\n%c ✦ Gridea Pro v1.3.0-beta.2 %c · Theme: liushen v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+<script>console.log("\n%c ✦ Gridea Pro v1.3.0-beta.2 %c · Theme: Claude v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
 </body>
 </html>
