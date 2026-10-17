@@ -176,7 +176,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .icon-btn-44{width:44px;height:44px}
 
 /* ==========================================================================
-   3. 顶栏（theme_config.navFixed / navMenuJson / navIconShow / navMenuShape）
+   3. 顶栏（theme_config.claudeNavFixed / claudeNavMenuJson / claudeNavIconShow / claudeNavMenuShape）
    64px 奶白栏：左侧徽记+字标，中部菜单，右侧圆形按钮组 + 珊瑚 CTA
    ========================================================================== */
 .progress-bar{position:fixed;inset:0 0 auto;height:3px;z-index:60;background:transparent}
@@ -209,7 +209,10 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
      内部 .nav-link 又是 flex:none 不跟着缩，结果就是最后几项骑到右侧图标上。
      空间不够时由品牌区先让（见下方 .brand），菜单保持完整。 */
   flex:0 0 auto;width:max-content;min-width:0;max-width:min(62vw,820px);overflow:hidden;
-  transform-origin:left center;
+  /* 缩放轴心取菜单自身中心：菜单是网格里居中（justify-self:center）的块，
+     若从左缘缩放，「由小变大」的尾段会左缘钉死、右缘向外爬，看起来就是朝右边长出来；
+     居中后收起/展开的缩放都以视口中线为轴，两个方向才真正互为止。 */
+  transform-origin:center;
   transition:max-width .3s cubic-bezier(.4,0,.2,1),opacity .26s ease,
              transform .3s cubic-bezier(.4,0,.2,1),visibility .3s}
 .nav-link{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;
@@ -286,7 +289,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
              visibility .3s,border-width .2s ease}
 
 /* ==========================================================================
-   4. 首屏（infoTitle / subtitleList / subtitleSpeed / scrollDownEnable）
+   4. 首屏（claudeInfoTitle / claudeSubtitleList / claudeSubtitleSpeed / claudeScrollDownEnable）
    6-6 分栏：左衬线大标题 + 打字机 + 按钮行；右深色 code-window 卡
    ========================================================================== */
 .hero{display:grid;grid-template-columns:1.04fr .96fr;gap:var(--sp-xxl);align-items:center}
@@ -311,7 +314,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .scroll-hint .ic{animation:bob 2.2s ease-in-out infinite}
 @keyframes bob{0%,100%{translate:0 0}50%{translate:0 4px}}
 
-/* 深色代码窗（codeCopy） */
+/* 深色代码窗（claudeCodeCopy） */
 .code-card{background:var(--surface-dark);border-radius:var(--r-lg);overflow:hidden;
   border:1px solid var(--surface-dark-elevated)}
 .code-bar{display:flex;align-items:center;gap:var(--sp-sm);padding:12px 16px;
@@ -344,8 +347,8 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .tab.is-active{background:var(--card);color:var(--fg)}
 
 /* ==========================================================================
-   6. 文章区：首篇深色产品卡（cream→dark 节奏拍点）+ 2 列奶白卡栅格
-   （indexLayout / indexCoverEnable / cardMinHeight / cardMaxHeight / excerptLength）
+   6. 文章区：首篇深色产品卡（节奏拍点）+ 卡片区四档排布
+   （claudeIndexCardLayout: uniform / masonry / magazine / list · claudeIndexCoverEnable）
    ========================================================================== */
 .feature-post{display:grid;grid-template-columns:1.12fr .88fr;gap:var(--sp-xl);
   align-items:center;background:var(--surface-dark);color:var(--on-dark);
@@ -374,6 +377,50 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
   margin-top:auto;padding-top:var(--sp-md)}
 .card-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--fg-muted-strong)}
 .card-meta span{display:inline-flex;align-items:center;gap:5px}
+
+/* ---- 6.1 卡片排布模式（claudeIndexCardLayout，尺寸只由文章实际属性决定） ----
+   is-hero  置顶文章：跨列大卡，左文右图（镜像 feature-post 版式，但仍是奶白面）
+   is-wide  正文 ≥1200 字的长文：跨列大卡，封面收成一条横带
+   is-row   紧凑列表行：序号 + 标题 + 摘要，无封面                        */
+.post-card.is-hero{flex-direction:row;align-items:stretch}
+.post-card.is-hero .cover{flex:0 0 44%;min-height:260px}
+.post-card.is-hero .cover img,.post-card.is-hero .cover svg{height:100%;aspect-ratio:auto;object-fit:cover}
+.post-card.is-hero .post-card-body{flex:1;justify-content:center;padding:var(--sp-xxl)}
+.post-card.is-hero h3{font-size:clamp(24px,2.2vw,32px);min-height:0}
+.post-card.is-wide .cover{height:220px}
+.post-card.is-wide .cover img,.post-card.is-wide .cover svg{height:100%;width:100%;aspect-ratio:auto;object-fit:cover}
+
+/* 瀑布流：双列 + 列不断裂，卡片高度随文章实际内容浮动；置顶横跨整条 */
+.post-grid.is-masonry{display:block;columns:2;column-gap:var(--sp-xl)}
+.post-grid.is-masonry>.feature-post,.post-grid.is-masonry>.span-all{column-span:all;margin-bottom:var(--sp-xl)}
+.post-grid.is-masonry .post-card{break-inside:avoid;margin-bottom:var(--sp-xl)}
+.post-grid.is-masonry .post-card.is-hero{column-span:all}
+/* 真实封面在瀑布流里按原图比例铺开，高度因此随文章而不同；超高封面收在 60vh 内 */
+.post-grid.is-masonry .cover img{aspect-ratio:auto;max-height:60vh}
+
+/* 杂志混排：dense 流自动回填空隙，大卡跨满列 */
+.post-grid.is-magazine{grid-auto-flow:dense}
+.post-grid.is-magazine .post-card.is-hero,.post-grid.is-magazine .post-card.is-wide{grid-column:1/-1}
+
+/* 紧凑列表：序号 + 标题 + 摘要 + 元信息，单列、无封面、细线分隔 */
+.post-grid.is-list{display:flex;flex-direction:column;counter-reset:cardno}
+.post-grid.is-list>.feature-post{margin-bottom:var(--sp-xl)}
+/* 列表行不显示封面（真实模板在 list 模式本就不输出 .cover，这条兜住预览稿等自定义 markup）；
+   序号只在列表模式显形 */
+.post-grid.is-list .cover{display:none}
+.card-no{display:none}
+.post-grid.is-list .card-no{display:block}
+.post-grid.is-list .post-card{counter-increment:cardno;flex-direction:row;align-items:baseline;
+  gap:var(--sp-lg);background:none;border-radius:0;border-bottom:1px solid var(--line);
+  padding:var(--sp-lg) 0;transition:none}
+.post-grid.is-list .post-card .card-no{flex:none;min-width:2.4em;
+  font-family:var(--font-display);font-size:22px;color:var(--fg-muted)}
+.post-grid.is-list .post-card .card-no::before{content:counter(cardno,decimal-leading-zero)}
+.post-grid.is-list .post-card:hover .card-no{color:var(--primary)}
+.post-grid.is-list .post-card .post-card-body{padding:0;gap:var(--sp-xs)}
+.post-grid.is-list .post-card h3{font-size:21px;min-height:0}
+.post-grid.is-list .post-card:hover h3 a{color:var(--link)}
+.post-grid.is-list .post-card .card-foot{padding-top:var(--sp-sm)}
 
 .pager{display:flex;align-items:center;justify-content:center;gap:var(--sp-xs);
   margin-top:var(--sp-xxl)}
@@ -438,7 +485,10 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
   background:var(--canvas);color:var(--ink);font:400 15px/1 var(--font-body)}
 .sub-input::placeholder{color:var(--muted)}
 .sub-input:focus{outline:2px solid var(--canvas);outline-offset:2px}
-.sub-btn{height:44px;padding:0 22px;border-radius:var(--r-md);background:var(--canvas);
+/* 与输入框底边对齐：.field 带了邮箱标签、比按钮高出一截，flex 默认 stretch 遇定高
+   会退化成 flex-start，把按钮顶到标签行（线上实测错位 25px）。
+   窄屏按钮换行到第二行时自成一行，本规则无副作用 */
+.sub-btn{height:44px;align-self:flex-end;padding:0 22px;border-radius:var(--r-md);background:var(--canvas);
   color:var(--ink);font:500 14px/1 var(--font-body);display:inline-flex;align-items:center;gap:var(--sp-xs)}
 .sub-note{margin-top:var(--sp-sm);font-size:13px;color:var(--on-coral)}
 .sub-tip{margin-top:var(--sp-xs);font-size:13px;font-weight:500;
@@ -446,7 +496,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .sub-ok{display:inline-flex;align-items:center;gap:8px;font-weight:500}
 
 /* ==========================================================================
-   9. 文章页（tocEnable / postWidget* / postStickyWidget / comments / post-nav）
+   9. 文章页（claudeTocEnable / postWidget* / claudePostStickyWidget / comments / post-nav）
    ========================================================================== */
 .article-head{max-width:820px;margin-inline:auto;text-align:center}
 .article-head h1{margin:var(--sp-md) 0 var(--sp-lg)}
@@ -504,7 +554,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
   border-radius:var(--r-lg);text-align:center;color:var(--fg-muted)}
 
 /* ==========================================================================
-   10. 页脚（footerCopyright / footerIcp / footerNavList / footerExtra / social*）
+   10. 页脚（claudeFooterCopyright / claudeFooterIcp / claudeFooterNavList / claudeFooterExtra / social*）
    深色 4 栏，按规范永不反转
    ========================================================================== */
 .footer{background:var(--surface-dark);color:var(--on-dark-soft);
@@ -529,7 +579,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .footer-bottom .meta{display:flex;flex-wrap:wrap;gap:var(--sp-md)}
 
 /* ==========================================================================
-   11. 浮层：搜索（searchEnable）/ 移动抽屉 / 外链提示（linkOutEnable）/ Toast
+   11. 浮层：搜索（claudeSearchEnable）/ 移动抽屉 / 外链提示（claudeLinkOutEnable）/ Toast
    ========================================================================== */
 /* 抽屉：开合都走过渡（visibility 可过渡，display 不可），关闭时也能滑回去 */
 .overlay{position:fixed;inset:0;z-index:80;visibility:hidden;pointer-events:none}
@@ -594,7 +644,7 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 .drawer-list a:hover{color:var(--primary)}
 .drawer-list .ic{color:var(--fg-muted)}
 
-/* 抽屉里的分组（navMenuJson 配了 children 才有）：
+/* 抽屉里的分组（claudeNavMenuJson 配了 children 才有）：
    子层用 grid-template-rows 0fr ↔ 1fr 过渡 —— 这是少数「height:auto 也能做动画」的写法，
    关闭时也能收回，不需要 JS 量 scrollHeight，也不怕窗口尺寸变化后算错。 */
 .drawer-group{display:flex;align-items:center;gap:var(--sp-sm);width:100%;
@@ -624,7 +674,8 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 
 @media (prefers-reduced-motion:reduce){
   .overlay,.scrim,.drawer-panel,.drawer-list>a,.drawer-list>.drawer-group,
-  .drawer-foot,.drawer-sub,.drawer-sub a,.drawer-caret{transition:none}
+  .drawer-foot,.drawer-sub,.drawer-sub a,.drawer-caret,
+  .link-apply,.link-apply-inner{transition:none}
 }
 .drawer-foot{margin-top:auto;padding-top:var(--sp-lg);border-top:1px solid var(--line);
   display:flex;flex-direction:column;gap:var(--sp-sm)}
@@ -649,7 +700,7 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 .toast.is-open{opacity:1;translate:-50% -6px}
 .toast .ic{color:var(--primary)}
 
-/* 右下浮动按钮组（scrollToTop / randomPostEnable / travellingsLink / tenYearsLink） */
+/* 右下浮动按钮组（claudeScrollToTop / claudeRandomPostEnable / claudeTravellingsLink / claudeTenYearsLink） */
 .dock{position:fixed;right:24px;bottom:28px;z-index:70;display:flex;flex-direction:column;gap:var(--sp-xs)}
 
 
@@ -658,7 +709,7 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
    ========================================================================== */
 .demo-bar{position:fixed;left:24px;bottom:28px;z-index:75;display:flex;align-items:center;
   gap:var(--sp-xs);padding:6px;background:var(--bg);border:1px solid var(--line);
-  border-radius:var(--r-md);box-shadow:var(--shadow)}
+  border-radius:var(--r-md);box-shadow:var(--shadow);flex-wrap:wrap;max-width:calc(100vw - 48px)}
 
 
 
@@ -684,12 +735,25 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 @media (max-width:1280px){
   .nav-menu .nav-link{padding:0 10px;font-size:13.5px}
 }
-/* icon / compact 档只剩图标，内容远窄于容器，放开裁切让 data-tip 悬浮提示露出来；
-   但必须限定 ≥1025 —— 更低档 #menus 已经收起（max-width:0），
-   这里若也 visible，被收起的菜单项会从 0 宽容器里溢出来把文档撑宽（实测 390px 下 +63px）。 */
-@media (min-width:1025px) and (max-width:1440px){
-  #menus.nav-shape-compact,
-  #menus.nav-shape-icon{overflow:visible}
+/* 图标/首字档内容远窄于上限，只有「悬停 / 下拉展开」时才放开裁剪，
+   让 data-tip 与下拉面板出边界；平时保持 hidden。
+   为什么不能常驻 visible：由小变大跨 1024 断点时视口已经 >1025，
+   若此时 overflow 是 visible，收起态的菜单项会整体溢出盒外 —— 实测展开 t=40ms 时
+   菜单盒只有 39px，图标却已排到盒外 +288px：整条菜单一上来就是全宽、从右边滑进来归位；
+   而由大变小走 ≤1024 的 hidden，是干净的裁切折叠 —— 两个方向就不镜像了。
+   绑定 :has() 与 nav-shape-full 展开期间放开裁剪同一手法（见下），
+   顺带保证没人悬停时被收起的菜单项不撑大文档。 */
+@media (min-width:1025px){
+  #menus.nav-shape-icon,
+  #menus.nav-shape-compact{overflow:hidden}
+  #menus.nav-shape-icon:has(.nav-link:hover),
+  #menus.nav-shape-icon:has(.nav-link:focus-visible),
+  #menus.nav-shape-icon:has(.nav-drop:hover),
+  #menus.nav-shape-icon:has(.nav-drop-panel.is-open),
+  #menus.nav-shape-compact:has(.nav-link:hover),
+  #menus.nav-shape-compact:has(.nav-link:focus-visible),
+  #menus.nav-shape-compact:has(.nav-drop:hover),
+  #menus.nav-shape-compact:has(.nav-drop-panel.is-open){overflow:visible}
 }
 @media (max-width:1024px){
   .nav-menu{max-width:0;opacity:0;transform:scale(.96);overflow:hidden;
@@ -713,6 +777,15 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
   .grid-3{grid-template-columns:1fr}
   .editorial{grid-template-columns:1fr;gap:var(--sp-xxl)}
   .post-card h3{font-size:22px;min-height:0}
+  /* 排布模式窄屏收拢：瀑布流归单列；大卡改回竖向、封面定高横带；列表行收紧 */
+  .post-grid.is-masonry{columns:1}
+  .post-card.is-hero{flex-direction:column}
+  .post-card.is-hero .cover{flex:none;width:100%;height:220px;min-height:0}
+  .post-card.is-hero .post-card-body{padding:var(--sp-xl)}
+  .post-card.is-wide .cover{height:200px}
+  .post-grid.is-list .post-card{gap:var(--sp-md)}
+  .post-grid.is-list .post-card .card-no{min-width:2em;font-size:18px}
+  .post-grid.is-list .post-card h3{font-size:19px}
   .footer-cols{grid-template-columns:1fr}
   .post-nav{grid-template-columns:1fr}
   .nav-subscribe{display:none}
@@ -728,8 +801,8 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 
 /* ==========================================================================
    主题配置接入层 —— base.html 会在 <head> 注入同名变量覆盖这里的回落值
-   primaryColor / accentColor / contentMaxWidth /
-   sidebarCardWidth / sidebarGradient / postCoverDarkness / bodyFont / codeFont /
+   claudePrimaryColor / claudeAccentColor / claudeContentMaxWidth /
+   claudeSidebarCardWidth / sidebarGradient / postCoverDarkness / claudeBodyFont / claudeCodeFont /
    bgImageLight / bgImageDark / cardMinHeight / cardMaxHeight
    ========================================================================== */
 :root{
@@ -833,16 +906,42 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
   border:1px solid var(--line);color:var(--fg-muted);
 }
 .lc-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+/* 头像被对方站防盗链挡掉时显示站点名首字（由 main.js 挂 is-fallback），不用裂图占位 */
+.lc-avatar.is-fallback{
+  font-family:var(--font-display);font-size:20px;letter-spacing:-.02em;
+  color:var(--fg-muted-strong);user-select:none;
+}
 .lc-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lc-head{display:flex;align-items:center;gap:var(--sp-sm);min-width:0}
 .lc-name{
+  flex:1;min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  font-size:16px;font-weight:500;color:var(--fg);transition:color .18s ease;
+  font-family:var(--font-display);font-size:16px;font-weight:400;letter-spacing:-.02em;
+  color:var(--fg);transition:color .18s ease;
 }
+/* 简介恒定占两行行高：有无简介、长短几何都不改卡片高度，整页友链卡才一般大 */
 .lc-desc{
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  font-size:13px;line-height:1.5;color:var(--fg-muted);
+  min-height:3em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:13px;line-height:1.5;color:var(--fg-muted-strong);
 }
+.link-card .lc-head .ic{color:var(--fg-muted);transition:color .18s ease}
 .link-card:hover .lc-name{color:var(--link)}
+.link-card:hover .lc-head .ic{color:var(--primary)}
+/* ------ 友链申请：标题行入口 + 页内展开面板 ------
+   开合走 grid-template-rows 0fr ↔ 1fr（禁 display 硬切，关闭时也能收回）；
+   收起态加 visibility，把面板里的链接移出 Tab 顺序。 */
+.band-head-actions{display:flex;align-items:center;gap:var(--sp-md);flex-wrap:wrap}
+.link-apply{display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .28s cubic-bezier(.2,.7,.3,1)}
+.link-apply.is-open{grid-template-rows:1fr;margin-bottom:var(--sp-lg)}
+.link-apply-inner{overflow:hidden;min-height:0;opacity:0;visibility:hidden;
+  transition:opacity .2s ease,visibility 0s linear .28s}
+.link-apply.is-open .link-apply-inner{opacity:1;visibility:visible;
+  transition:opacity .22s ease .04s,visibility 0s linear 0s}
+.link-apply-card{padding:var(--sp-xl);background:var(--bg);
+  border:1px solid var(--line);border-radius:var(--r-lg)}
+.link-apply-card>*+*{margin-top:var(--sp-lg)}
 .friend-feed{margin-top:var(--sp-xxl);padding-top:var(--sp-xl);border-top:1px solid var(--line)}
 .feed-item{
   display:grid;grid-template-columns:auto minmax(0,1fr) auto;
@@ -850,18 +949,60 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 }
 .feed-item+.feed-item{border-top:1px solid var(--line)}
 .feed-dot{
-  align-self:center;width:7px;height:7px;
+  align-self:center;width:7px;height:7px;flex:none;
   border-radius:var(--r-full);background:var(--primary);
 }
-.feed-item a{
+.feed-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.feed-title{
   font-size:15px;line-height:1.6;color:var(--fg-body);transition:color .18s ease;
   display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
 }
-.feed-item:hover a{color:var(--link)}
+.feed-item:hover .feed-title{color:var(--link)}
+.feed-meta{display:flex;align-items:center;gap:var(--sp-xs);min-width:0}
+.feed-avatar{
+  width:16px;height:16px;flex:none;border-radius:var(--r-full);
+  object-fit:cover;background:var(--card);border:1px solid var(--line);
+}
+.feed-src{
+  font-size:12.5px;line-height:1.5;color:var(--fg-muted-strong);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .feed-time{
   font-family:var(--font-mono);font-size:12.5px;
   color:var(--fg-muted);white-space:nowrap;
 }
+/* 骨架屏：抓取期间的占位，与 .feed-item 同栅格（替换时零跳动）。
+   底色与微光一律走令牌 + color-mix，不写裸色值；reduced-motion 下只留静态底色。 */
+.feed-skeleton .feed-item{pointer-events:none}
+.feed-skeleton .sk-dot,
+.feed-skeleton .sk-line{
+  display:block;border-radius:var(--r-full);
+  background:linear-gradient(90deg,
+    var(--line) 0%,
+    color-mix(in srgb,var(--fg) 10%,var(--line)) 50%,
+    var(--line) 100%);
+  background-size:280% 100%;
+  animation:sk-sweep 1.5s ease-in-out infinite;
+}
+.feed-skeleton .sk-dot{width:7px;height:7px;align-self:center}
+.feed-skeleton .sk-line{height:12px}
+.feed-skeleton .sk-w-title{width:68%;height:14px}
+.feed-skeleton .sk-w-src{width:30%;height:10px;margin-top:7px}
+.feed-skeleton .sk-w-time{width:42px;align-self:center}
+@keyframes sk-sweep{from{background-position:120% 0}to{background-position:-120% 0}}
+@media (prefers-reduced-motion:reduce){
+  .feed-skeleton .sk-dot,.feed-skeleton .sk-line{animation:none}
+}
+/* 全部源抓失败：整块降级成可重试的面板，不停在骨架上 */
+.feed-error{
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-md);
+  padding:var(--sp-lg);background:var(--bg);
+  border:1px solid var(--line);border-radius:var(--r-lg);
+}
+.feed-error .ic{color:var(--fg-muted);flex:none}
+.feed-error-text{flex:1;min-width:180px}
+.feed-error-text b{display:block;font-size:15px;font-weight:500;color:var(--fg-body)}
+.feed-error-text span{font-size:13px;line-height:1.6;color:var(--fg-muted-strong)}
 
 /* ------ 18. 闪念 ------ */
 .memo-list{display:flex;flex-direction:column;gap:var(--sp-md)}
@@ -1074,7 +1215,7 @@ html.not-loaded *::before,
 html.not-loaded *::after{transition:none !important;animation:none !important}
 
 /* ==========================================================================
-   28. 顶栏菜单形态（navFixed / navIconShow / navMenuShape）
+   28. 顶栏菜单形态（claudeNavFixed / claudeNavIconShow / claudeNavMenuShape）
    两个维度都由模板类静态决定，首帧即正确，无 JS 状态机。
    ========================================================================== */
 .nav.not-fixed{position:relative}
@@ -1119,7 +1260,7 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
 #menus .nav-link span{display:inline-block;max-width:20em;overflow:hidden;
   vertical-align:middle;transition:max-width .3s cubic-bezier(.4,0,.2,1),opacity .26s ease}
 /* 「仅图标 / 仅首字」两档都只在 1025–1440 收文字，1441px 起恢复完整文字 ——
-   与 config.json 里 navMenuShape 的 note 口径一致（用户按说明预期宽屏能看全文字）。
+   与 config.json 里 claudeNavMenuShape 的 note 口径一致（用户按说明预期宽屏能看全文字）。
    1441+ 之所以塞得下：顶栏是通栏，内容带 = 视口 − 48px 内边距，1441 时是 1393px；
    真实站点 9 个平级菜单的文字档实测 734px，品牌 225 + 菜单 734 + 右侧 5 个圆按钮 220
    + 两个 32px 列间隔 = 1243px < 1393px，留 150px 余量。（旧的 1203 > 1102 是按 1200
@@ -1133,10 +1274,6 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
   #menus.nav-shape-icon .nav-link .ic,
   #menus.nav-shape-compact .nav-link .ic{margin:0}
 }
-/* 图标档内容远窄于上限，放开裁剪让悬停提示能出边界。
-   但只在桌面生效：≤1024 时菜单被收到 0 宽，overflow:visible 会让里面看不见的菜单项
-   继续撑大文档（实测 360px 视口 docW 435），所以窄屏必须留在 overflow:hidden。 */
-@media (min-width:1025px){#menus.nav-shape-icon{overflow:visible}}
 /* ==========================================================================
    29. 首屏 / 编辑列 / 订阅校验
    ========================================================================== */
@@ -1222,7 +1359,7 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
   background:var(--surface-dark-elevated);color:var(--on-dark);border-color:transparent}
 
 /* ==========================================================================
-   32. 吸顶卡片（stickyWidget / postStickyWidget）
+   32. 吸顶卡片（stickyWidget / claudePostStickyWidget）
    ========================================================================== */
 .is-sticky{position:sticky;top:88px;align-self:start}
 @media (max-width:1024px){.is-sticky{position:static}}

@@ -159,6 +159,7 @@
   <symbol id="i-rss" viewBox="0 0 24 24"><path d="M5 19h.01"/><path d="M5 12.5A6.5 6.5 0 0 1 11.5 19"/><path d="M5 6.5A12.5 12.5 0 0 1 17.5 19"/><circle cx="5.6" cy="18.4" r="1.2" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-github" viewBox="0 0 24 24"><path d="M9.2 20.4v-2.6c-3 .5-3.8-1.3-3.8-1.3-.5-1.3-1.2-1.7-1.2-1.7-1-.7 0-.7 0-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.4-.3-5-1.2-5-5.4 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 3 1.1a10.2 10.2 0 0 1 5.4 0c2.1-1.4 3-1.1 3-1.1.6 1.5.2 2.6.1 2.9.7.8 1.1 1.8 1.1 3 0 4.2-2.6 5.1-5 5.4.4.4.8 1.1.8 2.2v3.5"/></symbol>
   <symbol id="i-telegram" viewBox="0 0 24 24"><path d="M20.5 4.2 3.9 10.6c-.9.4-.9.9-.1 1.1l4.1 1.3 1.6 4.8c.2.5.1.7.6.7.4 0 .6-.2.8-.4l2-1.9 4.1 3c.8.4 1.3.2 1.5-.7l2.7-12.5c.2-1-.4-1.5-1.2-1.2z"/><path d="M8.4 12.9 17 7.2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 15 22l-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
   <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-2 5.4-5.4 2 2-5.4z"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5S14.4 18.1 12 20.5c-2.4-2.4-3.6-5.3-3.6-8.5S9.6 5.9 12 3.5z"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3.5V6M16 3.5V6"/></symbol>
@@ -410,6 +411,10 @@
 
 
 
+
+
+
+
 <section class="band band-soft">
   <div class="wrap">
     <div class="band-head">
@@ -417,8 +422,31 @@
         <p class="eyebrow">Links · 友情链接</p>
         <h2 class="display-lg">一起写博客的人</h2>
       </div>
-      <p class="caption">共 23 位</p>
+      <div class="band-head-actions">
+        <p class="caption">共 23 位</p>
+        
+        
+        <button type="button" class="btn btn-coral btn-sm link-apply-toggle" id="friend-apply-toggle" aria-expanded="false" aria-controls="friend-apply-panel">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-send"/></svg>
+          <span class="link-apply-label">友链申请</span>
+        </button>
+        
+      </div>
     </div>
+
+    
+    
+    <div class="link-apply" id="friend-apply-panel" data-apply-link="/post/link_sq/">
+      <div class="link-apply-inner">
+        <div class="link-apply-card" role="region" aria-label="友链申请说明">
+          <div class="link-apply-body prose" id="friend-apply-content">
+            <h3>友链申请</h3>
+            <p>欢迎互换友链！请先把本站加入你的友链页面，再通过页脚的联系方式告知站长，附上站点名称、地址与简介。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
 
     
     <div class="link-grid">
@@ -429,12 +457,17 @@
       
       
       <a class="link-card" href="https://wowtang.top" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://wowtang.top/images/avatar.png" alt="Sunrise&#39;s blog（本站）" loading="lazy">
         </span>
-        <span class="title-sm">Sunrise&#39;s blog（本站）</span>
-        <span class="body-sm">心境自成天地，地狱可化作桃源，天堂也能沦为苦海。</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">Sunrise&#39;s blog（本站）</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">心境自成天地，地狱可化作桃源，天堂也能沦为苦海。</span>
+        </span>
       </a>
       
       
@@ -444,12 +477,17 @@
       
       
       <a class="link-card" href="https://www.zzzzhi.com" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://bu.dusays.com/2024/06/20/6674436e8be23.png" alt="祈星海" loading="lazy">
         </span>
-        <span class="title-sm">祈星海</span>
-        <span class="body-sm">慢热喜静，往哪走，都是往前走。</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">祈星海</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">慢热喜静，往哪走，都是往前走。</span>
+        </span>
       </a>
       
       
@@ -459,12 +497,17 @@
       
       
       <a class="link-card" href="https://blog.fyz666.xyz/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://s2.loli.net/2025/04/12/KqFxMtPRpu5bjTy.webp" alt="逸风亭" loading="lazy">
         </span>
-        <span class="title-sm">逸风亭</span>
-        <span class="body-sm">行所欲行，无问西东。</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">逸风亭</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">行所欲行，无问西东。</span>
+        </span>
       </a>
       
       
@@ -474,12 +517,17 @@
       
       
       <a class="link-card" href="https://blog.talen.top" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://image.talen.top/20251229184705_wgsva7g9.png" alt="爱吃猫的鱼" loading="lazy">
         </span>
-        <span class="title-sm">爱吃猫的鱼</span>
-        <span class="body-sm">前景可待 未来可期</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">爱吃猫的鱼</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">前景可待 未来可期</span>
+        </span>
       </a>
       
       
@@ -489,12 +537,17 @@
       
       
       <a class="link-card" href="https://ilimeng.cn/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://ilimeng.cn/SLiMan.png" alt="离梦博客" loading="lazy">
         </span>
-        <span class="title-sm">离梦博客</span>
-        <span class="body-sm">一蓑烟雨任平生</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">离梦博客</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">一蓑烟雨任平生</span>
+        </span>
       </a>
       
       
@@ -504,12 +557,17 @@
       
       
       <a class="link-card" href="https://twbk.cn/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://twbk.cn/wp-content/uploads/2025/10/logo.png?orientation=landscape&amp;width=512&amp;height=512" alt="叹惋博客" loading="lazy">
         </span>
-        <span class="title-sm">叹惋博客</span>
-        <span class="body-sm">唉…</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">叹惋博客</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">唉…</span>
+        </span>
       </a>
       
       
@@ -519,12 +577,17 @@
       
       
       <a class="link-card" href="https://whitebear.im" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://whitebear.im/usr/uploads/2024/11/4186247099.png" alt="I&#39;m WhiteBear" loading="lazy">
         </span>
-        <span class="title-sm">I&#39;m WhiteBear</span>
-        <span class="body-sm">白熊的自留地</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">I&#39;m WhiteBear</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">白熊的自留地</span>
+        </span>
       </a>
       
       
@@ -534,12 +597,17 @@
       
       
       <a class="link-card" href="https://myblog.icu" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://api.myblog.icu/api/images/66d8abaee825b7d74238c6bc8a58f4a5?size=sm" alt="JiuLiuBLOG" loading="lazy">
         </span>
-        <span class="title-sm">JiuLiuBLOG</span>
-        <span class="body-sm"> 一个个人开发的简洁博客，分享开发经验和生活日常。</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">JiuLiuBLOG</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc"> 一个个人开发的简洁博客，分享开发经验和生活日常。</span>
+        </span>
       </a>
       
       
@@ -549,12 +617,17 @@
       
       
       <a class="link-card" href="https://blog.002.hk" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://file.devhub.eu.org/file/fmrmokRG.png" alt="晓蓝" loading="lazy">
         </span>
-        <span class="title-sm">晓蓝</span>
-        <span class="body-sm">做一个自由自在的人，开心就好</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">晓蓝</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">做一个自由自在的人，开心就好</span>
+        </span>
       </a>
       
       
@@ -564,12 +637,17 @@
       
       
       <a class="link-card" href="https://hehuang.site" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://hehuang.site/img/avatar.jpg" alt="合荒小站" loading="lazy">
         </span>
-        <span class="title-sm">合荒小站</span>
-        <span class="body-sm">万物合鸣·独守一荒</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">合荒小站</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">万物合鸣·独守一荒</span>
+        </span>
       </a>
       
       
@@ -579,12 +657,17 @@
       
       
       <a class="link-card" href="https://jingyuan-zheng.github.io/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://jingyuan-zheng.github.io/img/avatar.png" alt="小景" loading="lazy">
         </span>
-        <span class="title-sm">小景</span>
-        <span class="body-sm">随心分享有趣的技术、开源项目与生活记录。</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">小景</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">随心分享有趣的技术、开源项目与生活记录。</span>
+        </span>
       </a>
       
       
@@ -594,12 +677,17 @@
       
       
       <a class="link-card" href="https://xice.cx/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://xice.cx/images/chongxi-avatar.webp" alt="Chongxiの咖啡屋" loading="lazy">
         </span>
-        <span class="title-sm">Chongxiの咖啡屋</span>
-        <span class="body-sm">Lose yourself to find yourself</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">Chongxiの咖啡屋</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">Lose yourself to find yourself</span>
+        </span>
       </a>
       
       
@@ -609,12 +697,17 @@
       
       
       <a class="link-card" href="https://mojue88.com" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://mojue88.com/favicon.png" alt="云墨观窗" loading="lazy">
         </span>
-        <span class="title-sm">云墨观窗</span>
-        <span class="body-sm">静坐窗前以文字记录日常与所思</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">云墨观窗</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">静坐窗前以文字记录日常与所思</span>
+        </span>
       </a>
       
       
@@ -624,12 +717,17 @@
       
       
       <a class="link-card" href="https://xiaoxi.ac.cn" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://img.xiaoxi.ac.cn/logo.png" alt="小曦的园子" loading="lazy">
         </span>
-        <span class="title-sm">小曦的园子</span>
-        <span class="body-sm">打理好自己的小园子</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">小曦的园子</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">打理好自己的小园子</span>
+        </span>
       </a>
       
       
@@ -639,12 +737,17 @@
       
       
       <a class="link-card" href="https://blog.blueke.top/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://gcore.jsdelivr.net/gh/Keduoli03/My_img@img/avatar.jpg" alt="Ditto" loading="lazy">
         </span>
-        <span class="title-sm">Ditto</span>
-        <span class="body-sm">请为一切不真实之物骄傲，因为我们高于这个世界！</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">Ditto</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">请为一切不真实之物骄傲，因为我们高于这个世界！</span>
+        </span>
       </a>
       
       
@@ -654,12 +757,17 @@
       
       
       <a class="link-card" href="https://www.s17.cn" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://www.s17.cn/logo.png" alt="17的主页" loading="lazy">
         </span>
-        <span class="title-sm">17的主页</span>
-        <span class="body-sm">活在当下 随遇而安 早睡早起 每天开心👐🏼</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">17的主页</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">活在当下 随遇而安 早睡早起 每天开心👐🏼</span>
+        </span>
       </a>
       
       
@@ -669,12 +777,17 @@
       
       
       <a class="link-card" href="https://blog.oopss.top" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://cdn.oopss.top/icon.jpg" alt="Brandon&#39;s Blog" loading="lazy">
         </span>
-        <span class="title-sm">Brandon&#39;s Blog</span>
-        <span class="body-sm">Brandon 的个人博客</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">Brandon&#39;s Blog</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">Brandon 的个人博客</span>
+        </span>
       </a>
       
       
@@ -684,12 +797,17 @@
       
       
       <a class="link-card" href="https://rainzt.cn/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://rainzt.cn/zzty.png" alt="朝朝听雨" loading="lazy">
         </span>
-        <span class="title-sm">朝朝听雨</span>
-        <span class="body-sm">物物而不物于物，念念而不念于念</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">朝朝听雨</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">物物而不物于物，念念而不念于念</span>
+        </span>
       </a>
       
       
@@ -699,12 +817,17 @@
       
       
       <a class="link-card" href="https://styunlen.cn" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://styunlen.cn/hello.png" alt="九仞之行" loading="lazy">
         </span>
-        <span class="title-sm">九仞之行</span>
-        <span class="body-sm">严于律己，宽以待人，深自警省，讷言敏行</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">九仞之行</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">严于律己，宽以待人，深自警省，讷言敏行</span>
+        </span>
       </a>
       
       
@@ -714,12 +837,17 @@
       
       
       <a class="link-card" href="https://blog.hjz0713.cn/" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://blog.hjz0713.cn/wp-content/uploads/2026/08/1787393316-87_avatar_middle.jpg" alt="HJZ的博客" loading="lazy">
         </span>
-        <span class="title-sm">HJZ的博客</span>
-        <span class="body-sm">Never stop discovering!</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">HJZ的博客</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">Never stop discovering!</span>
+        </span>
       </a>
       
       
@@ -729,12 +857,17 @@
       
       
       <a class="link-card" href="https://blog.demius.tech" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://unpkg.com/mzxi-static-resources@1.0.3/dist/img/avatar.jpg" alt="Demius" loading="lazy">
         </span>
-        <span class="title-sm">Demius</span>
-        <span class="body-sm">时间就是生命，Life is Money，Money is Time</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">Demius</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">时间就是生命，Life is Money，Money is Time</span>
+        </span>
       </a>
       
       
@@ -744,12 +877,17 @@
       
       
       <a class="link-card" href="https://lcrworld.xyz" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://lcrworld.xyz/default-avatar.jpeg" alt="lcrworld&#39;s blog" loading="lazy">
         </span>
-        <span class="title-sm">lcrworld&#39;s blog</span>
-        <span class="body-sm">lcrworld的个人博客，分享文章，记录日常</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">lcrworld&#39;s blog</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">lcrworld的个人博客，分享文章，记录日常</span>
+        </span>
       </a>
       
       
@@ -759,12 +897,17 @@
       
       
       <a class="link-card" href="https://liWanr.com" target="_blank" rel="noopener">
-        <span class="avatar">
+        <span class="lc-avatar">
           <img src="https://liwanr.com/assets/avatar.png" alt="liWanr" loading="lazy">
         </span>
-        <span class="title-sm">liWanr</span>
-        <span class="body-sm">Every nobody is somebody.</span>
-        <svg class="ic ic-s"><use href="#i-external"/></svg>
+        <span class="lc-body">
+          <span class="lc-head">
+            <span class="lc-name">liWanr</span>
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-external"/></svg>
+          </span>
+          
+          <span class="lc-desc">Every nobody is somebody.</span>
+        </span>
       </a>
       
       
@@ -805,7 +948,43 @@ https://blog.demius.tech/rss.xml
 https://lcrworld.xyz/api/rss/feed/newrss
 https://liwanr.com/rss.xml">
       
-      <p class="body-sm">正在加载朋友动态…</p>
+      
+      <div class="feed-skeleton" aria-hidden="true">
+        <div class="feed-item">
+          <span class="sk-dot"></span>
+          <span class="feed-body"><span class="sk-line sk-w-title"></span><span class="sk-line sk-w-src"></span></span>
+          <span class="sk-line sk-w-time"></span>
+        </div>
+        <div class="feed-item">
+          <span class="sk-dot"></span>
+          <span class="feed-body"><span class="sk-line sk-w-title"></span><span class="sk-line sk-w-src"></span></span>
+          <span class="sk-line sk-w-time"></span>
+        </div>
+        <div class="feed-item">
+          <span class="sk-dot"></span>
+          <span class="feed-body"><span class="sk-line sk-w-title"></span><span class="sk-line sk-w-src"></span></span>
+          <span class="sk-line sk-w-time"></span>
+        </div>
+        <div class="feed-item">
+          <span class="sk-dot"></span>
+          <span class="feed-body"><span class="sk-line sk-w-title"></span><span class="sk-line sk-w-src"></span></span>
+          <span class="sk-line sk-w-time"></span>
+        </div>
+        <div class="feed-item">
+          <span class="sk-dot"></span>
+          <span class="feed-body"><span class="sk-line sk-w-title"></span><span class="sk-line sk-w-src"></span></span>
+          <span class="sk-line sk-w-time"></span>
+        </div>
+        <div class="feed-item">
+          <span class="sk-dot"></span>
+          <span class="feed-body"><span class="sk-line sk-w-title"></span><span class="sk-line sk-w-src"></span></span>
+          <span class="sk-line sk-w-time"></span>
+        </div>
+      </div>
+      <noscript>
+        <style>.feed-skeleton{display:none}</style>
+        <p class="body-sm">朋友动态需要启用 JavaScript 才能加载。</p>
+      </noscript>
       
     </div>
   </div>
@@ -949,6 +1128,7 @@ https://liwanr.com/rss.xml">
 
 
 
+
   
   
 
@@ -975,7 +1155,33 @@ https://liwanr.com/rss.xml">
         
       
         
+        
+        <li>
+          <a href="/post/litter_202609/" title="「站长信」202609 - 无题">
+            <span class="no">01</span>
+            <span class="t">「站长信」202609 - 无题</span>
+          </a>
+        </li>
+        
       
+        
+        
+        <li>
+          <a href="/post/kai-shi-shang-gao-yi-liaoting-geng-yi-duan-shi-jiange-wei-hu-lian-zhan-chang-wu-xia-lian/" title="开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏">
+            <span class="no">02</span>
+            <span class="t">开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏</span>
+          </a>
+        </li>
+        
+      
+        
+        
+        <li>
+          <a href="/post/sdfj/" title="「浅谈」时代峰峻造星乱象：低龄逐利之下，追星早已失了底线">
+            <span class="no">03</span>
+            <span class="t">「浅谈」时代峰峻造星乱象：低龄逐利之下，追星早已失了底线</span>
+          </a>
+        </li>
         
       
         
@@ -1000,8 +1206,9 @@ https://liwanr.com/rss.xml">
       
         
       
-        
-      
+    
+    
+      <li class="body-sm list-empty">暂无文章</li>
     
   </ul>
 </section>
@@ -1887,18 +2094,16 @@ siteTime();
     runtimeEl.innerText = diff >= 0 ? diff : 0;
   }
 })();
-// 加载超时兜底：新版 busuanzi.cc 服务请求失败时不会动 DOM，槽位会一直停在初始占位符上。
-// 判据必须是「仍是占位符」，不能是 '--'（那是旧版 ibruce.info 服务的失败标记，本服务不产生）。
-// 8s 与 main.js 的同步超时对齐，弱网下不误判。
+// 加载超时兜底（原来的模板注释写法放进 script 会被浏览器判为语法错误，已改为 JS 注释）
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
-    ['busuanzi_today_pv','busuanzi_today_uv','busuanzi_site_pv','busuanzi_site_uv','busuanzi_page_pv'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(!el) return;
-      const v = (el.textContent || '').trim();
-      if(v === '' || v === '加载中...'){ el.innerText = '—'; }
-    });
-  }, 8000);
+    const uv = document.getElementById('busuanzi_site_uv').textContent;
+    const pv = document.getElementById('busuanzi_site_pv').textContent;
+    if(uv === '--' || pv === '--'){
+      document.getElementById('busuanzi_site_uv').innerText = '加载失败';
+      document.getElementById('busuanzi_site_pv').innerText = '加载失败';
+    }
+  }, 3000);
 })
 </script>
   <script>function loadDailySentence(){

@@ -3,7 +3,8 @@
    覆盖：暗色三档（跟随时间 / 浅色 / 深色）/ 打字机 / 多级菜单 / 页脚导航 /
         全屏搜索（键盘上下 + 高亮）/ 目录 / 阅读进度 / 代码复制 / 上下篇 /
         相关推荐 / 闪念热力图 / 运行天数 / 全站计数 / 随机文章 /
-        busuanzi 数据同步 / 图片宫格 / 图片查看器 / 订阅表单校验
+        busuanzi 数据同步 / 图片宫格 / 图片查看器 / 订阅表单校验 /
+        友链申请面板（抓取说明页正文）/ 友链动态抓取（RSS + 骨架屏）
    约定：所有选择器以 DESIGN.md 第二节的 DOM 契约为准，
         主题配置从 window.CLAUDE_CONFIG 读（base.html 内联注入）。
    ========================================================================== */
@@ -1181,6 +1182,444 @@
       applyRaw(box, form);
       wire(box, form);
     });
+  })();
+
+  /* ======================================================================
+     21. 友链申请（links.html）：按钮开合面板 + 抓取说明页正文
+     面板默认收起（CSS grid-template-rows:0fr，不用 display 硬切）；
+     初始内容是无 JS 也能读的内置提示，这里把 data-apply-link 指向页面的
+     #article-container 正文抓进来替换；抓不到则保留内置提示并附一条
+     「打开友链申请说明页」。与文章页一致的容器 id，跨主题抓取同样成立。
+     ====================================================================== */
+  (function initFriendApply() {
+    var toggle = $('#friend-apply-toggle');
+    var panel = $('#friend-apply-panel');
+    if (!toggle || !panel) { return; }
+    var content = $('#friend-apply-content');
+    var label = toggle.querySelector('.link-apply-label');
+    var link = (panel.getAttribute('data-apply-link') || '').trim();
+    var loaded = false;
+
+    function appendPageLink() {
+      if (!link || !content || content.querySelector('.link-apply-page-link')) { return; }
+      var p = document.createElement('p');
+      p.className = 'link-apply-page-link';
+      var a = document.createElement('a');
+      a.className = 'text-link';
+      a.href = link;
+      a.innerHTML = '打开友链申请说明页' + icon('i-external', 'ic-s');
+      p.appendChild(a);
+      content.appendChild(p);
+    }
+
+    function load() {
+      if (loaded || !link || !content) { return; }
+      loaded = true;
+      fetch(link, { credentials: 'same-origin' })
+        .then(function (r) { if (!r.ok) { throw new Error(String(r.status)); } return r.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var article = doc.querySelector('#article-container');
+          if (article && article.innerHTML.trim()) {
+            content.innerHTML = article.innerHTML;
+          } else {
+            appendPageLink();
+          }
+        })
+        .catch(appendPageLink);
+    }
+
+    toggle.addEventListener('click', function () {
+      var open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+      panel.classList.toggle('is-open', !open);
+      if (label) { label.textContent = open ? '友链申请' : '收起'; }
+      if (!open) { load(); }
+    });
+
+    // 预加载：点击时内容通常已就位，不会先展开再跳内容
+    load();
+  })();
+
+  /* ======================================================================
+     22. 友链头像兜底（links.html）：对方站防盗链挡掉头像时，
+     把裂图换成站点名首字，避免圆形占位框里露出裂图图标与 alt 文本。
+     ====================================================================== */
+  (function initLinkAvatars() {
+    function fallback(img) {
+      var box = img.closest('.lc-avatar');
+      if (!box || box.classList.contains('is-fallback')) { return; }
+      var name = (img.getAttribute('alt') || '').trim();
+      if (!name) { return; }
+      box.classList.add('is-fallback');
+      box.textContent = name.charAt(0);
+    }
+    $$('.lc-avatar img').forEach(function (img) {
+      if (img.complete && img.naturalWidth === 0) { fallback(img); return; }
+      img.addEventListener('error', function () { fallback(img); });
+    });
+  })();
+
+  /* ======================================================================
+     23. 友链动态（links.html #friend-feed）
+     模板把 theme_config.claudeFriendFeedRss（每行一个地址）写进 data-rss，首帧已渲染
+     骨架屏（.feed-skeleton，与 .feed-item 同栅格，替换时零跳动）。本节负责：
+       ① 抓取走 liushen 同款主通道 api.rss2json.com：服务端代抓 + 自带 CORS 头，
+         不看访客网络到对方博客的通达度；实测（2026-10-17）12/15 可用，偶发 429
+         限流（退避重试一次）。其后两级兜底：直连（源站放开 CORS 时最快、
+         不占 rss2json 配额）→ allorigins；单个源逐个尝试，超时即换下一个；
+       ② 解析 RSS 2.0 / RDF / Atom / rss2json JSON 四种形态；
+       ③ 按域名匹配同页友链卡的名字与头像（.link-card）：精确 → 去 www →
+         后缀匹配（blog.example.com ↔ example.com，同 liushen 的模糊口径），
+         再回落到 feed 自带的标题与图片，最后显示域名；
+       ④ 边到边渲染：某个源成功立刻并入列表（每源最多 3 条、全局最多 12 条，
+         按时间倒序），骨架屏随第一条数据到达而消失；
+       ⑤ 全部源失败 → 降级为可重试的面板；部分源失败只在状态栏注明数量；
+       ⑥ sessionStorage 缓存 10 分钟，翻回本页直接用缓存，不重新骨架。
+     ====================================================================== */
+  (function initFriendFeed() {
+    var box = $('#friend-feed');
+    if (!box) { return; }
+    var statusEl = $('#friend-feed-status');
+    /* 骨架屏只存在于模板首帧里；先留一份副本，重试时原样插回，不与模板重复维护 */
+    var skeletonNode = box.querySelector('.feed-skeleton');
+    var skeletonHtml = skeletonNode ? skeletonNode.outerHTML : '';
+
+    var raw = box.getAttribute('data-rss') || CFG.friendFeedRss || '';
+    var urls = String(raw).split(/[\n,]/).map(function (s) { return s.trim(); })
+      .filter(function (u) { return /^https?:\/\//i.test(u); });
+    urls = urls.filter(function (u, i) { return urls.indexOf(u) === i; });
+    if (!urls.length) { return; }               // 未配置：模板已渲染说明文字
+    if (!window.fetch || !window.DOMParser) {   // 老浏览器：直接给重试面板
+      renderError('当前浏览器过旧，无法加载朋友动态。');
+      return;
+    }
+
+    var PER_SOURCE = 3;                          // 每个源最多并入几条
+    var MAX_ITEMS = 12;                          // 列表最多展示几条
+    var CACHE_KEY = 'claude-friend-feed';
+    var CACHE_TTL = 10 * 60 * 1000;
+    var DIRECT_TIMEOUT = 6000;
+    var PROXY_TIMEOUT = 10000;
+    var CONCURRENCY = 6;
+    var DEADLINE = 25000;                        // 总闸：到点就用已拿到的数据收尾
+
+    var collected = [];
+    var okCount = 0;
+    var failCount = 0;
+    var settled = false;
+
+    function hostOf(u) {
+      try { return new URL(u).hostname.toLowerCase().replace(/^www\./, ''); } catch (e) { return ''; }
+    }
+    /* 同页友链卡：域名 → {name, avatar}（链接卡渲染在 feed 上方，直接读 DOM） */
+    var friends = {};
+    var friendHosts = [];
+    $$('.link-grid .link-card').forEach(function (card) {
+      var host = hostOf(card.getAttribute('href') || '');
+      if (!host || friends[host]) { return; }
+      var nameEl = card.querySelector('.lc-name');
+      var img = card.querySelector('.lc-avatar img');
+      friends[host] = {
+        name: nameEl ? (nameEl.textContent || '').trim() : '',
+        avatar: img ? (img.getAttribute('src') || '') : ''
+      };
+      friendHosts.push(host);
+    });
+    /* 域名模糊匹配（同 liushen 口径）：先精确/去 www，再后缀匹配
+       （api.myblog.icu ↔ myblog.icu、blog.a.com ↔ a.com）。两个候选 host
+       依次试：feed 自带站点链接优先，RSS 地址兜底。 */
+    function matchFriend(host, altHost) {
+      var hosts = [host, altHost].filter(Boolean);
+      var i, h, noWww, j, fh;
+      for (i = 0; i < hosts.length; i++) {
+        h = hosts[i];
+        noWww = h.replace(/^www\./, '');
+        if (friends[h]) { return friends[h]; }
+        if (friends[noWww]) { return friends[noWww]; }
+      }
+      for (i = 0; i < hosts.length; i++) {
+        noWww = hosts[i].replace(/^www\./, '');
+        for (j = 0; j < friendHosts.length; j++) {
+          fh = friendHosts[j];
+          if (noWww === fh || noWww.slice(-(fh.length + 1)) === '.' + fh) { return friends[fh]; }
+        }
+      }
+      return null;
+    }
+
+    /* ---------- 抓取 ---------- */
+    function fetchText(url, ms) {
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, ms);
+      return fetch(url, { signal: ctrl.signal, redirect: 'follow', credentials: 'omit' })
+        .then(function (r) {
+          if (!r.ok) {
+            var err = new Error('HTTP ' + r.status);
+            err.status = r.status;
+            throw err;
+          }
+          return r.text();
+        })
+        .then(function (text) { clearTimeout(timer); return text; },
+              function (e) { clearTimeout(timer); throw e; });
+    }
+    /* 传输链（liushen 同款主通道 + 两级兜底）：
+       ① rss2json —— 服务端代抓、自带 CORS 头，主通道；429 限退避重试一次
+       ② 直连   —— 源站放开 CORS 时最快，且不占用 rss2json 匿名配额
+       ③ allorigins —— 最后兜底，超时就放弃，不拖整页 */
+    var PROXY_CHAIN = [
+      { build: function (u) { return 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(u); }, json: true },
+      { build: function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); } }
+    ];
+    /* 代理响应可能是 JSON 包装（rss2json / allorigins /get），这里拆回 feed 本体 */
+    function unwrap(text) {
+      var t = (text || '').trim();
+      if (t.charAt(0) !== '{') { return text; }
+      try {
+        var j = JSON.parse(t);
+        if (j && typeof j.contents === 'string') { return j.contents; }  // allorigins /get
+        if (j && j.status === 'ok') { return j; }                        // rss2json
+      } catch (e) {}
+      throw new Error('not feed');
+    }
+    function loadSource(url) {
+      /* 顺序：rss2json → 直连 → allorigins */
+      var attempts = [function () {
+        var go = function () { return fetchText(PROXY_CHAIN[0].build(url), PROXY_TIMEOUT).then(unwrap); };
+        /* rss2json 匿名档限流：429 退避 2s 重试一次，不占用后面兜底的机会 */
+        return go().catch(function (e) {
+          if (e && e.status !== 429) { throw e; }
+          return new Promise(function (res) { setTimeout(res, 2000); }).then(go);
+        });
+      }];
+      attempts.push(function () { return fetchText(url, DIRECT_TIMEOUT); });
+      PROXY_CHAIN.slice(1).forEach(function (p) {
+        attempts.push(function () { return fetchText(p.build(url), PROXY_TIMEOUT).then(unwrap); });
+      });
+      return attempts.reduce(function (chain, attempt) {
+        return chain.catch(attempt);
+      }, Promise.reject()).then(function (payload) {
+        var items = parseAny(payload, url);
+        if (!items.length) { throw new Error('empty feed'); }
+        return items;
+      });
+    }
+
+    /* ---------- 解析：RSS 2.0 / RDF / Atom / rss2json JSON ---------- */
+    function parseAny(payload, sourceUrl) {
+      if (payload && typeof payload === 'object') { return parseJsonFeed(payload, sourceUrl); }
+      return parseXmlFeed(String(payload || ''), sourceUrl);
+    }
+    function parseXmlFeed(xml, sourceUrl) {
+      var doc = new DOMParser().parseFromString(xml, 'text/xml');
+      if (doc.getElementsByTagName('parsererror').length) { return []; }
+      /* 站点自身链接：RSS 取 <channel><link>，Atom 取根 <link>/<id>，
+         用来推导「这个 feed 属于哪个站」，与 RSS 地址互为候选 host */
+      var siteLink = childText(doc.getElementsByTagName('channel')[0], 'link');
+      if (!siteLink) {
+        var fe = doc.getElementsByTagName('feed')[0];
+        if (fe) { siteLink = entryLink(fe) || childText(fe, 'id'); }
+      }
+      var siteHost = hostOf(siteLink);
+      var rssHost = hostOf(sourceUrl);
+      var feedTitle = childText(doc.getElementsByTagName('channel')[0], 'title') ||
+                      childText(doc.getElementsByTagName('feed')[0], 'title');
+      var nodes = doc.getElementsByTagName('item');                  // RSS 2.0 / RDF
+      if (!nodes.length) { nodes = doc.getElementsByTagName('entry'); }  // Atom
+      var out = [];
+      for (var i = 0; i < nodes.length && out.length < 30; i++) {
+        var it = nodes[i];
+        var title = childText(it, 'title');
+        var link = entryLink(it);
+        if (!title || !link) { continue; }
+        var dateRaw = childText(it, 'pubDate') || childText(it, 'date') ||
+                      childText(it, 'published') || childText(it, 'updated');
+        out.push({
+          title: title, link: link,
+          host: siteHost || rssHost, altHost: rssHost,
+          feedTitle: feedTitle, feedImage: '',
+          time: parseTime(dateRaw)
+        });
+      }
+      return out;
+    }
+    function parseJsonFeed(j, sourceUrl) {
+      var feed = j.feed || {};
+      var rssHost = hostOf(sourceUrl);
+      var siteHost = hostOf(feed.link || '') || rssHost;
+      var feedTitle = String(feed.title || '').trim();
+      var feedImage = String(feed.image || '').trim();
+      var list = Array.isArray(j.items) ? j.items : [];
+      var out = [];
+      for (var i = 0; i < list.length && out.length < 30; i++) {
+        var it = list[i] || {};
+        var title = String(it.title || '').trim();
+        var link = String(it.link || it.guid || '').trim();
+        if (!title || !link) { continue; }
+        out.push({
+          title: title, link: link,
+          host: siteHost, altHost: rssHost,
+          feedTitle: feedTitle, feedImage: feedImage,
+          time: parseTime(it.pubDate || '')
+        });
+      }
+      return out;
+    }
+    function childText(parent, tag) {
+      if (!parent) { return ''; }
+      var el = parent.getElementsByTagName(tag)[0];
+      return el ? (el.textContent || '').trim() : '';
+    }
+    function entryLink(it) {
+      var links = it.getElementsByTagName('link');
+      var fallback = '';
+      for (var i = 0; i < links.length; i++) {
+        var href = (links[i].getAttribute('href') || '').trim();
+        var rel = links[i].getAttribute('rel');
+        if (href && (rel === 'alternate' || !rel)) { return href; }   // Atom
+        if (href && !fallback) { fallback = href; }
+        var txt = (links[i].textContent || '').trim();
+        if (txt && /^https?:\/\//.test(txt)) { return txt; }          // RSS
+      }
+      if (fallback) { return fallback; }
+      var guid = it.getElementsByTagName('guid')[0];
+      return guid ? (guid.textContent || '').trim() : '';
+    }
+    function parseTime(raw) {
+      if (!raw) { return 0; }
+      var t = Date.parse(raw);
+      return isNaN(t) ? 0 : t;
+    }
+
+    /* ---------- 渲染 ---------- */
+    function fmtTime(t) {
+      if (!t) { return ''; }
+      var d = new Date(t);
+      var now = new Date();
+      var days = Math.floor((now.getTime() - t) / 86400000);
+      if (days <= 0) { return '今天'; }
+      if (days < 7) { return days + ' 天前'; }
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      var md = pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+      return d.getFullYear() === now.getFullYear() ? md : d.getFullYear() + '-' + md;
+    }
+    function itemHtml(it) {
+      /* 名字/头像回退链（同 liushen 口径）：友链卡 → feed 自带标题/图片 → 域名 */
+      var f = matchFriend(it.host, it.altHost);
+      var name = (f && f.name) ? f.name : (it.feedTitle || it.host || '友链');
+      var avatar = (f && f.avatar) ? f.avatar : (it.feedImage || '');
+      var href = /^https?:\/\//i.test(it.link) ? it.link : '#';
+      var timeHtml = it.time
+        ? '<time class="feed-time" datetime="' + new Date(it.time).toISOString() + '">' + escapeHtml(fmtTime(it.time)) + '</time>'
+        : '<span class="feed-time"></span>';
+      return '<div class="feed-item">' +
+        '<span class="feed-dot"></span>' +
+        '<span class="feed-body">' +
+          '<a class="feed-title" href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' + escapeHtml(it.title) + '</a>' +
+          '<span class="feed-meta">' +
+            (avatar ? '<img class="feed-avatar" src="' + escapeHtml(avatar) + '" alt="" loading="lazy">' : '') +
+            '<span class="feed-src">' + escapeHtml(name) + '</span>' +
+          '</span>' +
+        '</span>' +
+        timeHtml +
+      '</div>';
+    }
+    function paint() {
+      /* 每源取最新 PER_SOURCE 条，再全局按时间倒序取前 MAX_ITEMS 条 */
+      var byHost = {};
+      collected.forEach(function (it) {
+        (byHost[it.host] = byHost[it.host] || []).push(it);
+      });
+      var picked = [];
+      Object.keys(byHost).forEach(function (h) {
+        byHost[h].sort(function (a, b) { return b.time - a.time; });
+        picked = picked.concat(byHost[h].slice(0, PER_SOURCE));
+      });
+      picked.sort(function (a, b) { return b.time - a.time; });
+      box.innerHTML = picked.slice(0, MAX_ITEMS).map(itemHtml).join('');
+    }
+    function setStatus(text) {
+      if (statusEl) { statusEl.textContent = text; }
+    }
+
+    /* ---------- 状态收尾 ---------- */
+    function finalize() {
+      if (settled) { return; }
+      settled = true;
+      if (!collected.length) { renderError(); return; }
+      var shown = box.querySelectorAll('.feed-item').length;
+      var text = '共 ' + shown + ' 条 · ' + okCount + '/' + urls.length + ' 个源';
+      if (failCount) { text += '（' + failCount + ' 个源暂不可用）'; }
+      setStatus(text);
+      try {
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), html: box.innerHTML, status: text }));
+      } catch (e) {}
+    }
+    function renderError(msg) {
+      settled = true;
+      setStatus('加载失败');
+      box.innerHTML =
+        '<div class="feed-error">' +
+          icon('i-rss') +
+          '<div class="feed-error-text"><b>朋友动态加载失败</b>' +
+          '<span>' + escapeHtml(msg || '朋友的博客暂时没有响应，可能是网络波动或对方站点临时不可达，稍后重试即可。') + '</span></div>' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-action="friend-feed-retry">' +
+            icon('i-loader', 'ic-s') + '<span>重试</span>' +
+          '</button>' +
+        '</div>';
+      var btn = box.querySelector('[data-action="friend-feed-retry"]');
+      if (btn) { btn.addEventListener('click', function () { start(true); }); }
+    }
+
+    /* ---------- 调度：并发 6，总闸 DEADLINE ---------- */
+    function withConcurrency(tasks, limit) {
+      var next = 0;
+      function worker() {
+        if (next >= tasks.length) { return Promise.resolve(); }
+        return tasks[next++]().then(worker);   // 任务内部已吞掉失败，这里不会 reject
+      }
+      var workers = [];
+      for (var i = 0; i < Math.min(limit, tasks.length); i++) { workers.push(worker()); }
+      return Promise.all(workers);
+    }
+    function start(force) {
+      if (force) {
+        try { sessionStorage.removeItem(CACHE_KEY); } catch (e) {}
+      } else {
+        try {
+          var cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+          if (cached && cached.ts && Date.now() - cached.ts < CACHE_TTL && cached.html) {
+            box.innerHTML = cached.html;
+            setStatus(cached.status || '');
+            return;
+          }
+        } catch (e) {}
+      }
+      collected = [];
+      okCount = 0;
+      failCount = 0;
+      settled = false;
+      setStatus('正在加载…');
+      if (skeletonHtml) { box.innerHTML = skeletonHtml; }
+      var tasks = urls.map(function (u) {
+        return function () {
+          return loadSource(u).then(function (items) {
+            if (settled) { return; }
+            collected = collected.concat(items);
+            okCount++;
+            paint();
+            if (okCount === 1) { setStatus('正在加载，已收录 ' + collected.length + ' 条…'); }
+          }, function () {
+            if (!settled) { failCount++; }
+          });
+        };
+      });
+      var deadline = new Promise(function (res) { setTimeout(res, DEADLINE); });
+      Promise.race([withConcurrency(tasks, CONCURRENCY), deadline]).then(finalize);
+    }
+
+    start(false);
   })();
 
 })();
