@@ -9,6 +9,162 @@
     <lastBuildDate>Wed, 07 Oct 2026 23:15:42 +0800</lastBuildDate>
     <atom:link href="https://wowtang.top/feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <item>
+      <title>博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做</title>
+      <link>https://wowtang.top/post/Claude-theme-1.0/</link>
+      <guid isPermaLink="true">https://wowtang.top/post/Claude-theme-1.0/</guid>
+      <pubDate>Sat, 17 Oct 2026 23:27:36 +0800</pubDate>
+      <description><![CDATA[<h2 id="heading">絮絮叨叨</h2>
+<p>2026 年 10 月 17 日，这个站点第三次换装。</p>
+<p>第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 <strong>Claude</strong>。</p>
+<p>熟悉我的朋友应该记得，七月那次搬家我写过一篇 <a href="https://wowtang.top/post/ToolRec_trae1/">《「工具推荐」TRAE》</a>，里面吐槽过 liushen 是从 Hexo 移植过来的，适配做得很粗，深色模式配色错乱、封面失效、闪念热力图异常，我挨个翻源码去缝补。这三个月我一直在补：补深色模式、补封面、补热力图，十月初还给它加了邮箱订阅。</p>
+<p>补到后来我发现一件很尴尬的事：<strong>我修的不是 bug，是审美。</strong></p>
+<p>那些问题的根源不是代码写错了，而是这套视觉语言本身——全屏大图 banner、粉蓝渐变侧栏、毛玻璃胶囊顶栏、带投影堆叠的卡片——就不是我想要的样子。它没坏，只是不对。</p>
+<p>于是有了今天这次更换。</p>
+<h2 id="heading-1">一、第一版被我自己否掉了</h2>
+<p>一开始我想得很简单：把 liushen 刷成奶白色，不就“换了套皮”吗。</p>
+<p>真做完一看，不行。骨架还是 liushen 的骨架，分区还是那个分区，只是颜色从蓝变成了奶白——<strong>那叫改配色，不叫新主题</strong>。</p>
+<p>所以这次重做，我先给自己立了两条硬规矩：</p>
+<ol>
+<li><strong>结构与 liushen 对齐</strong>：功能与配置变量名一一对应，不重复造轮子，之前配好的东西不用重新填一遍；</li>
+<li><strong>UI 全量重写</strong>：禁止保留 liushen 的任何一个视觉元素。</li>
+</ol>
+<p>第 2 条执行得比想象的狠。整套旧视觉机制是被<strong>删掉</strong>的，不是改颜色：整页背景图、页头顶图 banner、SVG 波浪、渐变侧栏、毛玻璃顶栏、卡片投影堆叠，连“圆角&quot;”文字颜色“这类开放给用户的自由值都一并去掉了——因为它们会让页面随时跑偏。</p>
+<h2 id="heading-2">二、这套视觉语言，核心不是配色，是节奏</h2>
+<h3 id="heading-3">奶白、珊瑚、衬线</h3>
+<p>三个词就能概括它的长相：<strong>奶白画布（<code>#faf9f5</code>）、珊瑚强调（<code>#cc785c</code>）、衬线大标题</strong>。正文用无衬线，代码用等宽，标题用衬线，各司其职。</p>
+<p>配色是 Anthropic 官网那套语言。但说实话，真正决定”这套设计像不像那么回事“的，不是这三个色值，而是下面两条纪律。</p>
+<h3 id="heading-4">珊瑚是稀缺资源</h3>
+<p>整套设计里，珊瑚色<strong>只允许出现在四个位置</strong>：主要按钮、通栏 CTA 区块的背景、标签徽标、深色面上的链接与装饰线。</p>
+<p>不允许把它铺满版面、不允许用于大段文字、不允许拿来做卡片背景和边框网格。</p>
+<p>原因很朴素：<strong>珊瑚一多就不亮了。</strong> 强调色的力量来自对比，满屏都是强调，等于没有强调。这是这套语言最容易被破坏的一条。</p>
+<h3 id="heading-5">节奏优先于装饰</h3>
+<p>页面由若干个”区段“纵向堆叠，规矩只有一句话：<strong>相邻两个区段，不得使用同一种表面。</strong></p>
+<p>标准的五拍是这样的：</p>
+<pre><code>奶白 → 深色产品卡 → 奶白 → 珊瑚通栏 → 深色页脚
+</code></pre>
+<p>用大白话讲：就像文章的段落需要有起伏，如果从上到下全是同一个底色，读者就失去了”翻页感“，滚多久都像停在同一屏。深色块在这套设计里是<strong>拍点</strong>——它自带产品感，比任何装饰插画都更贴题，所以它只出现在两个地方：首屏右侧的代码卡 / 文章列表的第一篇大卡，以及页脚。</p>
+<p>还有一条：<strong>图用线描，不用摄影。</strong> 封面一律是 SVG 线描几何——珊瑚细线 + 墨色低透明度网格 + 青绿点缀，不引用任何外部位图。好处是任何时候都不会出现”图裂了“或者”图把标题盖住了“。</p>
+<h2 id="heading-6">三、你能看到的具体变化</h2>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>变成什么样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶栏</td>
+<td>通栏三分区（品牌 / 菜单 / 按钮组），菜单落在视口中线上；只放站名，站点描述不再跟首屏重复一遍</td>
+</tr>
+<tr>
+<td>首屏</td>
+<td>左文右深色代码卡，衬线大标题 + 打字机副标题</td>
+</tr>
+<tr>
+<td>文章列表</td>
+<td><strong>四种排布可后台切换</strong>：整齐栅格 / 瀑布流 / 杂志混排 / 紧凑列表</td>
+</tr>
+<tr>
+<td>首页信息区</td>
+<td>原来侧栏的 9 个 widget 重新落位成「信息卡组 + 编辑列表 + 年份条」，功能一个不少</td>
+</tr>
+<tr>
+<td>订阅</td>
+<td>从侧栏小卡改成<strong>珊瑚通栏 CTA</strong></td>
+</tr>
+<tr>
+<td>友链页</td>
+<td>新增「朋友动态」：抓朋友们的 RSS，先看骨架屏再逐条渲染</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>整屏奶白层，不再是弹窗</td>
+</tr>
+<tr>
+<td>图标</td>
+<td>全部换成内联 SVG，去掉 FontAwesome 依赖</td>
+</tr>
+<tr>
+<td>移动端</td>
+<td>文章在上、卡片在下（原来卡片会抢到正文前面）</td>
+</tr>
+</tbody>
+</table>
+<p>四种排布里我最喜欢「杂志混排」：<strong>置顶文章</strong>和<strong>正文超过 1200 字的长文</strong>会自动放大成跨列大卡，其余保持标准卡。卡片大小由文章本身的属性决定，不是随机花样——写长的人自然得到更大的位置，这比”按位置轮换“公平得多。</p>
+<h2 id="-gridea-pro-">四、技术复盘：给同样在折腾 Gridea Pro 的人</h2>
+<p>下面这部分偏硬核，是这次重写真正花时间的地方。如果你也在自己改主题，希望有点用。</p>
+<h3 id="1-">1. 配置项全部加前缀</h3>
+<p>109 个配置项全部改成 <code>claude</code> 开头。原因很实在：<strong>Gridea Pro 的主题配置是共享命名空间的，不同主题之间会互相污染。</strong> 换主题时残留的同名变量会把新主题带偏。</p>
+<p>只有 20 个”内部契约键“保留了短名——它们是模板与 <code>main.js</code> 之间耦合的通道，改了会导致整套交互失效。</p>
+<h3 id="2---">2. 设计令牌单一事实源 + 别名层</h3>
+<p>所有颜色、圆角、间距必须走 CSS 变量，写死色值算违规。变量分两层：</p>
+<pre><code class="language-css">:root{
+  /* 基础层：只在这里出现真实色值 */
+  --canvas:#faf9f5;
+  --primary:#cc785c;
+  --surface-dark:#181715;
+  /* 别名层：主题切换只改这一层 */
+  --bg:var(--canvas);
+  --fg:var(--ink);
+}
+[data-theme=&quot;dark&quot;]{
+  --bg:var(--surface-dark);
+  --fg:var(--on-dark);
+}
+</code></pre>
+<p>组件样式从头到尾<strong>一行都不需要动</strong>。旧主题里有 300 行 <code>[data-theme=&quot;dark&quot;]</code> 的逐元素硬编码覆盖，这套写法下完全不需要——那 300 行本身就是”令牌没建好“的症状。</p>
+<h3 id="3-">3. 对比度是硬指标，不是凭感觉</h3>
+<p>正文与背景的对比度要求 <strong>≥ 4.5:1</strong>（这是 WCAG AA 的及格线，大白话就是”视力不太好的长辈也能看清“）。为了守住这条，改了三处：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>原本</th>
+<th>改后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>珊瑚底配白字</td>
+<td><code>#cc785c</code> → <strong>3.28:1</strong> :cross_mark:</td>
+<td>压暗成 <code>#a9583e</code> → <strong>5.06:1</strong> :check_mark_button:</td>
+</tr>
+<tr>
+<td>深色面上的链接</td>
+<td>压暗色 → <strong>3.54:1</strong> :cross_mark:</td>
+<td>换回原色 <code>#cc785c</code> → <strong>5.47:1</strong> :check_mark_button:</td>
+</tr>
+<tr>
+<td>卡片上的次级文字</td>
+<td><code>--muted</code> → <strong>4.48:1</strong>（边缘）</td>
+<td>新增 <code>--fg-muted-strong</code> → <strong>5.97:1</strong> :check_mark_button:</td>
+</tr>
+</tbody>
+</table>
+<p>有意思的是第二行：<strong>同一个珊瑚色，在浅色面上要压暗，在深色面上反而要用原色。</strong> 这不是审美摇摆，是数学。</p>
+<h3 id="4--display-">4. 动效纪律：不许用 <code>display</code> 硬切</h3>
+<p>下拉菜单、抽屉、搜索面板这类开合，一律用 <code>visibility + opacity + transform</code> 过渡，禁用 <code>display</code>。</p>
+<p>原因是 <code>display</code> 不参与插值，浏览器不会给一个不渲染的元素做动画——关闭时会”啪“地一下消失，没有过渡。</p>
+<p>实测踩到的一个坑值得记下来：下拉菜单<strong>点了没反应、鼠标移开才收起</strong>。根因是鼠标停在触发器上时 <code>:hover</code> 恒成立，光靠增删 <code>.is-open</code> 压不过它。修法是关闭态单独写 <code>.nav-drop.is-closed</code>，并用 <code>.is-closed:hover</code> 提高特异性。</p>
+<p>时长上：下拉 200ms、抽屉 280ms、主题切换 380ms（径向遮罩从点击点扩散）、搜索 260ms，并且全部尊重系统的”减弱动效“设置。</p>
+<h3 id="5-">5. 两个真实的翻车</h3>
+<p><strong>翻车一：模板语法。</strong></p>
+<p>为了修「关于页」的死链，我在 <code>base.html</code> 顶部写了个宏去解析页脚导航。本地用独立 nunjucks 跑，<strong>6 个用例全过、7 个模板 precompile 全过</strong>——结果在 Gridea Pro 里一构建，<strong>全站渲染失败</strong>。</p>
+<p>结论：<strong>独立 nunjucks 验证通过 ≠ Gridea Pro 的真实引擎认可。</strong> 从此任何模板层面的新写法，都必须先在 GP 里实际构建一次才算数。最后这个需求是用最笨也最稳的方式解决的：把 6 个文件里的 <code>/about/</code> 纯文本替换成 <code>/post/about/</code>，零模板语法、零风险。</p>
+<p><strong>翻车二：客户端回写。</strong></p>
+<p>Gridea Pro 客户端开着的时候，会用内存里的旧配置回写站点 <code>config.json</code>，把我刚迁移好的配置冲掉，还混进 7 个 liushen 的死键。</p>
+<p>教训：改配置前先确认客户端状态，改完提醒自己重启。</p>
+<h2 id="heading-7">最后</h2>
+<p>从”改个配色“到”重写一套节奏“，这次折腾的工程量远超我最初的预估。但看到首页从上往下滚时那种奶白 → 深色 → 奶白 → 珊瑚的呼吸感，我觉得值。</p>
+<p>如果你在浏览时发现了什么不对劲的地方——错位、看不清、点了没反应——欢迎直接在评论区/<a href="https://wowtang.top/post/feedback/">「一起来找茬」</a>留言，再或者发邮件到 <a href="mailto:sunrise@wowtang.top">sunrise@wowtang.top</a>。这个站点的每一次变化，基本都是被这些反馈推着往前走的。</p>
+<p>也欢迎<a href="https://wowtang.top/">订阅我的博客</a>，新文章会第一时间发到邮箱。</p>
+]]></description>
+      <category>Gridea Pro</category>
+      <category>技术</category>
+      <category>2026</category>
+    </item>
+    <item>
       <title>「站长信」202609 - 无题</title>
       <link>https://wowtang.top/post/litter_202609/</link>
       <guid isPermaLink="true">https://wowtang.top/post/litter_202609/</guid>

@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto" class="not-loaded">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#faf9f5">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="generator" content="Gridea Pro · Claude Theme">
+  <meta name="generator" content="Gridea Pro 1.3.0-beta.2">
+  <title>博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做 | Sunrise.博客 | Sunrise&#39;s blog</title>
+  <meta name="description" content="絮絮叨叨
+2026 年 10 月 17 日，这个站点第三次换装。
+第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。
+熟悉我的朋友应该记得，七月那次搬家我写过一篇 《「工具推荐」TRAE》，里面吐槽...">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做">
+  <meta property="og:description" content="絮絮叨叨
+2026 年 10 月 17 日，这个站点第三次换装。
+第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。
+熟悉我的朋友应该记得，七月那次搬家我写过一篇 《「工具推荐」TRAE》，里面吐槽...">
+  <meta property="og:image" content="/images/avatar.png">
+  <link rel="icon" href="/images/avatar.png" type="image/x-icon">
+  <link rel="alternate" type="application/atom+xml" title="Sunrise.博客 | Sunrise&#39;s blog" href="/atom.xml">
+
+  
+  
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+  <style>@font-face{font-display:swap !important}</style>
+
+  <link rel="stylesheet" href="/styles/main.css">
+
+  
+  <style id="claude-theme-vars">
+    :root{
+      
+      --primary:#cc785c;
+      /* 浅色面上承载白字的珊瑚面：自动压暗一档，保证 ≥4.5:1 */
+      --primary-active:color-mix(in srgb, #cc785c 78%, #000);
+      --coral-press:color-mix(in srgb, #cc785c 64%, #000);
+      --primary-disabled:color-mix(in srgb, #cc785c 22%, #fff);
+      
+      --accent-teal:#5db8a6;--accent:#5db8a6;
+      --font-body:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Lato, Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-mono:Consolas, Menlo, 'PingFang SC', 'Microsoft YaHei', monospace;
+      
+      --content-max:1150px;
+      --rail-width:300px;
+    }
+  </style>
+  <style id="claude-custom-css">/* 基础样式重置（减少默认差异） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 音频容器样式（整合所有外围样式） */
+[data-audio] {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* 用伪元素生成说明文字（添加目标字体） */
+[data-audio]::before {
+  content: "点击按钮听本文AI播客 边听边看";
+  display: block;
+  margin-bottom: 15px;
+  color: #4A5568;
+  font-size: 16px;
+  font-weight: 500;
+  /* 新增字体设置，优先使用LXGWWenKai-Regular */
+  font-family: 'LXGWWenKai-Regular', sans-serif;
+}
+
+/* 音频播放器核心样式（整合所有交互和显示样式） */
+[data-audio] audio {
+  width: 100%;
+  outline: none;
+  filter: hue-rotate(10deg) saturate(1.1);
+  transition: all 0.3s ease;
+}
+
+/* 悬停效果 */
+[data-audio] audio:hover {
+  filter: hue-rotate(10deg) saturate(1.1) brightness(1.05);
+}
+
+/* 强制音频控件显示（部分浏览器默认隐藏） */
+[data-audio] audio[controls] {
+  display: block;
+}
+#vcomments .vpower {
+    display: none !important;
+}</style>
+
+  
+  <script>
+    (function(){
+      var pref="auto";
+      try{var saved=localStorage.getItem('claude-theme');if(saved)pref=saved;}catch(e){}
+      var resolved=pref;
+      if(pref==='auto'){var h=new Date().getHours();resolved=(h>=6&&h<18)?'light':'dark';}
+      document.documentElement.setAttribute('data-theme',resolved);
+      document.documentElement.dataset.themePref=pref;
+    })();
+  </script>
+
+  
+  
+<meta name="description" content="絮絮叨叨 2026 年 10 月 17 日，这个站点第三次换装。 第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。 熟悉我的朋友应该记得，七月那次搬家我写过一篇 [《「工具推荐」TRAE》](https://wowtang.top/post/ToolRec&amp;hellip;">
+<link rel="canonical" href="https://wowtang.top/post/Claude-theme-1.0/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做","url":"https://wowtang.top/post/Claude-theme-1.0/","description":"絮絮叨叨 2026 年 10 月 17 日，这个站点第三次换装。 第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。 熟悉我的朋友应该记得，七月那次搬家我写过一篇 [《「工具推荐」TRAE》](https://wowtang.top/post/ToolRec\u0026hellip;","datePublished":"2026-10-17T23:27:36+08:00","dateModified":"2026-10-17T23:36:58+08:00","author":{"@type":"Person","name":"Sunrise.博客 | Sunrise's blog"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"Sunrise.博客 | Sunrise's blog"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://wowtang.top","name":"Sunrise.博客 | Sunrise's blog","position":1},{"@type":"ListItem","item":"https://wowtang.top/post/Claude-theme-1.0/","name":"博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做","position":2}]}</script>
+<meta property="og:title" content="博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做">
+<meta property="og:description" content="絮絮叨叨 2026 年 10 月 17 日，这个站点第三次换装。 第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。 熟悉我的朋友应该记得，七月那次搬家我写过一篇 [《「工具推荐」TRAE》](https://wowtang.top/post/ToolRec&amp;hellip;">
+<meta property="og:url" content="https://wowtang.top/post/Claude-theme-1.0/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Sunrise.博客 | Sunrise's blog">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://wowtang.top/post/Claude-theme-1.0/">
+<meta name="twitter:title" content="博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做">
+<meta name="twitter:description" content="絮絮叨叨 2026 年 10 月 17 日，这个站点第三次换装。 第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。 熟悉我的朋友应该记得，七月那次搬家我写过一篇 [《「工具推荐」TRAE》](https://wowtang.top/post/ToolRec&amp;hellip;">
+<meta name="twitter:image" content="/images/avatar.png">
+<meta name="follow.it-verification-code" content="DnyWrLTaFLCJYRqe0Z2U"/>
+<meta name="baidu-site-verification" content="codeva-PcjvRZLHIM" />
+<meta name="msvalidate.01" content="BF2F71B3281F4C479FAA8E20275BE6F1" />
+<meta name="google-site-verification" content="V5VQilBzQxrLpECbYBTO-JAhUwpVUaXljbbRBFjyvbw" />
+<link rel="prefetch" as="image" href="https://www.blogsclub.org/badge/wowtang.top">
+</head>
+<body class="page-post">
+
+  
+  <div class="progress-bar" id="reading-progress" aria-hidden="true"><span></span></div>
+  
+
+  <div id="theme-cover" aria-hidden="true"></div>
+
+  
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
+  <defs><g id="_s" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></g></defs>
+
+  <symbol id="i-spike" viewBox="0 0 24 24"><path d="M12 2.5 13.7 9l6.5 1.7-6.5 1.7L12 19l-1.7-6.6L3.8 10.7 10.3 9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18.6 16.4l.8 2.6 2.6.8-2.6.8-.8 2.6-.8-2.6-2.6-.8 2.6-.8z" fill="currentColor" opacity=".75"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5z"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h3.6l2 2.4H19a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M11.6 3H20v8.4L11 20.4 3.6 13z"/><circle cx="16.2" cy="7.8" r="1.4"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9z"/><path d="M18.5 3.5l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z" fill="currentColor" opacity=".7" stroke="none"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1-1"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9.5 12 15.5 18 9.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1.4-4.2 4-6.2 7-6.2s5.6 2 7 6.2"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.6 7l8.4 6 8.4-6"/></symbol>
+  <symbol id="i-rss" viewBox="0 0 24 24"><path d="M5 19h.01"/><path d="M5 12.5A6.5 6.5 0 0 1 11.5 19"/><path d="M5 6.5A12.5 12.5 0 0 1 17.5 19"/><circle cx="5.6" cy="18.4" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path d="M9.2 20.4v-2.6c-3 .5-3.8-1.3-3.8-1.3-.5-1.3-1.2-1.7-1.2-1.7-1-.7 0-.7 0-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.4-.3-5-1.2-5-5.4 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 3 1.1a10.2 10.2 0 0 1 5.4 0c2.1-1.4 3-1.1 3-1.1.6 1.5.2 2.6.1 2.9.7.8 1.1 1.8 1.1 3 0 4.2-2.6 5.1-5 5.4.4.4.8 1.1.8 2.2v3.5"/></symbol>
+  <symbol id="i-telegram" viewBox="0 0 24 24"><path d="M20.5 4.2 3.9 10.6c-.9.4-.9.9-.1 1.1l4.1 1.3 1.6 4.8c.2.5.1.7.6.7.4 0 .6-.2.8-.4l2-1.9 4.1 3c.8.4 1.3.2 1.5-.7l2.7-12.5c.2-1-.4-1.5-1.2-1.2z"/><path d="M8.4 12.9 17 7.2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 15 22l-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-2 5.4-5.4 2 2-5.4z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5S14.4 18.1 12 20.5c-2.4-2.4-3.6-5.3-3.6-8.5S9.6 5.9 12 3.5z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3.5V6M16 3.5V6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12.5" y="8" width="3" height="9"/><rect x="18" y="14" width="3" height="3"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l6 4V5L7 9H5a1 1 0 0 0-1 1z"/><path d="M17 9.5a3.5 3.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M6 15H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M20 12.5c0 3.9-3.6 7-8 7a9.4 9.4 0 0 1-2.6-.4L5 21l1.2-3.3A6.6 6.6 0 0 1 4 12.5c0-3.9 3.6-7 8-7s8 3.1 8 7z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M4 6h3.5l9 12H20M20 6h-3.5l-2.2 2.9M4 18h3.5l2.2-2.9"/><path d="M17 3.5 20 6l-3 2.5M17 15.5 20 18l-3 2.5"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.4-7.5-9.4A4.1 4.1 0 0 1 12 7.8a4.1 4.1 0 0 1 7.5 2.8c0 5-7.5 9.4-7.5 9.4z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8h.01"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5l1 2.2 2.4-.5 1.4 2 -.8 2.3 1.9 1.6-.9 2.3 1.6 1.8-1.4 2-2.3-.3-1.2 2-2.2-.6-1.9 1.4-1.9-1.4-2.2.6-1.2-2-2.3.3-1.4-2 1.6-1.8-.9-2.3 1.9-1.6-.8-2.3 1.4-2 2.4.5z"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-weibo" viewBox="0 0 24 24"><ellipse cx="10" cy="14.5" rx="7" ry="5"/><path d="M16.5 4.5c2.6 0 4.5 2 4.3 4.6"/><path d="M16.2 8c1.3 0 2.2 1 2.1 2.3"/></symbol>
+  <symbol id="i-bilibili" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="3"/><path d="M7 3.5l2.5 3M17 3.5l-2.5 3"/><path d="M9 11v3M15 11v3"/></symbol>
+  <symbol id="i-zhihu" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M7.685 4.078c-.271.73-.5 1.434-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58.104 58.104 0 01-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.223 9.223 0 01-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607-.523.468-1.58.82-2.64.516 2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753-.594 1.095-1.603 1.122-1.907 1.155.906-1.821 1.416-3.6 1.591-4.064.425-1.124 1.671-1.125 1.671-1.125zM13.078 6h6.377v11.33h-2.573l-2.184 1.373-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937 1.455-.938h1.456v-8.86z"/></symbol>
+  <symbol id="i-qq" viewBox="0 0 24 24"><path d="M12 3.5c3.6 0 6 2.6 6 6.4 0 1.6.6 2.3 1.2 3.4.5.9-.3 1.7-1.3 1.4-.7 1.5-2.5 2.8-5.9 2.8s-5.2-1.3-5.9-2.8c-1 .3-1.8-.5-1.3-1.4.6-1.1 1.2-1.8 1.2-3.4 0-3.8 2.4-6.4 6-6.4z"/><circle cx="9.6" cy="10.4" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="10.4" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 3s4.5 3.6 4.5 8.2A4.5 4.5 0 0 1 12 21a4.5 4.5 0 0 1-4.5-9.8C7.5 8.6 12 3 12 3z"/><path d="M12 17.5c1.2 0 2-.8 2-1.9 0-1.4-2-2.9-2-2.9s-2 1.5-2 2.9c0 1.1.8 1.9 2 1.9z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.7 5.6 6.1.8-4.4 4.3 1.1 6.1L12 17.4l-5.5 2.9 1.1-6.1-4.4-4.3 6.1-.8z"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14.5 7.5 16.5 9.5"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9.5 6C6.5 7.5 5 9.8 5 13v5h5v-5H7.6c0-2 .7-3.4 2.1-4.4z"/><path d="M19 6c-3 1.5-4.5 3.8-4.5 7v5h5v-5h-2.4c0-2 .7-3.4 2.1-4.4z"/></symbol>
+  <symbol id="i-loader" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" opacity=".25"/><path d="M20.5 12a8.5 8.5 0 0 0-8.5-8.5"/></symbol>
+</svg>
+
+
+  
+  
+  
+  
+  
+
+  
+<div class="overlay" id="mobile-sidebar">
+  <div class="scrim" data-action="close-mobile-menu"></div>
+  <aside class="drawer-panel" aria-label="站点菜单">
+    <div class="drawer-head">
+      <a class="brand" href="/">
+        <svg class="spike" aria-hidden="true"><use href="#i-spike"/></svg>
+        <span class="brand-word">Sunrise.博客 | Sunrise&#39;s blog</span>
+      </a>
+      <button type="button" class="icon-btn" data-action="close-mobile-menu" aria-label="关闭菜单">
+        <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+
+    <nav class="drawer-list" aria-label="导航">
+      
+        
+        <a href="/"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>首页</span></a>
+        
+        <a href="/post"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客</span></a>
+        
+        <a href="/memos"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>闪念</span></a>
+        
+        <a href="/archives"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>归档</span></a>
+        
+        <a href="/tags"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>标签</span></a>
+        
+        <a href="/links"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>友链</span></a>
+        
+        <a href="/post/about"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>关于</span></a>
+        
+        <a href="/post/bigthings"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客日志</span></a>
+        
+        <a href="/post/feedback"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>一起来找茬</span></a>
+        
+      
+    </nav>
+
+    <div class="drawer-foot">
+      
+      <div class="row-wrap">
+        
+        <a class="btn btn-ghost btn-sm" href="https://www.travellings.cn/go.html" rel="nofollow noopener" target="_blank">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-compass"/></svg>开往</a>
+        
+        
+        <a class="btn btn-ghost btn-sm" href="https://foreverblog.cn/go.html" rel="nofollow noopener" target="_blank">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-globe"/></svg>十年之约</a>
+        
+        
+        <button type="button" class="btn btn-ghost btn-sm" data-action="random-post">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-shuffle"/></svg>随机文章</button>
+        
+      </div>
+      
+      <div class="socials">
+<a class="icon-btn" href="mailto:sunrise@wowtang.top" title="邮箱" aria-label="邮箱" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></a>
+
+
+
+<a class="icon-btn" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" aria-label="哔哩哔哩" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-bilibili"/></svg></a>
+<a class="icon-btn" href="https://www.zhihu.com/people/wei-681618" title="知乎" aria-label="知乎" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-zhihu"/></svg></a>
+<a class="icon-btn" href="/feed.xml" title="RSS" aria-label="RSS" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg></a>
+
+</div>
+    </div>
+  </aside>
+</div>
+
+  
+
+
+
+
+
+
+<nav id="nav" class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/" title="Sunrise.博客 | Sunrise&#39;s blog">
+      
+      <svg class="spike" aria-hidden="true"><use href="#i-spike"/></svg>
+      
+      
+      <span class="brand-word">Sunrise.博客 | Sunrise&#39;s blog</span>
+    </a>
+
+    <div class="nav-menu nav-shape-icon" id="menus">
+      <div class="menus_items">
+        
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/" data-tip="首页">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>首页</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post" data-tip="博客">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/memos" data-tip="闪念">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>闪念</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/archives" data-tip="归档">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>归档</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/tags" data-tip="标签">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>标签</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/links" data-tip="友链">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>友链</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post/about" data-tip="关于">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>关于</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post/bigthings" data-tip="博客日志">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>博客日志</span>
+            </a>
+          </div>
+          
+          <div class="menus_item">
+            <a class="nav-link" href="/post/feedback" data-tip="一起来找茬">
+              <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>一起来找茬</span>
+            </a>
+          </div>
+          
+        
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      
+      <a class="icon-btn nav-extra" href="https://www.travellings.cn/go.html" title="友链接力 · 随机开往" aria-label="友链接力"
+         rel="nofollow noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-compass"/></svg></a>
+      
+      
+      <a class="icon-btn nav-extra" href="https://foreverblog.cn/go.html" title="十年之约" aria-label="十年之约"
+         rel="nofollow noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></a>
+      
+      
+      <button type="button" class="icon-btn" data-action="random-post" title="随机文章" aria-label="随机文章">
+        <svg class="ic" aria-hidden="true"><use href="#i-shuffle"/></svg></button>
+      
+      
+      <button type="button" class="icon-btn" data-action="open-search" title="搜索（Ctrl/⌘ + K）" aria-label="搜索">
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></button>
+      
+      <button type="button" class="icon-btn" data-action="toggle-theme" title="切换配色（跟随时间 / 浅色 / 深色）" aria-label="切换配色">
+        <svg class="ic" id="theme-icon" aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <button type="button" class="icon-btn nav-burger" data-action="toggle-mobile-menu" title="展开菜单" aria-label="展开菜单">
+        <svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+
+  
+  
+  
+
+
+
+
+
+<div id="page-header" hidden></div>
+
+
+
+
+
+  <div class="body-shell">
+    <main class="layout page-main">
+      <div class="content">
+        
+<article class="post-detail" id="post" data-link="/post/Claude-theme-1.0/">
+
+  
+  <section class="band band-flush-bottom">
+    <div class="wrap">
+      <div class="article-head">
+        
+        <div class="tags-row tags-row-center">
+          
+          <a class="pill" href="/tag/gridea-pro/">#Gridea Pro</a>
+          
+          <a class="pill" href="/tag/ji-shu/">#技术</a>
+          
+          <a class="pill" href="/tag/2026/">#2026</a>
+          
+        </div>
+        
+        <h1 class="display-lg">博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做</h1>
+        <div class="byline">
+          <span class="who">
+            
+            <span class="avatar-xs"><img src="/images/avatar.png" alt="" loading="lazy" class="avatar-img"></span>
+            
+            Sunrise.
+          </span>
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-cal"/></svg><time datetime="2026-10-17T23:27:36+08:00">Oct 17, 2026</time></span>
+          
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-clock"/></svg>10 min read 分钟</span>
+          <span><svg class="ic ic-s" aria-hidden="true"><use href="#i-chart"/></svg>3804 字</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  
+  
+  
+
+  
+  <div class="wrap mt-xxl">
+    <div class="post-layout">
+      <div class="post-main">
+        <div class="article-container post-content prose" id="article-container">
+          <h2 id="heading">絮絮叨叨</h2>
+<p>2026 年 10 月 17 日，这个站点第三次换装。</p>
+<p>第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 <strong>Claude</strong>。</p>
+<p>熟悉我的朋友应该记得，七月那次搬家我写过一篇 <a href="https://wowtang.top/post/ToolRec_trae1/">《「工具推荐」TRAE》</a>，里面吐槽过 liushen 是从 Hexo 移植过来的，适配做得很粗，深色模式配色错乱、封面失效、闪念热力图异常，我挨个翻源码去缝补。这三个月我一直在补：补深色模式、补封面、补热力图，十月初还给它加了邮箱订阅。</p>
+<p>补到后来我发现一件很尴尬的事：<strong>我修的不是 bug，是审美。</strong></p>
+<p>那些问题的根源不是代码写错了，而是这套视觉语言本身——全屏大图 banner、粉蓝渐变侧栏、毛玻璃胶囊顶栏、带投影堆叠的卡片——就不是我想要的样子。它没坏，只是不对。</p>
+<p>于是有了今天这次更换。</p>
+<h2 id="heading-1">一、第一版被我自己否掉了</h2>
+<p>一开始我想得很简单：把 liushen 刷成奶白色，不就“换了套皮”吗。</p>
+<p>真做完一看，不行。骨架还是 liushen 的骨架，分区还是那个分区，只是颜色从蓝变成了奶白——<strong>那叫改配色，不叫新主题</strong>。</p>
+<p>所以这次重做，我先给自己立了两条硬规矩：</p>
+<ol>
+<li><strong>结构与 liushen 对齐</strong>：功能与配置变量名一一对应，不重复造轮子，之前配好的东西不用重新填一遍；</li>
+<li><strong>UI 全量重写</strong>：禁止保留 liushen 的任何一个视觉元素。</li>
+</ol>
+<p>第 2 条执行得比想象的狠。整套旧视觉机制是被<strong>删掉</strong>的，不是改颜色：整页背景图、页头顶图 banner、SVG 波浪、渐变侧栏、毛玻璃顶栏、卡片投影堆叠，连“圆角&quot;”文字颜色“这类开放给用户的自由值都一并去掉了——因为它们会让页面随时跑偏。</p>
+<h2 id="heading-2">二、这套视觉语言，核心不是配色，是节奏</h2>
+<h3 id="heading-3">奶白、珊瑚、衬线</h3>
+<p>三个词就能概括它的长相：<strong>奶白画布（<code>#faf9f5</code>）、珊瑚强调（<code>#cc785c</code>）、衬线大标题</strong>。正文用无衬线，代码用等宽，标题用衬线，各司其职。</p>
+<p>配色是 Anthropic 官网那套语言。但说实话，真正决定”这套设计像不像那么回事“的，不是这三个色值，而是下面两条纪律。</p>
+<h3 id="heading-4">珊瑚是稀缺资源</h3>
+<p>整套设计里，珊瑚色<strong>只允许出现在四个位置</strong>：主要按钮、通栏 CTA 区块的背景、标签徽标、深色面上的链接与装饰线。</p>
+<p>不允许把它铺满版面、不允许用于大段文字、不允许拿来做卡片背景和边框网格。</p>
+<p>原因很朴素：<strong>珊瑚一多就不亮了。</strong> 强调色的力量来自对比，满屏都是强调，等于没有强调。这是这套语言最容易被破坏的一条。</p>
+<h3 id="heading-5">节奏优先于装饰</h3>
+<p>页面由若干个”区段“纵向堆叠，规矩只有一句话：<strong>相邻两个区段，不得使用同一种表面。</strong></p>
+<p>标准的五拍是这样的：</p>
+<pre><code>奶白 → 深色产品卡 → 奶白 → 珊瑚通栏 → 深色页脚
+</code></pre>
+<p>用大白话讲：就像文章的段落需要有起伏，如果从上到下全是同一个底色，读者就失去了”翻页感“，滚多久都像停在同一屏。深色块在这套设计里是<strong>拍点</strong>——它自带产品感，比任何装饰插画都更贴题，所以它只出现在两个地方：首屏右侧的代码卡 / 文章列表的第一篇大卡，以及页脚。</p>
+<p>还有一条：<strong>图用线描，不用摄影。</strong> 封面一律是 SVG 线描几何——珊瑚细线 + 墨色低透明度网格 + 青绿点缀，不引用任何外部位图。好处是任何时候都不会出现”图裂了“或者”图把标题盖住了“。</p>
+<h2 id="heading-6">三、你能看到的具体变化</h2>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>变成什么样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶栏</td>
+<td>通栏三分区（品牌 / 菜单 / 按钮组），菜单落在视口中线上；只放站名，站点描述不再跟首屏重复一遍</td>
+</tr>
+<tr>
+<td>首屏</td>
+<td>左文右深色代码卡，衬线大标题 + 打字机副标题</td>
+</tr>
+<tr>
+<td>文章列表</td>
+<td><strong>四种排布可后台切换</strong>：整齐栅格 / 瀑布流 / 杂志混排 / 紧凑列表</td>
+</tr>
+<tr>
+<td>首页信息区</td>
+<td>原来侧栏的 9 个 widget 重新落位成「信息卡组 + 编辑列表 + 年份条」，功能一个不少</td>
+</tr>
+<tr>
+<td>订阅</td>
+<td>从侧栏小卡改成<strong>珊瑚通栏 CTA</strong></td>
+</tr>
+<tr>
+<td>友链页</td>
+<td>新增「朋友动态」：抓朋友们的 RSS，先看骨架屏再逐条渲染</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>整屏奶白层，不再是弹窗</td>
+</tr>
+<tr>
+<td>图标</td>
+<td>全部换成内联 SVG，去掉 FontAwesome 依赖</td>
+</tr>
+<tr>
+<td>移动端</td>
+<td>文章在上、卡片在下（原来卡片会抢到正文前面）</td>
+</tr>
+</tbody>
+</table>
+<p>四种排布里我最喜欢「杂志混排」：<strong>置顶文章</strong>和<strong>正文超过 1200 字的长文</strong>会自动放大成跨列大卡，其余保持标准卡。卡片大小由文章本身的属性决定，不是随机花样——写长的人自然得到更大的位置，这比”按位置轮换“公平得多。</p>
+<h2 id="-gridea-pro-">四、技术复盘：给同样在折腾 Gridea Pro 的人</h2>
+<p>下面这部分偏硬核，是这次重写真正花时间的地方。如果你也在自己改主题，希望有点用。</p>
+<h3 id="1-">1. 配置项全部加前缀</h3>
+<p>109 个配置项全部改成 <code>claude</code> 开头。原因很实在：<strong>Gridea Pro 的主题配置是共享命名空间的，不同主题之间会互相污染。</strong> 换主题时残留的同名变量会把新主题带偏。</p>
+<p>只有 20 个”内部契约键“保留了短名——它们是模板与 <code>main.js</code> 之间耦合的通道，改了会导致整套交互失效。</p>
+<h3 id="2---">2. 设计令牌单一事实源 + 别名层</h3>
+<p>所有颜色、圆角、间距必须走 CSS 变量，写死色值算违规。变量分两层：</p>
+<pre><code class="language-css">:root{
+  /* 基础层：只在这里出现真实色值 */
+  --canvas:#faf9f5;
+  --primary:#cc785c;
+  --surface-dark:#181715;
+  /* 别名层：主题切换只改这一层 */
+  --bg:var(--canvas);
+  --fg:var(--ink);
+}
+[data-theme=&quot;dark&quot;]{
+  --bg:var(--surface-dark);
+  --fg:var(--on-dark);
+}
+</code></pre>
+<p>组件样式从头到尾<strong>一行都不需要动</strong>。旧主题里有 300 行 <code>[data-theme=&quot;dark&quot;]</code> 的逐元素硬编码覆盖，这套写法下完全不需要——那 300 行本身就是”令牌没建好“的症状。</p>
+<h3 id="3-">3. 对比度是硬指标，不是凭感觉</h3>
+<p>正文与背景的对比度要求 <strong>≥ 4.5:1</strong>（这是 WCAG AA 的及格线，大白话就是”视力不太好的长辈也能看清“）。为了守住这条，改了三处：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>原本</th>
+<th>改后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>珊瑚底配白字</td>
+<td><code>#cc785c</code> → <strong>3.28:1</strong> :cross_mark:</td>
+<td>压暗成 <code>#a9583e</code> → <strong>5.06:1</strong> :check_mark_button:</td>
+</tr>
+<tr>
+<td>深色面上的链接</td>
+<td>压暗色 → <strong>3.54:1</strong> :cross_mark:</td>
+<td>换回原色 <code>#cc785c</code> → <strong>5.47:1</strong> :check_mark_button:</td>
+</tr>
+<tr>
+<td>卡片上的次级文字</td>
+<td><code>--muted</code> → <strong>4.48:1</strong>（边缘）</td>
+<td>新增 <code>--fg-muted-strong</code> → <strong>5.97:1</strong> :check_mark_button:</td>
+</tr>
+</tbody>
+</table>
+<p>有意思的是第二行：<strong>同一个珊瑚色，在浅色面上要压暗，在深色面上反而要用原色。</strong> 这不是审美摇摆，是数学。</p>
+<h3 id="4--display-">4. 动效纪律：不许用 <code>display</code> 硬切</h3>
+<p>下拉菜单、抽屉、搜索面板这类开合，一律用 <code>visibility + opacity + transform</code> 过渡，禁用 <code>display</code>。</p>
+<p>原因是 <code>display</code> 不参与插值，浏览器不会给一个不渲染的元素做动画——关闭时会”啪“地一下消失，没有过渡。</p>
+<p>实测踩到的一个坑值得记下来：下拉菜单<strong>点了没反应、鼠标移开才收起</strong>。根因是鼠标停在触发器上时 <code>:hover</code> 恒成立，光靠增删 <code>.is-open</code> 压不过它。修法是关闭态单独写 <code>.nav-drop.is-closed</code>，并用 <code>.is-closed:hover</code> 提高特异性。</p>
+<p>时长上：下拉 200ms、抽屉 280ms、主题切换 380ms（径向遮罩从点击点扩散）、搜索 260ms，并且全部尊重系统的”减弱动效“设置。</p>
+<h3 id="5-">5. 两个真实的翻车</h3>
+<p><strong>翻车一：模板语法。</strong></p>
+<p>为了修「关于页」的死链，我在 <code>base.html</code> 顶部写了个宏去解析页脚导航。本地用独立 nunjucks 跑，<strong>6 个用例全过、7 个模板 precompile 全过</strong>——结果在 Gridea Pro 里一构建，<strong>全站渲染失败</strong>。</p>
+<p>结论：<strong>独立 nunjucks 验证通过 ≠ Gridea Pro 的真实引擎认可。</strong> 从此任何模板层面的新写法，都必须先在 GP 里实际构建一次才算数。最后这个需求是用最笨也最稳的方式解决的：把 6 个文件里的 <code>/about/</code> 纯文本替换成 <code>/post/about/</code>，零模板语法、零风险。</p>
+<p><strong>翻车二：客户端回写。</strong></p>
+<p>Gridea Pro 客户端开着的时候，会用内存里的旧配置回写站点 <code>config.json</code>，把我刚迁移好的配置冲掉，还混进 7 个 liushen 的死键。</p>
+<p>教训：改配置前先确认客户端状态，改完提醒自己重启。</p>
+<h2 id="heading-7">最后</h2>
+<p>从”改个配色“到”重写一套节奏“，这次折腾的工程量远超我最初的预估。但看到首页从上往下滚时那种奶白 → 深色 → 奶白 → 珊瑚的呼吸感，我觉得值。</p>
+<p>如果你在浏览时发现了什么不对劲的地方——错位、看不清、点了没反应——欢迎直接在评论区/<a href="https://wowtang.top/post/feedback/">「一起来找茬」</a>留言，再或者发邮件到 <a href="mailto:sunrise@wowtang.top">sunrise@wowtang.top</a>。这个站点的每一次变化，基本都是被这些反馈推着往前走的。</p>
+<p>也欢迎<a href="https://wowtang.top/">订阅我的博客</a>，新文章会第一时间发到邮箱。</p>
+
+        </div>
+
+        
+        
+        <div class="panel mt-xxl">
+          <div class="panel-head">
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-info"/></svg>
+            <span class="eyebrow">版权与引用</span>
+          </div>
+          <ul class="meta-list">
+            <li><span>本文标题</span><b>博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做</b></li>
+            <li><span>文章作者</span><b>Sunrise.</b></li>
+            <li><span>发布时间</span><b>Oct 17, 2026</b></li>
+            
+            
+            <li><span>本文链接</span><b><a href="https://wowtang.top/post/Claude-theme-1.0/">https://wowtang.top/post/Claude-theme-1.0/</a></b></li>
+            
+            <li><span>版权声明</span><b>本博客所有文章除特别声明外，均默认采用<a href="https://wowtang.top/post/SScopyright" target="_blank" rel="noopener noreferrer">「SS版权声明」</a> 与 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">「CC BY-NC-SA 4.0」</a>许可协议</b></li>
+          </ul>
+        </div>
+        
+
+        
+        <div class="tags-row">
+          
+          <a class="pill" href="/tag/gridea-pro/">#Gridea Pro</a>
+          
+          <a class="pill" href="/tag/ji-shu/">#技术</a>
+          
+          <a class="pill" href="/tag/2026/">#2026</a>
+          
+        </div>
+        
+
+        
+<nav class="post-nav" id="post-nav" data-current="/post/Claude-theme-1.0/" aria-label="相邻文章">
+  <a class="post-nav-item prev" href="#" data-role="prev" hidden>
+    <span class="dir"><svg class="ic ic-s" aria-hidden="true"><use href="#i-left"/></svg>上一篇</span>
+    <span class="tt">—</span>
+  </a>
+  <a class="post-nav-item next" href="#" data-role="next" hidden>
+    <span class="dir">下一篇<svg class="ic ic-s" aria-hidden="true"><use href="#i-right"/></svg></span>
+    <span class="tt">—</span>
+  </a>
+</nav>
+
+
+        <div class="related" id="related-posts" hidden>
+          <h2 class="display-sm">相关推荐</h2>
+          <div class="related-list" id="related-posts-list"></div>
+        </div>
+
+        
+<section class="comments" id="comments">
+  <h3 class="title-md title-row">
+    <svg class="ic" aria-hidden="true"><use href="#i-comment"/></svg>评论
+  </h3>
+  
+
+<div class="comment-box" data-comment-platform="twikoo">
+  <style>
+    .tk-login-title{position:relative;visibility:hidden;white-space:nowrap}
+    .tk-login-title::after{content:"Sunrise.博客 | Sunrise&#39;s blog 评论管理";position:absolute;left:0;top:0;visibility:visible;white-space:nowrap}
+    .tk-panel-title > div{position:relative;visibility:hidden;white-space:nowrap}
+    .tk-panel-title > div::after{content:"Sunrise.博客 | Sunrise&#39;s blog 评论管理面板";position:absolute;left:0;top:0;visibility:visible;white-space:nowrap}
+  </style>
+  <div id="tcomment"></div>
+  <script>
+  (function () {
+    function initTwikoo() {
+      if (!window.twikoo) { return; }
+      window.twikoo.init({ envId: 'https://twikoo.vercel.wowtang.top/', el: '#tcomment', lang: 'zh-CN', path: window.location.pathname });
+    }
+    if (window.twikoo) { initTwikoo(); return; }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdmirror.com/npm/twikoo@1/dist/twikoo.all.min.js';
+    script.async = true;
+    script.onload = initTwikoo;
+    document.body.appendChild(script);
+  })();
+  </script>
+</div>
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+</section>
+
+      </div>
+
+      
+
+
+<aside class="rail" id="rail-widgets" aria-label="文章侧栏">
+  
+    
+    <div data-widget="author" data-order="1">
+
+
+
+
+<section class="panel" data-widget="author" data-order="1" data-widget-name="author">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-user"/></svg>
+    <span class="eyebrow">作者</span>
+  </div>
+  <div class="author-id">
+    <span class="avatar" aria-hidden="true">
+      
+      <img src="/images/avatar.png" alt="Sunrise." class="avatar-img">
+      
+    </span>
+    <div>
+      <div class="author-name">Sunrise.</div>
+      <p class="body-sm mt-xxs">心境自成天地，地狱可化作桃源，天堂也能沦为苦海。</p>
+    </div>
+  </div>
+  <div class="socials">
+<a class="icon-btn" href="mailto:sunrise@wowtang.top" title="邮箱" aria-label="邮箱" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></a>
+
+
+
+<a class="icon-btn" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" aria-label="哔哩哔哩" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-bilibili"/></svg></a>
+<a class="icon-btn" href="https://www.zhihu.com/people/wei-681618" title="知乎" aria-label="知乎" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-zhihu"/></svg></a>
+<a class="icon-btn" href="/feed.xml" title="RSS" aria-label="RSS" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg></a>
+
+</div>
+  <div class="row-between">
+    <a class="btn btn-ghost btn-sm" href="/post/about/">关于我<svg class="ic ic-s" aria-hidden="true"><use href="#i-right"/></svg></a>
+    <p class="caption">已运行 <b id="card-info-runtime" data-since="2024-11-29">—</b> 天</p>
+  </div>
+</section>
+</div>
+  
+  
+  
+    
+    <div data-widget="announcement" data-order="3">
+
+
+<section class="panel" data-widget="announcement" data-order="3" data-widget-name="announcement">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-megaphone"/></svg>
+    <span class="eyebrow">公告</span>
+  </div>
+  <div class="serif-quote">每日一言：<span id="daily_sentence">每日哲思加载中……</span></div>
+</section>
+</div>
+  
+  
+    
+    <div data-widget="recent" data-order="4">
+
+
+
+
+
+  
+  
+
+
+<section class="panel" data-widget="recent" data-order="4" data-widget-name="recent">
+  
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-book"/></svg>
+    <span class="eyebrow">最新文章</span>
+  </div>
+  
+  <ul class="rank-list">
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        
+        <li>
+          <a href="/post/Claude-theme-1.0/" title="博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做">
+            <span class="no">01</span>
+            <span class="t">博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做</span>
+          </a>
+        </li>
+        
+      
+        
+        
+        <li>
+          <a href="/post/litter_202609/" title="「站长信」202609 - 无题">
+            <span class="no">02</span>
+            <span class="t">「站长信」202609 - 无题</span>
+          </a>
+        </li>
+        
+      
+        
+        
+        <li>
+          <a href="/post/kai-shi-shang-gao-yi-liaoting-geng-yi-duan-shi-jiange-wei-hu-lian-zhan-chang-wu-xia-lian/" title="开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏">
+            <span class="no">03</span>
+            <span class="t">开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏</span>
+          </a>
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="body-sm list-empty" aria-hidden="true">暂无文章</li>
+  </ul>
+</section>
+
+</div>
+  
+  
+  
+    
+    <div data-widget="tags" data-order="6">
+
+
+
+<section class="panel" data-widget="tags" data-order="6" data-widget-name="tags">
+  
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-tag"/></svg>
+    <span class="eyebrow">标签</span>
+  </div>
+  
+  <div class="tag-cloud">
+    
+      
+        
+        
+        <a class="pill" href="/tag/gridea/" title="Gridea (1)" data-count="1">Gridea</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/gridea-pro/" title="Gridea Pro (2)" data-count="2">Gridea Pro</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/qian-tan/" title="浅谈 (6)" data-count="6">浅谈</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/xin-wen/" title="新闻 (3)" data-count="3">新闻</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/2024/" title="2024 (1)" data-count="1">2024</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/say-goodbye/" title="Say Goodbye (2)" data-count="2">Say Goodbye</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/xian-yan-sui-yu/" title="闲言碎语 (1)" data-count="1">闲言碎语</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/2026/" title="2026 (2)" data-count="2">2026</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/2025/" title="2025 (1)" data-count="1">2025</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/gong-ju-tui-jian/" title="工具推荐 (1)" data-count="1">工具推荐</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/ji-shu/" title="技术 (3)" data-count="3">技术</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/zhong-kao/" title="中考 (1)" data-count="1">中考</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/twikoo/" title="Twikoo (1)" data-count="1">Twikoo</a>
+        
+      
+        
+        
+        <a class="pill" href="/tag/html/" title="html (1)" data-count="1">html</a>
+        
+      
+    
+  </div>
+</section>
+</div>
+  
+  
+  
+    
+    <div data-widget="webinfo" data-order="8">
+
+
+<section class="panel" data-widget="webinfo" data-order="8" data-widget-name="webinfo">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-chart"/></svg>
+    <span class="eyebrow">网站统计</span>
+  </div>
+  <div class="stat-grid">
+    <div>
+      <b data-site-post-count>14
+</b>
+      <span>文章</span>
+    </div>
+    <div>
+      <b>14</b>
+      <span>标签</span>
+    </div>
+    <div>
+      <b id="webinfo-runtime" data-since="2024-11-29">—</b>
+      <span>运行天数</span>
+    </div>
+    <div>
+      <b id="webinfo-busuanzi-pv">—</b>
+      <span>总访问</span>
+    </div>
+  </div>
+  <p class="caption">建站于 2024-11-29 · 访客 <b id="webinfo-busuanzi">—</b></p>
+</section>
+</div>
+  
+  
+    
+    <div data-widget="toc" data-order="2">
+      <section class="panel" id="toc-aside" data-widget="toc" data-order="2" data-widget-name="toc" hidden>
+        <div class="panel-head">
+          <svg class="ic ic-s" aria-hidden="true"><use href="#i-list"/></svg>
+          <span class="eyebrow">目录</span>
+          <button class="icon-btn icon-btn-sm" type="button" data-action="toggle-toc" aria-expanded="true" aria-controls="rightside-toc" aria-label="折叠目录">
+            <svg class="ic ic-s" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </button>
+        </div>
+        <nav class="toc" id="rightside-toc" aria-label="文章目录">
+          <ol class="toc-list" id="toc-list"></ol>
+        </nav>
+      </section>
+    </div>
+  
+  
+    
+    <div data-widget="subscribe" data-order="3.5">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="panel" data-widget="subscribe" data-order="3.5" data-widget-name="subscribe">
+  <div class="panel-head">
+    <svg class="ic ic-s" aria-hidden="true"><use href="#i-mail"/></svg>
+    <span class="eyebrow">订阅</span>
+  </div>
+  <p class="body-sm">输入邮箱，第一时间收到最新文章</p>
+  <div class="subscribe-form-box"
+       data-sub-field="email"
+       data-sub-placeholder="你的邮箱地址"
+       data-sub-button="订阅"
+       data-sub-button-icon="fa-solid fa-paper-plane"
+       data-sub-tip-empty="请输入邮箱地址"
+       data-sub-tip-format="邮箱格式不正确，请检查后重试">
+    <template class="sub-raw"><form action="https://api.follow.it/subscription-form/M09MTTRWV2hGR0tIczVTdi81a0VHOVZKZ1BqTjkzZCtQT3pkdkRwVVVnSUZEV3pkUWQ1RXlCM003cXYrL3l0MDZCaVFhbVl3anNabnlDOXpJQnlpTDA3dGNCSFAwNEpTT3M2MU1UZ1BqNFZYbHZjRjFrbFR4b1l0V3FQQ2hiZy98QXhGNHhZdVZwOTVrVFNPdHQwZlZQVWEyRFFjMVRSUTBzcTVqdFlXUHFHND0=/8" method="post"></template>
+    <form class="sub-form" id="sub-form" novalidate>
+      <span class="field">
+        <label class="eyebrow eyebrow-label" for="sub-email">邮箱地址</label>
+        <input class="sub-input" id="sub-email" type="email" name="email" placeholder="你的邮箱地址" autocomplete="email">
+      </span>
+      <button class="sub-btn" type="submit">订阅<svg class="ic ic-s" aria-hidden="true"><use href="#i-right"/></svg></button>
+      <p class="sub-tip" id="sub-tip" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+  
+  <p class="caption">不会向任何人分享你的邮箱地址。</p>
+  
+</section>
+
+
+</div>
+  
+</aside>
+<script>
+(function () {
+  var rail = document.getElementById('rail-widgets');
+  if (!rail) { return; }
+  var parts = String("").split(','), sticky = [];
+  for (var k = 0; k < parts.length; k++) {
+    var n = parts[k].replace(/\s/g, '');
+    if (n) { sticky.push(n); }
+  }
+  var slots = [], i;
+  for (i = 0; i < rail.children.length; i++) {
+    if (rail.children[i].hasAttribute('data-widget')) { slots.push(rail.children[i]); }
+  }
+  slots.sort(function (a, b) {
+    return (parseInt(a.getAttribute('data-order'), 10) || 999) - (parseInt(b.getAttribute('data-order'), 10) || 999);
+  });
+  var frag = document.createDocumentFragment();
+  for (i = 0; i < slots.length; i++) {
+    var name = slots[i].getAttribute('data-widget');
+    var card = slots[i].firstElementChild || slots[i];
+    card.setAttribute('data-widget', name);
+    card.setAttribute('data-widget-name', name);
+    card.setAttribute('data-order', slots[i].getAttribute('data-order'));
+    if (sticky.indexOf(name) !== -1) { card.classList.add('is-sticky'); }
+    frag.appendChild(card);
+  }
+  rail.innerHTML = '';
+  rail.appendChild(frag);
+  var toc = document.getElementById('toc-aside');
+  if (toc && sticky.indexOf('toc') !== -1) { toc.classList.add('is-sticky'); }
+})();
+</script>
+
+    </div>
+  </div>
+</article>
+
+      </div>
+      
+    </main>
+  </div>
+
+  
+<footer class="footer">
+  <div class="footer-wrap">
+    <div class="footer-top">
+      <svg class="spike" aria-hidden="true"><use href="#i-spike"/></svg>
+      <span class="serif-md">Sunrise.博客 | Sunrise&#39;s blog</span>
+    </div>
+
+    <div class="footer-cols">
+      <div class="footer-about">
+        <p>一个来自浙江的神秘人……</p>
+        <div class="socials">
+<a class="icon-btn" href="mailto:sunrise@wowtang.top" title="邮箱" aria-label="邮箱" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></a>
+
+
+
+<a class="icon-btn" href="https://space.bilibili.com/1371604939" title="哔哩哔哩" aria-label="哔哩哔哩" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-bilibili"/></svg></a>
+<a class="icon-btn" href="https://www.zhihu.com/people/wei-681618" title="知乎" aria-label="知乎" rel="noopener" target="_blank"><svg class="ic" aria-hidden="true"><use href="#i-zhihu"/></svg></a>
+<a class="icon-btn" href="/feed.xml" title="RSS" aria-label="RSS" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg></a>
+
+</div>
+      </div>
+
+      <div>
+        <h4>导航</h4>
+        <ul id="footer-nav">
+          <li><a href="/">首页</a></li>
+          <li><a href="/archives/">归档</a></li>
+          <li><a href="/tags/">标签</a></li>
+          <li><a href="/categories/">分类</a></li>
+          <li><a href="/links/">友链</a></li>
+          <li><a href="/post/about/">关于</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>更多</h4>
+        <ul>
+          <li><a href="/memos/">闪念</a></li>
+          <li><a href="/atom.xml">RSS 订阅</a></li>
+          <li><a href="https://www.travellings.cn/go.html" rel="nofollow noopener" target="_blank">友链接力</a></li>
+          <li><a href="https://foreverblog.cn/go.html" rel="nofollow noopener" target="_blank">十年之约</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>站点</h4>
+        
+        <div class="footer-extra">今日总访问量 <span id="busuanzi_today_pv">加载中...</span> 次 |
+	    今日总访客数 <span id="busuanzi_today_uv">加载中...</span> 人<br>
+            本站总访问量 <span id="busuanzi_site_pv">加载中...</span> 次 | 
+	    本站总访客数 <span id="busuanzi_site_uv">加载中...</span> 人 | 
+	    本页总阅读量 <span id="busuanzi_page_pv">加载中...</span> 次<br>
+本站在风雨中安全运行：<span id="sitetime" style="color:#096"></span>
+<script>
+function siteTime() {
+    // 获取当前时间
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth();
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+
+    // 网站上线时间，注意月份参数从0开始（0代表1月）
+    var launchDate = new Date(2024, 11, 29, 14, 15, 00);
+
+    // 时间差值（毫秒数）
+    var diff = today - launchDate;
+
+    // 以下分别计算年、天、小时、分钟、秒
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+
+    // 考虑闰年情况来计算准确的年数
+    var diffYears = Math.floor(diff / years);
+    var remainingDiff = diff - diffYears * years;
+    var leapYearsCount = Math.floor(diffYears / 4) - Math.floor(diffYears / 100) + Math.floor(diffYears / 400);
+    remainingDiff += leapYearsCount * days;
+
+    var diffDays = Math.floor(remainingDiff / days);
+    remainingDiff -= diffDays * days;
+
+    var diffHours = Math.floor(remainingDiff / hours);
+    remainingDiff -= diffHours * hours;
+
+    var diffMinutes = Math.floor(remainingDiff / minutes);
+    remainingDiff -= diffMinutes * minutes;
+
+    var diffSeconds = Math.floor(remainingDiff / seconds);
+
+    document.getElementById("sitetime").innerHTML = "" + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+}
+// 使用setInterval实现每秒更新时间显示，达到实时变动效果
+setInterval(siteTime, 1000);
+siteTime();
+</script></div>
+        
+        <p class="footer-icp"><a href="https://icp.gov.moe/?keyword=20255556" target="_blank">萌ICP备20255556号</a></p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2024 - {YEAR} · Sunrise.</p>
+      <div class="meta">
+        <span>Built with Gridea Pro</span>
+        <span>Theme Claude</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  
+<div class="dock" id="rightside" aria-label="快捷操作">
+  
+  <button type="button" class="icon-btn" data-action="open-search" title="搜索" aria-label="搜索">
+    <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+  </button>
+  
+  
+  <button type="button" class="icon-btn" data-action="random-post" title="随机文章" aria-label="随机文章">
+    <svg class="ic" aria-hidden="true"><use href="#i-shuffle"/></svg>
+  </button>
+  
+  <button type="button" class="icon-btn" data-action="toggle-theme" title="切换配色" aria-label="切换配色">
+    <svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg>
+  </button>
+  
+  <button type="button" class="icon-btn scroll-to-top" data-action="scroll-to-top" title="回到顶部" aria-label="回到顶部" hidden>
+    <svg class="ic" aria-hidden="true"><use href="#i-up"/></svg>
+  </button>
+  
+</div>
+
+  
+    
+<div class="overlay" id="search-modal" hidden>
+  <div class="scrim" data-action="close-search"></div>
+  <div class="search-sheet" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-inner">
+      <div class="search-field">
+        <svg class="ic ic-l" aria-hidden="true"><use href="#i-search"/></svg>
+        <input class="search-input" id="search-input" type="search" placeholder="搜索文章、标签、正文…"
+               autocomplete="off" spellcheck="false" aria-label="搜索关键词">
+        <button class="icon-btn" type="button" data-action="close-search" aria-label="关闭搜索">
+          <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <ul class="search-results" id="search-results"></ul>
+      <div class="search-empty" id="search-empty" hidden>没有找到匹配的内容，换个关键词试试</div>
+      <p class="search-hint" id="search-tip">
+        <span>输入关键词开始搜索</span>
+        <span><kbd>/</kbd> 唤起 · <kbd>Esc</kbd> 关闭 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 打开</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+    
+<script id="search-index-data" type="application/json">
+{
+  "posts": [
+    {
+      "title": "SS版权声明｜SS Copyright Statement",
+      "link": "/post/SScopyright/",
+      "date": "Oct 07, 2026",
+      "tags": [],
+      "excerpt": "中文版（Chinese Version）\n\nSS 版权声明（以下称“本声明”）\n版本号：v2.0 ｜ 发布日期：2026 年 10 月 7 日 ｜ 生效日期：自发布之日起\n制定主体：Sunrise.（本站运营者、著作权人）\n适用站点：Sunrise.博客（https://wowtang.top）及其镜像站点、订阅输出（RSS/Atom）与全部衍生分发渠道\n联系方式：sunrise@wowta...",
+      "hidden": true
+    },{
+      "title": "Sunrise's blog 友链互换",
+      "link": "/post/link_sq/",
+      "date": "Oct 07, 2026",
+      "tags": [],
+      "excerpt": "提交申请前，请申请方先行完成下列准备工作：\n\n已在贵站友链页面添加本站链接；\n已完整阅读下方《Sunrise\u0026rsquo;s blog 互链须知》全文。\n\n本站唯一官方申请渠道为友链工单系统：https://wowtang.top/link_user/，支持一站式的申请提交、进度查询与信息修改。\n本站信息\n- name: Sunrise.博客 | Sunrise's blog（建议从中英文选...",
+      "hidden": true
+    },{
+      "title": "🎯一起来“找茬”",
+      "link": "/post/feedback/",
+      "date": "Aug 22, 2026",
+      "tags": [],
+      "excerpt": "欢迎浏览本站的同时化身质检员！如果你发现网站存在页面bug、样式错位、文字笔误、交互不顺、体验别扭，或是有可以优化的小细节，都欢迎在评论区指出。\n大到布局错乱，小到一个错别字，任何想法都可以分享出来，帮助 Sunrise\u0026rsquo;s blog 一点点打磨得更好。\n",
+      "hidden": true
+    },{
+      "title": "赞助列表",
+      "link": "/post/thanks/",
+      "date": "Nov 29, 2024",
+      "tags": [],
+      "excerpt": "\n\n\n姓名\n日期\n渠道\n金额\n\n\n\n\n**凡\n2025-3-8\n爱发电\n6.66\n\n\n**泽\n2025-6-11\n支付宝\n8.88\n\n\n**禾\n2026-1-10\n微信\n5.00\n\n\n**晚\n2026-5-16\n支付宝\n3.66\n\n\n**彬\n2026-7-11\nQQ\n5.55\n\n\n下一个会是你吗？\n-\n-\n-\n\n\n\n",
+      "hidden": true
+    },{
+      "title": "关于",
+      "link": "/post/about/",
+      "date": "Nov 29, 2024",
+      "tags": [],
+      "excerpt": "\n欢迎来到我的小站呀，很高兴遇见你！🤝\n\n🏠 关于本站\n一个来自浙江中学生的个人博客小站……\n👨‍💻 博主是谁\nSunrise.\n⛹ 兴趣爱好\n……刷抖音算嘛😁\n📬 联系我呀\nQQ：2468841720\nWeChat：Sunrise6218\nE-mail：sunrise@wowtang.top\n💰 投喂我呀\n⚡️爱发电投喂\n🔵支付宝跳转（手机访问网页可用）\n收款图片依次为：微信、支付宝、QQ...",
+      "hidden": true
+    },{
+      "title": "Sunrise's blog 日志",
+      "link": "/post/bigthings/",
+      "date": "Nov 29, 2024",
+      "tags": [],
+      "excerpt": "2026\n10月\n\n2026-10-17 :fire:博客更换全新视觉主题「Claude」（自编主题：结构与 liushen 对齐、UI 全量重写，奶白画布 / 珊瑚强调 / 衬线大标题）。\n2026-10-07 「SS版权声明」与「友链互换条款」发布正式 PDF 定稿 v2.0（中英双语），全站文章默认采用该许可协议。\n2026-10-05 顶栏菜单升级为三档形态（完整文字 / 仅首字 /...",
+      "hidden": true
+    },{
+      "title": "小工具（Sunrise.开发）",
+      "link": "/post/tools/",
+      "date": "Jan 01, 0001",
+      "tags": [],
+      "excerpt": "计算器\n",
+      "hidden": true
+    },{
+      "title": "博客换上自编主题「Claude」：一次从「改配色」到「重写节奏」的重做",
+      "link": "/post/Claude-theme-1.0/",
+      "date": "Oct 17, 2026",
+      "tags": ["Gridea Pro","技术","2026"],
+      "excerpt": "絮絮叨叨\n2026 年 10 月 17 日，这个站点第三次换装。\n第一次是 2024 年 12 月上线时的 Next 主题，第二次是今年 7 月随框架一起换成的 liushen，今天这次，换成了一套我自己写的主题——我叫它 Claude。\n熟悉我的朋友应该记得，七月那次搬家我写过一篇 《「工具推荐」TRAE》，里面吐槽过 liushen 是从 Hexo 移植过来的，适配做得很粗，深色模式配色...",
+      "hidden": false
+    },{
+      "title": "「站长信」202609 - 无题",
+      "link": "/post/litter_202609/",
+      "date": "Sep 27, 2026",
+      "tags": [],
+      "excerpt": "一封来自 Sunrise 的站长信\n见字如面。距离我上一次认认真真打理这个站点，已经过去一阵子了。趁着周末把想说的话写成一封信寄给你 —— 汇报一下这个夏天站点换的新模样，也有一件关于友链的小事想拜托各位。\n先请个假，但请别把我从友链里删掉\n嗨，我是 Sunrise。今年九月，我正式成了一名高一学生。课业的强度比我预想的要重得多，能留给博客的整块时间被切得很碎，所以接下来一段时间，这个站点大...",
+      "hidden": false
+    },{
+      "title": "开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏",
+      "link": "/post/kai-shi-shang-gao-yi-liaoting-geng-yi-duan-shi-jiange-wei-hu-lian-zhan-chang-wu-xia-lian/",
+      "date": "Aug 27, 2026",
+      "tags": [],
+      "excerpt": "开始上高一了，比较忙，停更一段时间，各位互链站长勿下链！！！🙏\n",
+      "hidden": false
+    },{
+      "title": "「浅谈」时代峰峻造星乱象：低龄逐利之下，追星早已失了底线",
+      "link": "/post/sdfj/",
+      "date": "Aug 20, 2026",
+      "tags": ["浅谈"],
+      "excerpt": "引言\n\n养成系追星的初衷，本是温柔陪伴、见证少年成长、汲取正向力量。但回看如今时代峰峻的饭圈生态，只剩下无休止的疯狂、越界与戾气。低龄化造星、未成年暧昧化玩梗、线下暴力冲突、无脑跟风对立，种种乱象层层叠加。我们不得不质问：资本无底线收割少年，粉丝无边界放纵狂热，到底是谁毁掉了追星本该有的纯粹？\n\n一、极致低龄造星：到底还要把年龄压到多低？\n时代峰峻主打的养成系，早已从“少年逐梦”变成了“幼龄...",
+      "hidden": false
+    },{
+      "title": "Twikoo 评论管理后台 魔改版 · 开源版1.0 重磅发布",
+      "link": "/post/Twikoo-comment-management-1.0/",
+      "date": "Aug 12, 2026",
+      "tags": ["Twikoo","技术","html"],
+      "excerpt": "Twikoo 评论管理后台 · 开源版\n一个开箱即用的 Twikoo 评论系统管理面板，原版UI较简陋，我们提供美观、响应式的后台界面，支持评论审核、配置管理、数据导入导出、深色主题等特性。无需额外安装，仅需一个 HTML 文件即可部署。\nGithub仓库：https://github.com/wowtang/Twikoo-comment-management\n\n:book: 项目简介\n本项...",
+      "hidden": false
+    },{
+      "title": "图片宫格布局测试",
+      "link": "/post/image-grid-test/",
+      "date": "Aug 11, 2026",
+      "tags": [],
+      "excerpt": "图片宫格布局测试\n这篇文章用于测试图片宫格功能。\n四宫格示例（2x2）\n\n\n\n\n\n\n\n九宫格示例（3x3）\n\n\n\n\n\n\n\n\n\n\n\n\n\n混合布局示例（上3下2）\n\n\n\n\n\n\n\n\n单张大图示例\n\n\n\n普通图片（不受影响）\n这是一段普通的文字，下面是一张不受宫格控制的图片：\n\n图片之后的文字。\n保持原始比例示例（使用 ~ 标记）\n在图片 alt 属性中添加 ~ 符号，该图片和同行所有图片都将保持原...",
+      "hidden": true
+    },{
+      "title": "「工具推荐」TRAE：字节跳动自研AI原生IDE编程软件（非广告）",
+      "link": "/post/ToolRec_trae1/",
+      "date": "Jul 21, 2026",
+      "tags": ["工具推荐","Gridea","Gridea Pro","技术"],
+      "excerpt": "絮絮叨叨\n这个中考完的暑假，终于有时间来da\u0026rsquo;li（搭理、打理、……）我的博客网站。\n这个网站除了每年的“定时闹钟”「Good bye！YYYY」外，似乎已经“荒废”很久了，我一直以来的博客梦早已被学业、人际死死压在底下。如果不是雨云与西数多次发来域名续费提醒，我的域名早就过期失效，整个站点也会彻底从互联网里消失。\n前两天静下心打理博客时才恍然发现，我一直使用的原版Gridea框...",
+      "hidden": false
+    },{
+      "title": "「闲言碎语」202607-中考后的胡思乱想",
+      "link": "/post/talking_202607/",
+      "date": "Jul 19, 2026",
+      "tags": ["闲言碎语","2026","中考"],
+      "excerpt": "\n中考出分那天，我正躺在医院病房里，看着手机屏幕，我不知如何面对出分短信。\n\n曾经的一模、二模、很长一段时间里，我稳居班级前列，大大小小的考试稳居上游，我自己也早早规划好了高一的学习节奏、选课方向，甚至畅想过重点班里浓厚的学习氛围。我把那所理想高中当成了必然的归宿，以为一路稳步往前走，就不会有意外。\n可这次中考，我狠狠摔了一跤。发挥失常，各科分数都远低于日常模拟水准，特别是理科，排名断崖式下...",
+      "hidden": false
+    },{
+      "title": "浅谈：一些关于今年华语辩论世界杯的看法",
+      "link": "/post/2026CDWC_talk1/",
+      "date": "Jul 19, 2026",
+      "tags": ["浅谈"],
+      "excerpt": "引言\n\n看了今年的2026CDWC，心生一些想法，和大家谈谈\n纯业外人士个人看法，如意见不同，敬请谅解！（求放过）\n\n高校锐评\n1. 清北\n最典型“正确但无聊”。全程套理论、堆框架、堆学术名词，四平八稳不敢冒险。打青年情绪题完全脱离普通人生活，高高在上、悬浮感极强。优点稳，缺点毫无灵气、毫无共情、毫无记忆点，赢比赛靠资历分，不靠观点赢人。\n2. 人大\n模板化最严重的学校。任何辩题最后都强行扯...",
+      "hidden": false
+    },{
+      "title": "Good bye！2025",
+      "link": "/post/goodbye2025/",
+      "date": "Jan 01, 2026",
+      "tags": ["2025","Say Goodbye"],
+      "excerpt": "\n岁序更替，华章日新；凡是过往，皆为序章。愿今年所有的遗憾，都是明年惊喜的铺垫。2026，愿生活温暖顺遂，所求皆如愿，所行化坦途。\n\n",
+      "hidden": false
+    },{
+      "title": "浅谈：抖音博主张大大事件背后的舆论与艺人形象崩塌",
+      "link": "/post/zhangdada/",
+      "date": "Jan 27, 2025",
+      "tags": ["浅谈"],
+      "excerpt": "引言\n\n在信息传播光速化的当下，网红与明星的生活和工作细节被公众以放大镜审视。博主张大大，曾是抖音平台上极具话题性与流量的人物。他凭借着独特甚至略显夸张的直播风格，以及频繁制造出圈话题的能力，迅速积攒起庞大的粉丝基础，成为备受瞩目的网络红人。直播间里，他凭借与粉丝互动时的幽默风趣，或是对热点事件的犀利点评，吸引着大量观众驻足。然而，2024年一系列负面事件的爆发，如同一场突如其来的风暴，将他...",
+      "hidden": false
+    },{
+      "title": "Good bye！2024",
+      "link": "/post/goodbye2024/",
+      "date": "Jan 01, 2025",
+      "tags": ["2024","Say Goodbye"],
+      "excerpt": "\n启一年复始，待四序更新。愿新岁，心怀暖阳踏坦途，目遇皆良辰。旧梦常温，新愿将成，与时光同酌，和岁月言欢，共赴下一场山川湖海。\n\n",
+      "hidden": false
+    },{
+      "title": "浅谈：为什么一张视频截图就能成为造谣的源头？",
+      "link": "/post/dyunamtzy/",
+      "date": "Dec 31, 2024",
+      "tags": ["浅谈","新闻"],
+      "excerpt": "引言\n\n当今时代，信息洪流滚滚而来，网络好似一个奇幻万花筒。指尖轻点间，一张视频截图便能闯入视野。谁能料到，它竟会成为谣言的“导火索”。就如一位摩托车博主，在日常骑行视频里截取女孩画面，配上暧昧误导性文案“网恋一年了，几百公里过来见你，没想到你竟然能装下一个我”，公众好奇心瞬间被点燃，谣言迅速扩散。此事背后成因复杂，且看我们深入探究，为何小小截图有这般扰乱舆论、颠覆真相之力。\n\n\r\n“截图谣...",
+      "hidden": false
+    },{
+      "title": "浅谈：“3月10日邯郸初中生杀同学案”——令人痛心的悲剧与深刻反思",
+      "link": "/post/handanczsr/",
+      "date": "Dec 30, 2024",
+      "tags": ["浅谈","新闻"],
+      "excerpt": "引言\n\n2024年3月10日，河北邯郸肥乡区发生了一起令人痛心疾首的初中生杀同学案，这一事件在社会上引起了轩然大波，引发了人们对未成年人犯罪问题的广泛关注和深刻反思。\n\n\r\n案件详情\n13岁的张某某、李某与同班同学王某某因金钱方面的矛盾，关系逐渐紧张。张某某竟心生恶念，提议杀害王某某后平分其钱财，二人多次共谋，并由张某某选定废弃蔬菜大棚为作案地点，提前携带铁锹挖坑准备掩埋。当日下午，张某某以...",
+      "hidden": false
+    },{
+      "title": "浅谈：博主“影子不会说谎”及其团队“自导自演”事件",
+      "link": "/post/yingzi/",
+      "date": "Dec 29, 2024",
+      "tags": ["浅谈","新闻"],
+      "excerpt": "前言\n\n在当今自媒体蓬勃发展的浪潮下，博主“影子不会说谎”曾在网络世界掀起不小的波澜。截至 2024 年 12 月 9 日，其抖音账号积聚了 503.2 万粉丝，作品获赞量高达 3521.8 万，这般耀眼的数据见证了其曾经的辉煌。他主打揭秘生活骗局、曝光不良现象，以看似真实、接地气的视频风格赢得了众多观众的信赖，一度被大家奉为正义的代言人。\n\n\r\n往事\n回首往昔，2024 年 9 月 23 ...",
+      "hidden": false
+    }
+  ]
+}
+</script>
+
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script id="claude-config-data" type="application/json">
+{
+  "domain": "https://wowtang.top",
+  "siteName": "Sunrise.博客 | Sunrise's blog",
+  "defaultTheme": "auto",
+  "tocEnable": true,
+  "codeCopy": true,
+  "readingProgress": true,
+  "scrollToTop": true,
+  "heatmapEnable": true,
+  "randomPostEnable": true,
+  "linkOutEnable": true,
+  "linkOutWhitelist": "wowtang.top\nhttps://qr.alipay.com/fkx13264k09iixl5xpovf9b\nhttps://ifdian.net/order/create?user_id=78b6cdfac6aa11ef9cb952540025c377",
+  "subtitleSpeed": 60,
+  "subtitleList": "\"To be, or not to be: that is the question.\" —— William Shakespeare\n生存还是毁灭，这是一个值得考虑的问题。—— 威廉·莎士比亚\n\"Not all those who wander are lost.\" —— J.R.R. Tolkien\n并非所有四处漂泊的人都迷失了前路。—— J.R.R.托尔金\n\"Two roads diverged in a wood, and I took the one less traveled by, and that has made all the difference.\" —— Robert Frost\n林间两条小路分岔，我选择了行人稀少的那一条，它彻底改变了我的人生。—— 罗伯特·弗罗斯特\n\"Only a life lived for others is a life worthwhile.\" —— Albert Einstein\n唯有为他人奔赴的人生，才拥有真正的意义。—— 阿尔伯特·爱因斯坦\n\"This above all: to thine own self be true.\" —— William Shakespeare\n最重要的一件事，永远忠于本心。—— 威廉·莎士比亚\n\"Life is 10% what happens to you and 90% how you react to it.\" —— Charles R. Swindoll\n人生一成是遭遇的际遇，九成是自己看待世事的态度。—— 查尔斯·斯温多尔\n\"It matters not what someone is born, but what they grow to be.\" —— J.K. Rowling\n出身无法定义一个人，成长后的模样才是答案。—— J.K.罗琳\n\"The mind is its own place, and in itself can make a heaven of hell, a hell of heaven.\" —— John Milton\n心境自成天地，地狱可化作桃源，天堂也能沦为苦海。—— 约翰·弥尔顿\n\"I have not failed. I've just found 10,000 ways that won't work.\" —— Thomas Edison\n我从未失败，只是找到了一万种行不通的办法。—— 托马斯·爱迪生\n\"Believe you can and you're halfway there.\" —— Theodore Roosevelt\n坚信自己可以做到，你就已经走完了一半路程。—— 西奥多·罗斯福\n\"Do not go where the path may lead, go instead where there is no path and leave a trail.\" —— Ralph Waldo Emerson\n别沿着现成道路前行，去往无人踏足之处，亲手开辟属于自己的轨迹。—— 拉尔夫·沃尔多·爱默生\n\"Success is not final, failure is not fatal: it is the courage to continue that counts.\" —— Winston Churchill\n成功并非终点，失败也不足以致命，拥有坚持下去的勇气才最为可贵。—— 温斯顿·丘吉尔\n\"You miss 100 percent of the shots you don’t take.\" —— Wayne Gretzky\n所有不敢出手的机会，注定会百分之百错过。—— 韦恩·格雷茨基\n\"Education is the most powerful weapon which you can use to change the world.\" —— Nelson Mandela\n教育是改变世界最强大的武器。—— 纳尔逊·曼德拉\n\"Be the change that you wish to see in the world.\" —— Mahatma Gandhi\n若期待世界有所改变，就先让自己成为那份改变。—— 圣雄甘地\n\"Keep your face always toward the sunshine—and shadows will fall behind you.\" —— Walt Whitman\n始终面朝阳光，阴影自然会落在身后。—— 沃尔特·惠特曼\n\"The future belongs to those who believe in the beauty of their dreams.\" —— Eleanor Roosevelt\n未来永远属于坚信自己梦想美好的人。—— 埃莉诺·罗斯福\n\"Storms make trees take deeper roots.\" —— Dolly Parton\n狂风暴雨，会让树木扎下更深的根基。—— 多莉·帕顿\n\"Great things never came from comfort zones.\" —— Neil Strauss\n所有了不起的成就，都不会诞生在舒适区里。—— 尼尔·施特劳斯\n\"Time you enjoy wasting is not wasted time.\" —— Bertrand Russell\n心甘情愿消磨的时光，从来不算虚度。—— 伯特兰·罗素",
+  "navMenuJson": "[]",
+  "navIconShow": true,
+  "navMenuShape": "icon",
+  "navMenuIcons": "# 每行一条：匹配, 图标。分隔符可用 , ， | = 或 Tab；图标可只写 fa-bug 这样的短名\n/post/bigthings, fa-solid fa-timeline\n/post/feedback, fa-solid fa-bug",
+  "footerNavList": "首页#%#/\n归档#%#/archives/\n标签#%#/tags/\n分类#%#/categories/\n友链#%#/links/\n关于#%#/post/about/\n博客日志#%#/post/bigthings\nSunrise's blog 评论管理#%#/comment-management/\nSunrise's blog 友联工单系统#%#/link_user/\n一起来找茬#%#/post/feedback/",
+  "friendFeedEnable": true,
+  "friendFeedRss": "https://wowtang.top/feed.xml\nhttps://twbk.cn/feed\nhttps://blog.002.hk/rss/feed.xml\nhttps://hehuang.site/index.xml\nhttps://xice.cx/atom.xml\nhttps://mojue88.com/feed\nhttps://blog.fyz666.xyz/atom.xml\nhttps://ilimeng.cn/feed/\nhttps://api.myblog.icu/api/public/rss?username=admin\nhttps://jingyuan-zheng.github.io/zh/index.xml\nhttps://xiaoxi.ac.cn/rss.xml\nhttps://www.s17.cn/rss.xml\nhttps://blog.blueke.top/rss.xml\nhttps://blog.oopss.top/blog/rss.xml\nhttps://rainzt.cn/rss.xml\nhttps://styunlen.cn/feed\nhttps://blog.demius.tech/rss.xml\nhttps://lcrworld.xyz/api/rss/feed/newrss\nhttps://liwanr.com/rss.xml"
+}
+  </script>
+  <script>
+    (function(){
+      try { window.CLAUDE_CONFIG = JSON.parse(document.getElementById('claude-config-data').textContent); }
+      catch (e) { window.CLAUDE_CONFIG = {}; }
+    })();
+  </script>
+  
+  <!-- ==========================================================================
+     critical-inline.html · 首屏关键交互（内联，零外部依赖）
+     弱网下 HTML 已渲染、/scripts/main.js（defer）还在路上的窗口里，这三件事
+     原本完全没有反应，搬到这里内联执行，首帧即可用：
+       ① 按 CLAUDE_CONFIG.navMenuIcons 给顶栏菜单项匹配内置 SVG 图标
+          （FontAwesome 类名或短名 → #i-xxx，见 DESIGN.md 第五节）
+       ② 移动抽屉开合（[data-action="toggle-mobile-menu" / "close-mobile-menu"]）
+       ③ 外链风险提示（CLAUDE_CONFIG.linkOutEnable / linkOutWhitelist）
+     硬约束：
+       · 必须排在 #claude-config-data 之后、main.js 之前（base.html 已按此顺序 include）；
+       · 本块内不得出现模板定界符（花括号百分号 / 双花括号 / 花括号井号），保持纯静态；
+       · 与 main.js 是两份独立作用域，改这里无需同步改 main.js；
+         main.js 若重建菜单 DOM，可回调 window.CLAUDE_CRITICAL.applyNavIcons()。
+     ========================================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  var CFG = window.CLAUDE_CONFIG || {};
+  var NS = 'http://www.w3.org/2000/svg';
+  var XLINK = 'http://www.w3.org/1999/xlink';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var root = document.documentElement;
+  var body = document.body;
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* ---------- 图标解析：FA 类名 / 短名 / 内置 id → 内置 sprite id ---------- */
+  var ICONS = {
+    'house': 'i-spike', 'home': 'i-spike', 'index': 'i-spike', 'dashboard': 'i-spike', 'spa': 'i-spike',
+    'newspaper': 'i-book', 'book': 'i-book', 'blog': 'i-book', 'post': 'i-book', 'posts': 'i-book',
+    'article': 'i-book', 'file-lines': 'i-book', 'bookmark': 'i-book', 'read': 'i-book',
+    'archive': 'i-archive', 'box-archive': 'i-archive', 'timeline': 'i-archive', 'history': 'i-archive',
+    'folder': 'i-folder', 'folder-open': 'i-folder', 'folder-tree': 'i-folder', 'layer-group': 'i-folder',
+    'list': 'i-list', 'list-ul': 'i-list', 'bars': 'i-list',
+    'tag': 'i-tag', 'tags': 'i-tag', 'hashtag': 'i-tag',
+    'comment': 'i-comment', 'comments': 'i-comment', 'comment-dots': 'i-comment', 'message': 'i-comment',
+    'chat': 'i-comment',
+    'mail': 'i-mail', 'envelope': 'i-mail', 'envelope-open-text': 'i-mail',
+    'link': 'i-link', 'link-simple': 'i-link', 'chain': 'i-link', 'share': 'i-link', 'share-nodes': 'i-link',
+    'user': 'i-user', 'users': 'i-user', 'address-card': 'i-user', 'id-card': 'i-user',
+    'circle-user': 'i-user', 'address-book': 'i-user',
+    'search': 'i-search', 'magnifying-glass': 'i-search', 'rss': 'i-rss',
+    'github': 'i-github', 'telegram': 'i-telegram', 'paper-plane': 'i-telegram',
+    'compass': 'i-compass', 'location-arrow': 'i-compass',
+    'globe': 'i-globe', 'earth': 'i-globe', 'language': 'i-globe', 'map': 'i-globe',
+    'calendar': 'i-cal', 'calendar-days': 'i-cal', 'calendar-check': 'i-cal',
+    'clock': 'i-clock', 'stopwatch': 'i-clock', 'hourglass': 'i-clock',
+    'chart': 'i-chart', 'chart-simple': 'i-chart', 'chart-pie': 'i-chart', 'chart-line': 'i-chart',
+    'chart-column': 'i-chart', 'chart-bar': 'i-chart', 'signal': 'i-chart', 'gauge': 'i-chart',
+    'bullhorn': 'i-megaphone', 'megaphone': 'i-megaphone', 'volume-high': 'i-megaphone',
+    'copy': 'i-copy', 'clone': 'i-copy',
+    'check': 'i-check', 'circle-check': 'i-check', 'shield-halved': 'i-check',
+    'eye': 'i-eye', 'info': 'i-info', 'circle-info': 'i-info',
+    'grid': 'i-grid', 'th': 'i-grid', 'table-cells': 'i-grid',
+    'gear': 'i-settings', 'cog': 'i-settings', 'sliders': 'i-settings', 'wrench': 'i-settings',
+    'external-link': 'i-external', 'up-right-from-square': 'i-external',
+    'arrow-up-right-from-square': 'i-external', 'link-out': 'i-external',
+    'weibo': 'i-weibo', 'bilibili': 'i-bilibili', 'zhihu': 'i-zhihu', 'qq': 'i-qq',
+    'fire': 'i-fire', 'flame': 'i-fire', 'hot': 'i-fire', 'star': 'i-star',
+    'pen': 'i-pen', 'pencil': 'i-pen', 'edit': 'i-pen', 'feather': 'i-pen',
+    'quote-left': 'i-quote', 'quote-right': 'i-quote',
+    'heart': 'i-heart', 'shuffle': 'i-shuffle', 'random': 'i-shuffle', 'arrows-rotate': 'i-shuffle',
+    'chevron-down': 'i-chevron', 'angle-down': 'i-chevron', 'caret-down': 'i-chevron',
+    'arrow-right': 'i-right', 'arrow-left': 'i-left', 'arrow-up': 'i-up', 'arrow-down': 'i-down',
+    'sparkles': 'i-sparkle', 'wand-magic-sparkles': 'i-sparkle', 'star-of-life': 'i-sparkle'
+  };
+  var HINTS = [
+    ['folder', 'i-folder'], ['archive', 'i-archive'], ['tag', 'i-tag'], ['hashtag', 'i-tag'],
+    ['house', 'i-spike'], ['home', 'i-spike'], ['comment', 'i-comment'], ['chat', 'i-comment'],
+    ['message', 'i-comment'], ['envelope', 'i-mail'], ['mail', 'i-mail'], ['search', 'i-search'],
+    ['link', 'i-link'], ['user', 'i-user'], ['card', 'i-user'], ['book', 'i-book'],
+    ['newspaper', 'i-book'], ['read', 'i-book'], ['calendar', 'i-cal'], ['clock', 'i-clock'],
+    ['time', 'i-clock'], ['chart', 'i-chart'], ['stat', 'i-chart'], ['bullhorn', 'i-megaphone'],
+    ['megaphone', 'i-megaphone'], ['rss', 'i-rss'], ['github', 'i-github'], ['telegram', 'i-telegram'],
+    ['globe', 'i-globe'], ['compass', 'i-compass'], ['star', 'i-star'], ['fire', 'i-fire'],
+    ['heart', 'i-heart'], ['eye', 'i-eye'], ['info', 'i-info'], ['list', 'i-list'], ['grid', 'i-grid'],
+    ['cog', 'i-settings'], ['gear', 'i-settings'], ['external', 'i-external'], ['pen', 'i-pen'],
+    ['quote', 'i-quote'], ['copy', 'i-copy'], ['check', 'i-check'], ['shuffle', 'i-shuffle'],
+    ['sparkle', 'i-sparkle']
+  ];
+  var FA_STYLE = /^(fa|fas|far|fab|fal|fat|fad|fa-solid|fa-regular|fa-brands|fa-light|fa-thin|fa-duotone|fa-sharp)$/;
+
+  function resolveIcon(name) {
+    var s = String(name == null ? '' : name).toLowerCase().replace(/[^a-z0-9-]+/g, ' ').trim();
+    if (!s) { return 'i-link'; }
+    if (/^i-[a-z0-9-]+$/.test(s)) { return s; }
+    var parts = s.split(/\s+/), out = [], i, t;
+    for (i = 0; i < parts.length; i++) {
+      t = parts[i];
+      if (!t || FA_STYLE.test(t)) { continue; }
+      out.push(t.replace(/^fa-/, ''));
+    }
+    var slug = out.join('-');
+    if (!slug) { return 'i-link'; }
+    if (ICONS[slug]) { return ICONS[slug]; }
+    var tail = slug.split('-').pop();
+    if (ICONS[tail]) { return ICONS[tail]; }
+    for (i = 0; i < HINTS.length; i++) {
+      if (slug.indexOf(HINTS[i][0]) !== -1) { return HINTS[i][1]; }
+    }
+    return 'i-link';
+  }
+
+  /* ---------- 用户规则表：兼容 textarea 字符串与 array ---------- */
+  var SEPS = [',', '\uFF0C', '|', '=', '\t'];
+  function splitRule(line) {
+    var cut = -1, skip = 1, i, p;
+    for (i = 0; i < SEPS.length; i++) {
+      p = line.indexOf(SEPS[i]);
+      if (p >= 0 && (cut < 0 || p < cut)) { cut = p; skip = SEPS[i].length; }
+    }
+    if (cut >= 0) { return [line.slice(0, cut), line.slice(cut + skip)]; }
+    return [line, ''];
+  }
+  function ruleTable(raw) {
+    var out = [], i, j, line, pair;
+    if (Object.prototype.toString.call(raw) === '[object Array]') {
+      for (i = 0; i < raw.length; i++) {
+        if (raw[i] && raw[i].match) { out.push({ match: raw[i].match, icon: raw[i].icon }); }
+      }
+      return out;
+    }
+    if (typeof raw !== 'string') { return out; }
+    var lines = raw.split(/\r?\n/);
+    for (j = 0; j < lines.length; j++) {
+      line = lines[j].trim();
+      if (!line || line.charAt(0) === '#') { continue; }
+      pair = splitRule(line);
+      if (!pair[0].trim()) { continue; }
+      out.push({ match: pair[0].trim(), icon: pair[1].trim() });
+    }
+    return out;
+  }
+  function pathOf(href) {
+    var s = String(href == null ? '' : href).trim();
+    if (!s || s === '#' || s.indexOf('javascript:') === 0) { return ''; }
+    s = s.split('#')[0].split('?')[0];
+    var abs = s.match(/^[a-zA-Z][\w+.-]*:\/\/[^/]*(\/.*)?$/);
+    if (abs) { s = abs[1] || '/'; }
+    return s.replace(/\/index\.html?$/i, '/').replace(/\.html?$/i, '').replace(/^\/+|\/+$/g, '').toLowerCase();
+  }
+  function keyOf(raw) {
+    return String(raw == null ? '' : raw).trim().split('#')[0].split('?')[0].replace(/^\/+|\/+$/g, '').toLowerCase();
+  }
+  function lookup(table, href, label) {
+    var path = pathOf(href), name = String(label == null ? '' : label).trim().toLowerCase(), i, key;
+    for (i = 0; i < table.length; i++) {
+      key = keyOf(table[i].match);
+      if (!key) { continue; }
+      if ((path && path.indexOf(key) !== -1) || (name && name.indexOf(key) !== -1)) {
+        return resolveIcon(table[i].icon);
+      }
+    }
+    return '';
+  }
+
+  /* 没配 navMenuIcons 时的兜底：按路径猜一个内置图标，避免所有菜单都顶同一本书 */
+  function defaultNavIcon(href) {
+    var h = String(href || '').toLowerCase();
+    if (h === '/' || h === '' || /\/(index|home)\b/.test(h)) { return 'i-spike'; }
+    if (h.indexOf('archive') !== -1) { return 'i-archive'; }
+    if (h.indexOf('tag') !== -1) { return 'i-tag'; }
+    if (h.indexOf('categor') !== -1) { return 'i-folder'; }
+    if (h.indexOf('link') !== -1) { return 'i-link'; }
+    if (h.indexOf('memo') !== -1 || h.indexOf('moment') !== -1) { return 'i-sparkle'; }
+    if (h.indexOf('about') !== -1) { return 'i-info'; }
+    if (h.indexOf('comment') !== -1) { return 'i-comment'; }
+    if (h.indexOf('post') !== -1) { return 'i-book'; }
+    return 'i-book';
+  }
+
+  function applyNavIcons() {
+    var table = ruleTable(CFG.navMenuIcons);
+    $$('.menus_items a, .nav-menu a, .nav-drop-panel a, .drawer-list a').forEach(function (a) {
+      var svg = a.querySelector('svg.ic');
+      var label = a.querySelector('span') ? a.querySelector('span').textContent : a.textContent;
+      var id = lookup(table, a.getAttribute('href'), label) || defaultNavIcon(a.getAttribute('href'));
+      if (!id) { return; }
+      if (!svg) {
+        svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', 'ic');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.appendChild(document.createElementNS(NS, 'use'));
+        a.insertBefore(svg, a.firstChild);
+      }
+      var use = svg.querySelector('use');
+      if (!use) { use = document.createElementNS(NS, 'use'); svg.appendChild(use); }
+      use.setAttribute('href', '#' + id);
+      use.setAttributeNS(XLINK, 'xlink:href', '#' + id);
+    });
+  }
+  applyNavIcons();
+
+  /* ---------- 移动抽屉开合（.is-open；滚动锁走 html.no-scroll） ---------- */
+  function drawerEl() {
+    return document.getElementById('mobile-sidebar')
+        || document.querySelector('[data-drawer]')
+        || ($('.drawer-panel') ? $('.drawer-panel').parentNode : null);
+  }
+  function openMobile() {
+    var d = drawerEl();
+    if (!d) { return; }
+    d.classList.add('is-open');
+    d.removeAttribute('hidden');
+    root.classList.add('no-scroll');
+    body.style.overflow = 'hidden';
+  }
+  function closeMobile() {
+    var d = drawerEl();
+    if (!d) { return; }
+    d.classList.remove('is-open');
+    root.classList.remove('no-scroll');
+    body.style.overflow = '';
+  }
+  $$('[data-action="toggle-mobile-menu"]').forEach(function (b) { b.addEventListener('click', openMobile); });
+  $$('[data-action="close-mobile-menu"]').forEach(function (b) { b.addEventListener('click', closeMobile); });
+  var drawer = drawerEl();
+  if (drawer) {
+    $$('.scrim', drawer).forEach(function (s) { s.addEventListener('click', closeMobile); });
+  }
+
+  /* ---------- 外链风险提示（站内 / 白名单直接放行） ---------- */
+  function initLinkOut() {
+    if (!CFG.linkOutEnable) { return; }
+    var here = window.location.hostname;
+    var modal = null, url = null, last = null;
+    var allow = [];
+    if (CFG.linkOutWhitelist) {
+      allow = String(CFG.linkOutWhitelist).split(/[\n,]+/).map(function (d) {
+        return d.trim().toLowerCase()
+          .replace(/^[a-z][a-z0-9+.-]*:\/\//, '')
+          .split('/')[0].split(':')[0].replace(/^\.+/, '');
+      }).filter(Boolean);
+    }
+    function whitelisted(host) {
+      host = host.toLowerCase();
+      for (var i = 0; i < allow.length; i++) {
+        if (host === allow[i] || host.indexOf('.' + allow[i], host.length - allow[i].length - 1) !== -1) { return true; }
+      }
+      return false;
+    }
+    function build() {
+      var site = escapeHtml(CFG.siteName || '本站');
+      modal = document.createElement('div');
+      modal.className = 'overlay';
+      modal.id = 'link-out-modal';
+      modal.innerHTML =
+        '<div class="scrim" data-link-out="cancel"></div>' +
+        '<div class="modal-wrap"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="link-out-title">' +
+          '<svg class="ic ic-l" aria-hidden="true"><use href="#i-external"></use></svg>' +
+          '<h3 id="link-out-title">即将离开本站</h3>' +
+          '<p>你正在前往「' + site + '」之外的第三方网站。该网站不受本站控制，' +
+            '亦不对其内容与隐私政策负责，请谨慎辨别。</p>' +
+          '<div class="domain" id="link-out-url"></div>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-link-out="cancel">返回本站</button>' +
+            '<button type="button" class="btn btn-coral btn-sm" data-link-out="go">继续访问</button>' +
+          '</div>' +
+        '</div></div>';
+      document.body.appendChild(modal);
+      modal.addEventListener('click', function (e) {
+        var act = e.target.getAttribute ? e.target.getAttribute('data-link-out') : null;
+        if (act === 'cancel') { shut(); }
+        if (act === 'go' && url) { window.open(url, '_blank', 'noopener'); shut(); }
+      });
+      document.addEventListener('keydown', function onEsc(e) {
+        if (e.key === 'Escape') { shut(); document.removeEventListener('keydown', onEsc); }
+      });
+    }
+    function show(href) {
+      url = href;
+      if (!modal) { build(); }
+      $('.domain', modal).textContent = href;
+      modal.classList.add('is-open');
+      root.classList.add('no-scroll');
+      last = document.activeElement;
+      var first = $('[data-link-out="cancel"]', modal);
+      if (first) { first.focus(); }
+    }
+    function shut() {
+      if (!modal) { return; }
+      modal.classList.remove('is-open');
+      root.classList.remove('no-scroll');
+      url = null;
+      if (last && typeof last.focus === 'function') { try { last.focus(); } catch (e) {} }
+      last = null;
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) { return; }
+      var href = a.href;
+      if (!href || href.indexOf('#') === 0 || href.indexOf('javascript:') === 0) { return; }
+      try {
+        var u = new URL(href);
+        if (u.hostname && u.hostname !== here && !whitelisted(u.hostname)) {
+          e.preventDefault();
+          show(href);
+        }
+      } catch (err) { /* 相对路径，忽略 */ }
+    });
+  }
+  initLinkOut();
+
+  /* ---------- 暴露给 main.js（菜单重建后重跑图标匹配 / 搜索 Esc 关抽屉） ---------- */
+  window.CLAUDE_CRITICAL = {
+    resolveIcon: resolveIcon,
+    applyNavIcons: applyNavIcons,
+    openMobile: openMobile,
+    closeMobile: closeMobile
+  };
+})();
+</script>
+
+  <script src="/scripts/main.js" defer></script>
+  
+  <script src="https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
+<script>
+(function(){
+  const runtimeEl = document.getElementById('webinfo-runtime');
+  if(runtimeEl){
+    const start = new Date(runtimeEl.dataset.since);
+    const now = new Date();
+    const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+    runtimeEl.innerText = diff >= 0 ? diff : 0;
+  }
+})();
+// 加载超时兜底（原来的模板注释写法放进 script 会被浏览器判为语法错误，已改为 JS 注释）
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    const uv = document.getElementById('busuanzi_site_uv').textContent;
+    const pv = document.getElementById('busuanzi_site_pv').textContent;
+    if(uv === '--' || pv === '--'){
+      document.getElementById('busuanzi_site_uv').innerText = '加载失败';
+      document.getElementById('busuanzi_site_pv').innerText = '加载失败';
+    }
+  }, 3000);
+})
+</script>
+  <script>function loadDailySentence(){
+  const dom = document.getElementById("daily_sentence");
+  if(!dom) return;
+  dom.textContent = "每日哲思加载中……";
+  const api = "https://uapis.cn/api/v1/saying/random?mode=daily&scene=philosophy";
+  fetch(api)
+  .then(function(res){return res.json();})
+  .then(function(data){
+    const item = data.item;
+    // 格式：正文 — 作者《标题》
+    const formatStr = `${item.content} — ${item.author}《${item.source}》`;
+    dom.textContent = formatStr;
+  })
+  .catch(function(){
+    dom.textContent = "每日哲思";
+  });
+}
+document.addEventListener("DOMContentLoaded",loadDailySentence);</script>
+  
+<script>console.log("\n%c ✦ Gridea Pro v1.3.0-beta.2 %c · Theme: Claude v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+</html>

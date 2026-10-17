@@ -794,7 +794,8 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
   .feature-art{order:-1}
   .callout{grid-template-columns:1fr;padding:var(--sp-xxl)}
   .post-layout{grid-template-columns:1fr;gap:var(--sp-xxl)}
-  .rail{position:static;order:-1}
+  /* 窄屏：文章在上、侧栏卡片沉到文末（保持 DOM 源顺序，不用 order 提前） */
+  .rail{position:static}
   .footer-cols{grid-template-columns:1fr 1fr;gap:var(--sp-xxl)}
   .editorial{grid-template-columns:1fr 1fr}
 }
