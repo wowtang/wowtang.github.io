@@ -4,7 +4,8 @@
         全屏搜索（键盘上下 + 高亮）/ 目录 / 阅读进度 / 代码复制 / 上下篇 /
         相关推荐 / 闪念热力图 / 运行天数 / 全站计数 / 随机文章 /
         busuanzi 数据同步 / 图片宫格 / 图片查看器 / 订阅表单校验 /
-        友链申请面板（抓取说明页正文）/ 友链动态抓取（RSS + 骨架屏）
+        友链申请面板（抓取说明页正文）/ 友链动态抓取（RSS + 骨架屏）/
+        瀑布流时间序重排（左右交替，不报纸式纵填）
    约定：所有选择器以 DESIGN.md 第二节的 DOM 契约为准，
         主题配置从 window.CLAUDE_CONFIG 读（base.html 内联注入）。
    ========================================================================== */
@@ -498,37 +499,83 @@
   })();
 
   /* ======================================================================
-     10. 代码块复制
+     10. 文章代码块 → 深色代码窗（.article-code，与首屏 code-window 同构）
+     把 Gridea 渲染的裸 <pre><code> 包上窗饰：顶栏圆点 + 语言名 + 复制按钮，
+     纯文本代码再重建出行号结构；复制只取 .tx 文本，行号不进剪贴板。
      ====================================================================== */
-  (function initCodeCopy() {
-    if (!CFG.codeCopy) { return; }
+  (function initCodeWindows() {
     $$('.post-content pre').forEach(function (pre) {
-      if (pre.querySelector('.code-copy')) { return; }
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'code-copy';
-      btn.innerHTML = icon('i-copy', 'ic-s') + '<span>复制</span>';
-      pre.appendChild(btn);
-      btn.addEventListener('click', function () {
-        var code = pre.querySelector('code');
-        var text = code ? code.innerText : pre.innerText;
-        var done = function () {
-          btn.querySelector('span').textContent = '已复制';
-          setTimeout(function () { btn.querySelector('span').textContent = '复制'; }, 1600);
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(done);
-        } else {
-          var ta = document.createElement('textarea');
-          ta.value = text;
-          ta.style.position = 'fixed';
-          ta.style.opacity = '0';
-          document.body.appendChild(ta);
-          ta.select();
-          try { document.execCommand('copy'); done(); } catch (e) {}
-          document.body.removeChild(ta);
+      if (pre.closest('.article-code')) { return; }
+      var code = pre.querySelector('code');
+
+      /* 语言名：Gridea 渲染 <code class="language-xxx">，没有语言信息的块不显示 */
+      var lang = '';
+      if (code) {
+        var mLang = (code.className || '').match(/(?:language|lang)-([\w+#.-]+)/);
+        if (mLang) { lang = mLang[1]; }
+      }
+
+      /* 纯文本代码重建行号；code 里已有子元素（异常高亮标记）就不动，防止破坏内容 */
+      if (code && code.children.length === 0 && code.textContent.replace(/\s/g, '') !== '') {
+        var lines = code.textContent.replace(/\n$/, '').split('\n');
+        code.textContent = '';
+        for (var i = 0; i < lines.length; i++) {
+          var ln = document.createElement('span'); ln.className = 'ln';
+          var no = document.createElement('span'); no.className = 'no';
+          no.textContent = String(i + 1);
+          var tx = document.createElement('span'); tx.className = 'tx';
+          tx.textContent = lines[i];
+          ln.appendChild(no); ln.appendChild(tx);
+          code.appendChild(ln);
         }
-      });
+      }
+
+      var win = document.createElement('div');
+      win.className = 'article-code';
+      var bar = document.createElement('div');
+      bar.className = 'code-bar';
+      if (!lang) { bar.className += ' no-lang'; }
+      bar.innerHTML = '<span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+      if (lang) {
+        var name = document.createElement('span');
+        name.className = 'code-name';
+        name.textContent = lang;
+        bar.appendChild(name);
+      }
+      win.appendChild(bar);
+      pre.parentNode.insertBefore(win, pre);
+      win.appendChild(pre);
+      pre.classList.add('code-body');
+
+      if (CFG.codeCopy) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'code-copy';
+        btn.innerHTML = icon('i-copy', 'ic-s') + '<span>复制</span>';
+        bar.appendChild(btn);
+        btn.addEventListener('click', function () {
+          var txs = pre.querySelectorAll('.tx');
+          var text = txs.length
+            ? Array.prototype.map.call(txs, function (t) { return t.textContent; }).join('\n')
+            : (code ? code.innerText : pre.innerText);
+          var done = function () {
+            btn.querySelector('span').textContent = '已复制';
+            setTimeout(function () { btn.querySelector('span').textContent = '复制'; }, 1600);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done);
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            document.body.removeChild(ta);
+          }
+        });
+      }
     });
   })();
 
@@ -1185,18 +1232,22 @@
   })();
 
   /* ======================================================================
-     21. 友链申请（links.html）：按钮开合面板 + 抓取说明页正文
-     面板默认收起（CSS grid-template-rows:0fr，不用 display 硬切）；
-     初始内容是无 JS 也能读的内置提示，这里把 data-apply-link 指向页面的
-     #article-container 正文抓进来替换；抓不到则保留内置提示并附一条
-     「打开友链申请说明页」。与文章页一致的容器 id，跨主题抓取同样成立。
+     21. 友链申请（links.html）：点击后与友链列表整页互换（同 liushen）
+     点「友链申请」：友链列表（栅格或空态面板）让位，申请说明卡原地顶上，
+     按钮变「返回友链」（图标换左箭头）；再点切回列表。
+     离场立即隐藏，入场走 panel-in 动画（is-entering，JS 强制 reflow 重放）。
+     说明正文：把 data-apply-link 指向页面的 #article-container 抓进来替换
+     内置提示；抓不到则保留提示并附一条「打开友链申请说明页」。
+     与文章页一致的容器 id，跨主题抓取同样成立。
      ====================================================================== */
   (function initFriendApply() {
     var toggle = $('#friend-apply-toggle');
     var panel = $('#friend-apply-panel');
-    if (!toggle || !panel) { return; }
+    var list = $('.link-grid') || $('#links-empty');
+    if (!toggle || !panel || !list) { return; }
     var content = $('#friend-apply-content');
     var label = toggle.querySelector('.link-apply-label');
+    var iconUse = toggle.querySelector('use');
     var link = (panel.getAttribute('data-apply-link') || '').trim();
     var loaded = false;
 
@@ -1229,15 +1280,49 @@
         .catch(appendPageLink);
     }
 
+    /* 入场动画：display 切换后强制 reflow 再挂动画类，连续快速切换也能重放 */
+    function enter(el) {
+      el.classList.remove('is-entering');
+      void el.offsetWidth;
+      el.classList.add('is-entering');
+      setTimeout(function () { el.classList.remove('is-entering'); }, 280);
+    }
+
     toggle.addEventListener('click', function () {
       var open = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
-      panel.classList.toggle('is-open', !open);
-      if (label) { label.textContent = open ? '友链申请' : '收起'; }
-      if (!open) { load(); }
+      if (open) {
+        /* 返回友链列表 */
+        panel.setAttribute('hidden', '');
+        panel.classList.remove('is-open');
+        list.removeAttribute('hidden');
+        enter(list);
+      } else {
+        /* 切到申请页：列表让位 */
+        list.setAttribute('hidden', '');
+        panel.removeAttribute('hidden');
+        panel.classList.add('is-open');
+        enter(panel);
+      }
+      if (label) { label.textContent = open ? '友链申请' : '返回友链'; }
+      if (iconUse) { iconUse.setAttribute('href', open ? '#i-send' : '#i-left'); }
+      if (!open) {
+        /* 友链区多视图互斥：开申请页时关掉朋友动态视图（对方监听同名事件自行收起） */
+        document.dispatchEvent(new CustomEvent('claude:links-view', { detail: 'apply' }));
+        load();
+      }
     });
 
-    // 预加载：点击时内容通常已就位，不会先展开再跳内容
+    document.addEventListener('claude:links-view', function (e) {
+      if (e.detail === 'apply' || toggle.getAttribute('aria-expanded') !== 'true') { return; }
+      toggle.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('hidden', '');
+      panel.classList.remove('is-open');
+      if (label) { label.textContent = '友链申请'; }
+      if (iconUse) { iconUse.setAttribute('href', '#i-send'); }
+    });
+
+    // 预加载：点击时内容通常已就位，切过去就是完整说明页
     load();
   })();
 
@@ -1271,9 +1356,9 @@
        ② 解析 RSS 2.0 / RDF / Atom / rss2json JSON 四种形态；
        ③ 按域名匹配同页友链卡的名字与头像（.link-card）：精确 → 去 www →
          后缀匹配（blog.example.com ↔ example.com，同 liushen 的模糊口径），
-         再回落到 feed 自带的标题与图片，最后显示域名；
-       ④ 边到边渲染：某个源成功立刻并入列表（每源最多 3 条、全局最多 12 条，
-         按时间倒序），骨架屏随第一条数据到达而消失；
+         再回落到 feed 自带的标题与图片，最后显示域名首字兜底；
+       ④ 边到边渲染：某个源成功立刻并入卡片墙（每源最多 5 条、全局最多 60 条，
+         按时间倒序，卡片含两行摘要），骨架屏随第一条数据到达而消失；
        ⑤ 全部源失败 → 降级为可重试的面板；部分源失败只在状态栏注明数量；
        ⑥ sessionStorage 缓存 10 分钟，翻回本页直接用缓存，不重新骨架。
      ====================================================================== */
@@ -1295,8 +1380,8 @@
       return;
     }
 
-    var PER_SOURCE = 3;                          // 每个源最多并入几条
-    var MAX_ITEMS = 12;                          // 列表最多展示几条
+    var PER_SOURCE = 5;                          // 每个源最多并入几条（同 liushen）
+    var MAX_ITEMS = 60;                          // 列表最多展示几张卡（同 liushen）
     var CACHE_KEY = 'claude-friend-feed';
     var CACHE_TTL = 10 * 60 * 1000;
     var DIRECT_TIMEOUT = 6000;
@@ -1439,6 +1524,8 @@
           title: title, link: link,
           host: siteHost || rssHost, altHost: rssHost,
           feedTitle: feedTitle, feedImage: '',
+          desc: stripHtml(childText(it, 'description') || childText(it, 'summary') ||
+                          childText(it, 'content')).slice(0, 120),
           time: parseTime(dateRaw)
         });
       }
@@ -1461,6 +1548,7 @@
           title: title, link: link,
           host: siteHost, altHost: rssHost,
           feedTitle: feedTitle, feedImage: feedImage,
+          desc: stripHtml(it.description || it.content || '').slice(0, 120),
           time: parseTime(it.pubDate || '')
         });
       }
@@ -1493,6 +1581,13 @@
     }
 
     /* ---------- 渲染 ---------- */
+    function stripHtml(s) {
+      /* 去标签 → textarea 解码实体（textarea 内不会执行脚本，安全）→ 压空白 */
+      var txt = String(s == null ? '' : s).replace(/<[^>]+>/g, ' ');
+      var d = document.createElement('textarea');
+      d.innerHTML = txt;
+      return String(d.value).replace(/\s+/g, ' ').trim();
+    }
     function fmtTime(t) {
       if (!t) { return ''; }
       var d = new Date(t);
@@ -1510,20 +1605,38 @@
       var name = (f && f.name) ? f.name : (it.feedTitle || it.host || '友链');
       var avatar = (f && f.avatar) ? f.avatar : (it.feedImage || '');
       var href = /^https?:\/\//i.test(it.link) ? it.link : '#';
-      var timeHtml = it.time
-        ? '<time class="feed-time" datetime="' + new Date(it.time).toISOString() + '">' + escapeHtml(fmtTime(it.time)) + '</time>'
-        : '<span class="feed-time"></span>';
-      return '<div class="feed-item">' +
-        '<span class="feed-dot"></span>' +
+      var first = (name || '友').charAt(0);
+      var avatarHtml = avatar
+        ? '<img class="feed-avatar" src="' + escapeHtml(avatar) + '" alt="" loading="lazy" data-first="' + escapeHtml(first) + '">'
+        : '<span class="feed-avatar is-fallback" aria-hidden="true">' + escapeHtml(first) + '</span>';
+      var time = it.time ? fmtTime(it.time) : '';
+      return '<a class="feed-item" href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' +
+        avatarHtml +
         '<span class="feed-body">' +
-          '<a class="feed-title" href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' + escapeHtml(it.title) + '</a>' +
-          '<span class="feed-meta">' +
-            (avatar ? '<img class="feed-avatar" src="' + escapeHtml(avatar) + '" alt="" loading="lazy">' : '') +
-            '<span class="feed-src">' + escapeHtml(name) + '</span>' +
+          '<span class="feed-title">' + escapeHtml(it.title) + '</span>' +
+          '<span class="feed-info"><span class="feed-src">' + escapeHtml(name) + '</span>' +
+            (time ? ' · <time class="feed-time" datetime="' + new Date(it.time).toISOString() + '">' + escapeHtml(time) + '</time>' : '') +
           '</span>' +
+          (it.desc ? '<span class="feed-desc">' + escapeHtml(it.desc) + '</span>' : '') +
         '</span>' +
-        timeHtml +
-      '</div>';
+      '</a>';
+    }
+    /* 头像被对方站防盗链挡掉时，把裂图换成站点名首字（同友链卡 is-fallback 的手势） */
+    function wireAvatars() {
+      $$('.feed-avatar[data-first]', box).forEach(function (img) {
+        var done = false;
+        function fb() {
+          if (done) { return; }
+          done = true;
+          var s = document.createElement('span');
+          s.className = 'feed-avatar is-fallback';
+          s.setAttribute('aria-hidden', 'true');
+          s.textContent = img.getAttribute('data-first') || '友';
+          img.parentNode.replaceChild(s, img);
+        }
+        if (img.complete && img.naturalWidth === 0) { fb(); return; }
+        img.addEventListener('error', fb);
+      });
     }
     function paint() {
       /* 每源取最新 PER_SOURCE 条，再全局按时间倒序取前 MAX_ITEMS 条 */
@@ -1538,6 +1651,7 @@
       });
       picked.sort(function (a, b) { return b.time - a.time; });
       box.innerHTML = picked.slice(0, MAX_ITEMS).map(itemHtml).join('');
+      wireAvatars();
     }
     function setStatus(text) {
       if (statusEl) { statusEl.textContent = text; }
@@ -1591,6 +1705,7 @@
           var cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
           if (cached && cached.ts && Date.now() - cached.ts < CACHE_TTL && cached.html) {
             box.innerHTML = cached.html;
+            wireAvatars();
             setStatus(cached.status || '');
             return;
           }
@@ -1619,7 +1734,119 @@
       Promise.race([withConcurrency(tasks, CONCURRENCY), deadline]).then(finalize);
     }
 
-    start(false);
+    /* ---------- 视图互换：与友链申请按钮同一套机制 ----------
+       点「朋友动态」：友链列表让位，动态卡片墙原地顶上（hidden 互换 + is-entering 入场）；
+       点「返回友链」切回。首次切过去才抓取——不切换不出网（省流量），缓存命中则秒开。
+       两个互换视图通过 claude:links-view 事件互斥，不会叠在列表位上。 */
+    var feedToggle = $('#friend-feed-toggle');
+    var feedPanel = $('#friend-feed-panel');
+    var feedList = $('.link-grid') || $('#links-empty');
+    if (feedToggle && feedPanel && feedList) {
+      var feedStarted = false;
+      var feedLabel = feedToggle.querySelector('.feed-toggle-label');
+      var feedIcon = feedToggle.querySelector('use');
+      function feedEnter(el) {
+        el.classList.remove('is-entering');
+        void el.offsetWidth;
+        el.classList.add('is-entering');
+        setTimeout(function () { el.classList.remove('is-entering'); }, 280);
+      }
+      function feedReset() {
+        feedToggle.setAttribute('aria-expanded', 'false');
+        feedPanel.setAttribute('hidden', '');
+        if (feedLabel) { feedLabel.textContent = '朋友动态'; }
+        if (feedIcon) { feedIcon.setAttribute('href', '#i-rss'); }
+      }
+      feedToggle.addEventListener('click', function () {
+        var open = feedToggle.getAttribute('aria-expanded') === 'true';
+        if (open) {
+          /* 返回友链列表 */
+          feedPanel.setAttribute('hidden', '');
+          feedList.removeAttribute('hidden');
+          feedEnter(feedList);
+          feedReset();
+        } else {
+          /* 切到朋友动态：列表让位，首次切换才抓取 */
+          document.dispatchEvent(new CustomEvent('claude:links-view', { detail: 'feed' }));
+          feedList.setAttribute('hidden', '');
+          feedPanel.removeAttribute('hidden');
+          feedEnter(feedPanel);
+          feedToggle.setAttribute('aria-expanded', 'true');
+          if (feedLabel) { feedLabel.textContent = '返回友链'; }
+          if (feedIcon) { feedIcon.setAttribute('href', '#i-left'); }
+          if (!feedStarted) { feedStarted = true; start(false); }
+        }
+      });
+      document.addEventListener('claude:links-view', function (e) {
+        if (e.detail !== 'feed' && feedToggle.getAttribute('aria-expanded') === 'true') { feedReset(); }
+      });
+    } else {
+      start(false);
+    }
+  })();
+
+  /* ======================================================================
+     瀑布流时间序重排：按时间**左右交替**（1 左 2 右 3 左…），不再报纸式纵填一列
+     ======================================================================
+     CSS columns 的填充方向是先灌满第一列再灌第二列，时间顺序读起来是
+     「左列从上到下 → 跳右列顶」，像报纸分栏。这里在 ≥769px 把普通卡按
+     奇偶交替分进左右两列（列高仍随内容浮动），满宽卡（首篇深色产品卡 /
+     置顶 is-hero / 空态 span-all）自成一拍插回原时间位置；≤768px 收单列
+     时恢复原始 DOM 顺序。无 JS 时由 CSS columns 兜底（顺序退回报纸式）。 */
+  (function initMasonryOrder() {
+    var grids = $$('.post-grid.is-masonry');
+    if (!grids.length) return;
+    var mq;
+    try { mq = window.matchMedia('(min-width:769px)'); } catch (e) { return; }
+
+    grids.forEach(function (grid) {
+      var originals = Array.prototype.slice.call(grid.children);
+      var arranged = false;
+
+      function isFullWidth(el) {
+        return el.classList.contains('feature-post') ||
+               el.classList.contains('is-hero') ||
+               el.classList.contains('span-all');
+      }
+      function arrange() {
+        if (arranged) return;
+        arranged = true;
+        grid.classList.add('is-masonry-js');
+        var batch = [];
+        function flush() {
+          if (!batch.length) return;
+          var row = document.createElement('div');
+          row.className = 'masonry-row';
+          var colL = document.createElement('div');
+          var colR = document.createElement('div');
+          colL.className = 'masonry-col';
+          colR.className = 'masonry-col';
+          batch.forEach(function (card, i) {
+            ((i % 2 === 0) ? colL : colR).appendChild(card);
+          });
+          row.appendChild(colL);
+          row.appendChild(colR);
+          grid.appendChild(row);
+          batch = [];
+        }
+        originals.forEach(function (el) {
+          if (isFullWidth(el)) { flush(); grid.appendChild(el); }
+          else { batch.push(el); }
+        });
+        flush();
+      }
+      function restore() {
+        if (!arranged) return;
+        arranged = false;
+        grid.classList.remove('is-masonry-js');
+        originals.forEach(function (el) { grid.appendChild(el); });
+        $$('.masonry-row', grid).forEach(function (row) { row.remove(); });
+      }
+      function apply() { if (mq.matches) { arrange(); } else { restore(); } }
+      apply();
+      if (mq.addEventListener) { mq.addEventListener('change', apply); }
+      else if (mq.addListener) { mq.addListener(apply); }
+    });
   })();
 
 })();

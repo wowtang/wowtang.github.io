@@ -348,7 +348,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 
 /* ==========================================================================
    6. 文章区：首篇深色产品卡（节奏拍点）+ 卡片区四档排布
-   （claudeIndexCardLayout: uniform / masonry / magazine / list · claudeIndexCoverEnable）
+   （claudeIndexCardLayout: uniform / masonry / magazine / list · claudeIndexCoverEnable · claudeNoCoverHide）
    ========================================================================== */
 .feature-post{display:grid;grid-template-columns:1.12fr .88fr;gap:var(--sp-xl);
   align-items:center;background:var(--surface-dark);color:var(--on-dark);
@@ -360,6 +360,8 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .feature-meta span{display:inline-flex;align-items:center;gap:6px}
 .feature-art{background:var(--surface-dark-soft);border-radius:var(--r-md);
   border:1px solid color-mix(in srgb, var(--on-dark) 12%, transparent);overflow:hidden}
+/* 无封面文章（claudeNoCoverHide）：首篇卡不渲染 .feature-art，收成单列避免左半空栏 */
+.feature-post.is-no-cover{grid-template-columns:1fr}
 .feature-post.is-hidden{display:none}
 
 .post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sp-xl)}
@@ -390,11 +392,19 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .post-card.is-wide .cover{height:220px}
 .post-card.is-wide .cover img,.post-card.is-wide .cover svg{height:100%;width:100%;aspect-ratio:auto;object-fit:cover}
 
-/* 瀑布流：双列 + 列不断裂，卡片高度随文章实际内容浮动；置顶横跨整条 */
-.post-grid.is-masonry{display:block;columns:2;column-gap:var(--sp-xl)}
-.post-grid.is-masonry>.feature-post,.post-grid.is-masonry>.span-all{column-span:all;margin-bottom:var(--sp-xl)}
-.post-grid.is-masonry .post-card{break-inside:avoid;margin-bottom:var(--sp-xl)}
+/* 瀑布流：高度随文章实际内容浮动，时间顺序**左右交替**（第 1 篇在左、第 2 篇在右…）。
+   JS（main.js 瀑布流重排）把普通卡按奇偶分进 .masonry-col 两列，满宽卡（首篇深色卡 /
+   置顶 / 空态）自成一拍；`.is-masonry-js` 不在（无 JS）时退回 CSS 多列兜底（报纸式纵填）。 */
+.post-grid.is-masonry:not(.is-masonry-js){display:block;columns:2;column-gap:var(--sp-xl)}
+.post-grid.is-masonry:not(.is-masonry-js)>.feature-post,
+.post-grid.is-masonry:not(.is-masonry-js)>.span-all{column-span:all;margin-bottom:var(--sp-xl)}
+.post-grid.is-masonry:not(.is-masonry-js) .post-card{break-inside:avoid;margin-bottom:var(--sp-xl)}
 .post-grid.is-masonry .post-card.is-hero{column-span:all}
+/* JS 重排后：满宽卡通栏，两列各自独立堆叠，间距由容器 gap 统一给 */
+.post-grid.is-masonry-js{display:flex;flex-direction:column;gap:var(--sp-xl)}
+.post-grid.is-masonry-js>.feature-post,.post-grid.is-masonry-js>.span-all{margin-bottom:0}
+.post-grid.is-masonry-js .masonry-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-xl);align-items:start}
+.post-grid.is-masonry-js .masonry-col{display:flex;flex-direction:column;gap:var(--sp-xl);min-width:0}
 /* 真实封面在瀑布流里按原图比例铺开，高度因此随文章而不同；超高封面收在 60vh 内 */
 .post-grid.is-masonry .cover img{aspect-ratio:auto;max-height:60vh}
 
@@ -528,13 +538,30 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .prose blockquote p{font-family:var(--font-display);font-size:20px;line-height:1.5;color:var(--fg)}
 .prose figure{margin:var(--sp-xl) 0}
 .prose figcaption{margin-top:var(--sp-sm);font-size:13px;color:var(--fg-muted);text-align:center}
-.prose pre{margin:0;padding:var(--sp-lg);background:var(--surface-dark-soft);overflow-x:auto;
-  font:400 13.5px/1.7 var(--font-mono);color:var(--on-dark)}
+/* 正文代码块基线（无 JS 兜底）：深色圆角卡 + 细滚动条；
+   main.js 会把裸 <pre><code> 升级为 .article-code 代码窗，与首屏 code-window 同一视觉语言 */
+.prose pre{margin:0;padding:var(--sp-lg);background:var(--surface-dark);overflow-x:auto;
+  font:400 13.5px/1.8 var(--font-mono);color:var(--on-dark);
+  border-radius:var(--r-lg);border:1px solid var(--surface-dark-elevated);
+  scrollbar-width:thin;scrollbar-color:color-mix(in srgb, var(--on-dark) 22%, transparent) transparent}
 .inline-code{padding:2px 6px;border-radius:var(--r-xs);background:var(--card);
   font:400 13.5px/1.5 var(--font-mono);color:var(--fg)}
-.article-code{background:var(--surface-dark);border-radius:var(--r-lg);overflow:hidden;margin:var(--sp-xl) 0}
-.article-code .code-body{padding:var(--sp-lg)}
-.article-code .code-body .ln{font-size:13px}
+.article-code{background:var(--surface-dark);border:1px solid var(--surface-dark-elevated);
+  border-radius:var(--r-lg);overflow:hidden;margin:var(--sp-xl) 0}
+.article-code .code-body{padding:var(--sp-lg);border:0;border-radius:0;background:transparent}
+/* 窗内只有圆点没有语言名时（main.js 会给顶栏加 .no-lang），复制按钮自己贴右 */
+.article-code .code-bar.no-lang .code-copy{margin-left:auto}
+/* 空行保住行高：伪元素补一个不换行空格，不进 textContent，复制不受污染 */
+.article-code .tx:empty::after{content:"\00a0"}
+/* 深色主题：页面底就是 surface-dark，代码窗整体提一档 + 用 --line 勾边才不糊底 */
+[data-theme="dark"] .prose pre,
+[data-theme="dark"] .article-code{background:var(--surface-dark-soft);border-color:var(--line)}
+/* 代码块横向滚动条：细轨 + 半透明把手，替代系统默认粗滚动条 */
+.prose pre::-webkit-scrollbar{height:8px}
+.prose pre::-webkit-scrollbar-track{background:transparent}
+.prose pre::-webkit-scrollbar-thumb{border-radius:var(--r-full);
+  background:color-mix(in srgb, var(--on-dark) 22%, transparent)}
+.prose pre::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb, var(--on-dark) 38%, transparent)}
 .tags-row{display:flex;flex-wrap:wrap;gap:var(--sp-xs);margin-top:var(--sp-xl)}
 .rail{position:sticky;top:88px;display:flex;flex-direction:column;gap:var(--sp-lg)}
 .toc{border-left:1px solid var(--line);padding-left:var(--sp-md)}
@@ -675,7 +702,8 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 @media (prefers-reduced-motion:reduce){
   .overlay,.scrim,.drawer-panel,.drawer-list>a,.drawer-list>.drawer-group,
   .drawer-foot,.drawer-sub,.drawer-sub a,.drawer-caret,
-  .link-apply,.link-apply-inner{transition:none}
+  .link-apply.is-entering,.link-grid.is-entering,#links-empty.is-entering,
+  #friend-feed-panel.is-entering{animation:none}
 }
 .drawer-foot{margin-top:auto;padding-top:var(--sp-lg);border-top:1px solid var(--line);
   display:flex;flex-direction:column;gap:var(--sp-sm)}
@@ -928,53 +956,71 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 .link-card .lc-head .ic{color:var(--fg-muted);transition:color .18s ease}
 .link-card:hover .lc-name{color:var(--link)}
 .link-card:hover .lc-head .ic{color:var(--primary)}
-/* ------ 友链申请：标题行入口 + 页内展开面板 ------
-   开合走 grid-template-rows 0fr ↔ 1fr（禁 display 硬切，关闭时也能收回）；
-   收起态加 visibility，把面板里的链接移出 Tab 顺序。 */
+/* ------ 友链申请：标题行入口 + 整页互换（liushen 行为） ------
+   点「友链申请」：友链列表（栅格或空态面板）让位，申请说明卡原地顶上；
+   点「返回友链」切回。离场立即隐藏（用户要的直接切换），
+   入场走 opacity + 6px 上浮动画；连续快速切换由 JS 重放动画。 */
 .band-head-actions{display:flex;align-items:center;gap:var(--sp-md);flex-wrap:wrap}
-.link-apply{display:grid;grid-template-rows:0fr;
-  transition:grid-template-rows .28s cubic-bezier(.2,.7,.3,1)}
-.link-apply.is-open{grid-template-rows:1fr;margin-bottom:var(--sp-lg)}
-.link-apply-inner{overflow:hidden;min-height:0;opacity:0;visibility:hidden;
-  transition:opacity .2s ease,visibility 0s linear .28s}
-.link-apply.is-open .link-apply-inner{opacity:1;visibility:visible;
-  transition:opacity .22s ease .04s,visibility 0s linear 0s}
+.link-apply[hidden],.link-grid[hidden],#links-empty[hidden]{display:none}
+.link-apply.is-entering,.link-grid.is-entering,#links-empty.is-entering{
+  animation:panel-in .24s cubic-bezier(.2,.7,.3,1) both}
+@keyframes panel-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
 .link-apply-card{padding:var(--sp-xl);background:var(--bg);
   border:1px solid var(--line);border-radius:var(--r-lg)}
-.link-apply-card>*+*{margin-top:var(--sp-lg)}
-.friend-feed{margin-top:var(--sp-xxl);padding-top:var(--sp-xl);border-top:1px solid var(--line)}
+/* 申请正文挂 .prose 复用排版，但文章页的 720px 行宽度量在这不适用——
+   说明卡是页面级面板，正文撑满卡片（实测 1440 下 720 限宽会空出右侧 350px）。 */
+.link-apply-body.prose{max-width:none}
+/* ------ 朋友动态：标题行入口 + 整页互换（与友链申请同一套机制） ------
+   点「朋友动态」：友链列表让位，动态卡片墙原地顶上；再点「返回友链」切回。
+   离场立即隐藏（hidden），入场走 opacity + 6px 上浮（panel-in，JS 重放）。 */
+#friend-feed-panel[hidden]{display:none}
+#friend-feed-panel.is-entering{animation:panel-in .24s cubic-bezier(.2,.7,.3,1) both}
+/* 骨架屏自身也要铺卡片栅格：它整体替换 .friend-feed 的内容，
+   不铺栅格的话 9 张卡会竖着堆成一列。列数与 .friend-feed 完全一致。 */
+.feed-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--sp-md)}
+/* 朋友动态：卡片墙（liushen 的卡片结构——头像/标题/名字·时间/两行摘要，
+   表皮走 Claude 令牌：奶白面 + 细线 + 珊瑚 hover，不搬对方的半透明底与整卡填色）。
+   auto-fill 自适应列数：1440 三列、768 两列、360 单列，无需额外断点。 */
+.friend-feed{
+  margin-top:var(--sp-xxl);padding-top:var(--sp-xl);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--sp-md);
+}
 .feed-item{
-  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
-  gap:var(--sp-md);align-items:baseline;padding:var(--sp-md) 0;
+  display:flex;gap:var(--sp-md);padding:var(--sp-lg);min-width:0;
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-lg);
+  transition:border-color .18s ease,transform .18s ease;
 }
-.feed-item+.feed-item{border-top:1px solid var(--line)}
-.feed-dot{
-  align-self:center;width:7px;height:7px;flex:none;
-  border-radius:var(--r-full);background:var(--primary);
+.feed-item:hover{border-color:var(--primary);transform:translateY(-2px)}
+.feed-avatar{
+  width:44px;height:44px;flex:none;border-radius:var(--r-full);
+  object-fit:cover;background:var(--art-bg);border:1px solid var(--line);
 }
-.feed-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+/* 无头像可用的兜底：站点名首字（与友链卡 .lc-avatar.is-fallback 同一手势） */
+span.feed-avatar{
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:20px;letter-spacing:-.02em;
+  color:var(--fg-muted-strong);user-select:none;
+}
+.feed-body{min-width:0;flex:1;display:flex;flex-direction:column}
 .feed-title{
-  font-size:15px;line-height:1.6;color:var(--fg-body);transition:color .18s ease;
-  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+  display:block;margin:0 0 4px;font-size:15px;font-weight:500;line-height:1.4;
+  color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  transition:color .18s ease;
 }
 .feed-item:hover .feed-title{color:var(--link)}
-.feed-meta{display:flex;align-items:center;gap:var(--sp-xs);min-width:0}
-.feed-avatar{
-  width:16px;height:16px;flex:none;border-radius:var(--r-full);
-  object-fit:cover;background:var(--card);border:1px solid var(--line);
+.feed-info{
+  display:block;font-size:12.5px;line-height:1.5;color:var(--fg-muted-strong);
+  margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.feed-src{
-  font-size:12.5px;line-height:1.5;color:var(--fg-muted-strong);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.feed-time{
-  font-family:var(--font-mono);font-size:12.5px;
-  color:var(--fg-muted);white-space:nowrap;
+.feed-time{font-family:var(--font-mono);font-size:12px}
+.feed-desc{
+  margin:0;font-size:12.5px;line-height:1.6;color:var(--fg-muted);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 /* 骨架屏：抓取期间的占位，与 .feed-item 同栅格（替换时零跳动）。
    底色与微光一律走令牌 + color-mix，不写裸色值；reduced-motion 下只留静态底色。 */
 .feed-skeleton .feed-item{pointer-events:none}
-.feed-skeleton .sk-dot,
+.feed-skeleton .sk-avatar,
 .feed-skeleton .sk-line{
   display:block;border-radius:var(--r-full);
   background:linear-gradient(90deg,
@@ -984,14 +1030,15 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
   background-size:280% 100%;
   animation:sk-sweep 1.5s ease-in-out infinite;
 }
-.feed-skeleton .sk-dot{width:7px;height:7px;align-self:center}
+.feed-skeleton .sk-avatar{width:44px;height:44px;flex:none}
 .feed-skeleton .sk-line{height:12px}
-.feed-skeleton .sk-w-title{width:68%;height:14px}
-.feed-skeleton .sk-w-src{width:30%;height:10px;margin-top:7px}
-.feed-skeleton .sk-w-time{width:42px;align-self:center}
+.feed-skeleton .sk-w-title{width:85%;height:15px}
+.feed-skeleton .sk-w-info{width:40%;height:11px;margin-top:6px}
+.feed-skeleton .sk-w-desc{width:95%;height:11px;margin-top:8px}
+.feed-skeleton .sk-w-desc2{width:70%;height:11px;margin-top:6px}
 @keyframes sk-sweep{from{background-position:120% 0}to{background-position:-120% 0}}
 @media (prefers-reduced-motion:reduce){
-  .feed-skeleton .sk-dot,.feed-skeleton .sk-line{animation:none}
+  .feed-skeleton .sk-avatar,.feed-skeleton .sk-line{animation:none}
 }
 /* 全部源抓失败：整块降级成可重试的面板，不停在骨架上 */
 .feed-error{
@@ -1024,27 +1071,11 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
   border:1px dashed var(--line);border-radius:var(--r-lg);
 }
 
-/* ------ 19. 闪念热力图 ------ */
-/* 7 行 = 一周，列 = 周，整体横向滚动 */
-.heatmap{overflow-x:auto;overflow-y:hidden;padding-bottom:var(--sp-xs);-webkit-overflow-scrolling:touch}
-.heatmap::-webkit-scrollbar{height:6px}
-.heatmap::-webkit-scrollbar-track{background:transparent}
-.heatmap::-webkit-scrollbar-thumb{background:var(--line);border-radius:var(--r-full)}
-.heatmap-months{
-  display:flex;gap:3px;margin-bottom:var(--sp-xs);width:max-content;
-  font-size:11px;line-height:1.2;color:var(--fg-muted);white-space:nowrap;
-}
-.heatmap-months span{flex:0 0 auto;width:calc(4.4 * 14px);overflow:hidden}
-.heatmap-grid{
-  display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,11px);
-  gap:3px;width:max-content;
-}
-.heatmap-cell{width:11px;height:11px;border-radius:var(--r-xs);background:var(--art-bg)}
-.heatmap-cell.lv0{background:var(--art-bg)}
-.heatmap-cell.lv1{background:color-mix(in srgb, var(--art-bg) 62%, var(--primary))}
-.heatmap-cell.lv2{background:color-mix(in srgb, var(--art-bg) 42%, var(--primary))}
-.heatmap-cell.lv3{background:color-mix(in srgb, var(--art-bg) 20%, var(--primary))}
-.heatmap-cell.lv4{background:var(--primary)}
+/* ------ 19. 闪念热力图 ------
+   旧「横向滚动」版规则已整体删除（.heatmap overflow-x / 月份 span 固定宽 /
+   .heatmap-grid grid-auto-flow:column / .lv0~lv4）。
+   现行实现只在第 30 节：两套规则并存时 auto-flow:column 会把周列折进
+   外层栅格的 7 行里、月份 span 固定宽度会顶穿 minmax(0,1fr) 轨道。 */
 
 /* ------ 20. 关于页 ------ */
 .about-hero{
@@ -1148,7 +1179,8 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 .related-item .ic{color:var(--fg-muted)}
 
 /* ------ 24. 评论区 ------ */
-.comment-box{margin-top:var(--sp-xxl);padding-top:var(--sp-xl);border-top:1px solid var(--line)}
+/* 评论区标题自带区隔，不再加横线（用户反馈：与评论组件之间割裂） */
+.comment-box{margin-top:var(--sp-xxl)}
 .comment-headline{
   display:flex;align-items:center;gap:var(--sp-xs);margin-bottom:var(--sp-lg);
   font-family:var(--font-display);font-size:20px;letter-spacing:-.01em;color:var(--fg);
@@ -1166,6 +1198,112 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 .comment-box .disqus_thread{min-width:0;max-width:100%}
 .comment-box iframe{max-width:100%;border:0}
 
+/* Twikoo 主题化：版权隐藏 + 控件/按钮/评论流全部走令牌别名层，明暗一套代码 */
+/* 「Powered by Twikoo」版权（.tk-footer，已核对 1.7.x 源码类名）不展示 */
+.comment-box .tk-footer{display:none}
+/* 输入控件：评论正文 */
+.comment-box .tk-input .el-textarea__inner,
+.comment-box .tk-input textarea{
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);
+  color:var(--fg-body);font-family:var(--font-body);font-size:14px;line-height:1.6;
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+.comment-box .tk-input .el-textarea__inner,
+.comment-box .tk-input textarea{min-height:112px;padding:var(--sp-sm) var(--sp-md);resize:vertical}
+.comment-box .tk-input .el-textarea__inner::placeholder,
+.comment-box .tk-input textarea::placeholder{color:var(--fg-muted)}
+.comment-box .tk-input .el-textarea__inner:focus,
+.comment-box .tk-input textarea:focus{
+  border-color:var(--coral-fill);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--coral-fill) 16%, transparent);
+}
+/* 昵称 / 邮箱 / 网址：带前置标签的重做——整组一条边框一个圆角，标签裸在字段里（无缝拼接） */
+.comment-box .tk-meta-input .el-input-group{
+  display:flex;align-items:stretch;
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+.comment-box .tk-meta-input .el-input-group:focus-within{
+  border-color:var(--coral-fill);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--coral-fill) 16%, transparent);
+}
+.comment-box .tk-meta-input .el-input-group .el-input-group__prepend{
+  display:flex;align-items:center;flex:none;
+  background:transparent;border:0;border-radius:0;box-shadow:none;
+  color:var(--fg-muted);font-size:13px;padding:0 16px 0 14px;
+}
+.comment-box .tk-meta-input .el-input-group .el-input__inner{
+  flex:1;min-width:0;height:38px;
+  background:transparent;border:0;border-radius:0;box-shadow:none;
+}
+/* 校验失败：整组边框转 --error（接管 Twikoo 的 input:invalid 红边） */
+.comment-box .tk-meta-input .el-input-group:has(input:invalid){
+  border-color:var(--error);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--error) 12%, transparent);
+}
+/* 按钮：发送 = 珊瑚主按钮（按压 --coral-press，与 .btn-coral 同手感）；预览 / 取消 = ghost
+   选择器带 .el-button 提到 (0,3,0)+，压过 Twikoo 内置的 .twikoo .el-button--primary 系（同特异性但后注入） */
+.comment-box .tk-send.el-button{
+  height:34px;padding:0 18px;border-radius:var(--r-md);border:1px solid var(--coral-fill);
+  background:var(--coral-fill);color:var(--on-coral);font:500 13px/1 var(--font-body);
+  transition:background-color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.comment-box .tk-send.el-button:hover,.comment-box .tk-send.el-button:focus{background:var(--coral-press);border-color:var(--coral-press);color:var(--on-coral)}
+.comment-box .tk-send.el-button:active{transform:translateY(1px)}
+.comment-box .tk-send.el-button.is-disabled,
+.comment-box .tk-send.el-button.is-disabled:hover{
+  background:color-mix(in srgb, var(--fg-muted) 12%, transparent);
+  border-color:transparent;color:var(--fg-muted);transform:none}
+.comment-box .tk-preview.el-button,.comment-box .tk-cancel.el-button{
+  height:34px;padding:0 18px;border-radius:var(--r-md);border:1px solid var(--line);
+  background:var(--bg);color:var(--fg-body);font:400 13px/1 var(--font-body);
+  transition:color .18s ease,border-color .18s ease;
+}
+.comment-box .tk-preview.el-button:hover,.comment-box .tk-preview.el-button:focus,
+.comment-box .tk-cancel.el-button:hover,.comment-box .tk-cancel.el-button:focus{border-color:var(--coral-fill);color:var(--link);background:var(--bg)}
+/* 评论流：条目以细线分隔，缩进楼层靠 --sp-lg；嵌套回复只缩进不加线 */
+.comment-box .tk-comment{padding:var(--sp-lg) 0;border-top:1px solid var(--line)}
+.comment-box .tk-comment:first-child{border-top:0;padding-top:var(--sp-xs)}
+.comment-box .tk-replies .tk-comment{border-top:0;padding-top:var(--sp-sm)}
+.comment-box .tk-avatar{border-radius:var(--r-lg);overflow:hidden;flex:none}
+.comment-box .tk-avatar-img{width:100%;height:100%;object-fit:cover}
+.comment-box .tk-nick,.comment-box .tk-nick-link{color:var(--fg);font-weight:500}
+.comment-box .tk-time{color:var(--fg-muted);font-size:12px}
+.comment-box .tk-content{color:var(--fg-body);font-size:14.5px;line-height:1.7}
+.comment-box .tk-content a{color:var(--link)}
+.comment-box .tk-tag{border-radius:var(--r-full)}
+/* 操作图标（表情 / 预览工具）+ 列表操作三连（搜索 / 刷新 / 设置）——接管 Twikoo 默认 Element 蓝 */
+.comment-box .tk-submit-action-icon,.comment-box .tk-action-icon{color:var(--fg-muted);transition:color .18s ease}
+.comment-box .tk-submit-action-icon:hover,.comment-box .tk-action-icon:hover{color:var(--link)}
+.comment-box .tk-icon.__comments{color:var(--fg-muted);transition:color .18s ease}
+.comment-box .tk-icon.__comments:hover{color:var(--link)}
+/* 点赞 / 点踩：muted 常态，hover 与已赞转珊瑚（已核对源码 .tk-action-link{color:#409eff}；
+   a.tk-action-link 并列提特异性，压过 .tk-content a 的链接色） */
+.comment-box .tk-action-link,
+.comment-box a.tk-action-link{color:var(--fg-muted);transition:color .18s ease}
+.comment-box .tk-action-link:hover,
+.comment-box a.tk-action-link:hover,
+.comment-box a.tk-action-link.tk-liked{color:var(--link)}
+.comment-box .tk-action-count{color:var(--fg-muted)}
+/* 加载转圈（Element v-loading 默认蓝改珊瑚） */
+.comment-box .el-loading-spinner .path{stroke:var(--coral-fill)}
+/* 排序标签（最新 / 最早 / 热门）：接管 Twikoo 的 rgba(64,158,255,.6) / #409eff */
+.comment-box .tk-sort-item{color:var(--fg-muted);transition:color .18s ease}
+.comment-box .tk-sort-item:hover,
+.comment-box .tk-sort-item:focus,
+.comment-box .tk-sort-item.__active{color:var(--link)}
+/* 列表标题 / 空态 / 加载更多 / 错误提示 */
+.comment-box .tk-comments-title{color:var(--fg-muted);font-size:13px}
+.comment-box .tk-comments-no{color:var(--fg-muted)}
+.comment-box .tk-expand{
+  display:inline-block;margin:var(--sp-sm) auto;padding:8px 18px;cursor:pointer;
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);
+  color:var(--fg-muted);font-size:13px;
+  transition:color .18s ease,border-color .18s ease;
+}
+.comment-box .tk-expand:hover{color:var(--link);border-color:var(--coral-fill)}
+.comment-box .tk-error-message{color:var(--error)}
+
 /* ------ 25. 面包屑 ------ */
 .breadcrumb{
   display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-xs);
@@ -1178,13 +1316,37 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
 
 /* ------ 26. 响应式补充 ------ */
 @media (min-width:1280px){
-  .timeline{
+  /* 归档页（.timeline-zig）走中轴左右交替布局，不进这套双栏栅格 */
+  .timeline:not(.timeline-zig){
     display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
     gap:var(--sp-xxs) var(--sp-xxl);align-items:start;
   }
-  .timeline-year{grid-column:1/-1}
   .link-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .taxonomy-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+/* 归档页中轴左右交替时间线：中间一条竖线，条目左右交错，日期在条目对面一侧；
+   nth-of-type 按 <a> 元素计数（年份是 h3 不打断奇偶），交替跨年份连续 */
+@media (min-width:1024px){
+  .timeline-zig{position:relative}
+  .timeline-zig::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
+    background:var(--line);translate:-50% 0;
+  }
+  .timeline-zig .timeline-item{
+    grid-template-columns:minmax(0,1fr) var(--sp-xxl) minmax(0,1fr);
+    gap:var(--sp-md);align-items:center;
+    padding:var(--sp-sm) 0;border-left:0;
+  }
+  .timeline-zig .timeline-dot{
+    position:static;translate:none;
+    grid-column:2;grid-row:1;justify-self:center;
+  }
+  .timeline-zig .timeline-date{grid-column:3;grid-row:1;justify-self:start}
+  .timeline-zig .timeline-title{
+    grid-column:1;grid-row:1;justify-self:end;text-align:right;max-width:100%;
+  }
+  .timeline-zig .timeline-item:nth-of-type(even) .timeline-date{grid-column:1;justify-self:end}
+  .timeline-zig .timeline-item:nth-of-type(even) .timeline-title{grid-column:3;justify-self:start;text-align:left}
 }
 @media (max-width:768px){
   .page-header-inner{padding-block:var(--sp-xl)}
@@ -1294,15 +1456,18 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
 .panel .sub-btn{background:var(--coral-fill);color:var(--on-coral)}
 
 /* ==========================================================================
-   30. 闪念热力图（周列栅格：每列 7 天，月份轴与网格共用列模板）
+   30. 闪念热力图（周列栅格：每列 7 天，月份轴与网格共用列模板；
+       列数按容器宽度自适应 4~53，格子 minmax(0,1fr) + aspect-ratio 收缩，
+       无横向滚动 —— 实现口径对齐 chatgpt 主题）
    ========================================================================== */
 .heatmap-wrap{display:flex;flex-direction:column;gap:var(--sp-xs);min-width:0}
+.heatmap{min-width:0}
 .heatmap-months{display:grid;gap:3px;font-size:12px;color:var(--fg-muted)}
-.heatmap-months span{overflow:hidden;white-space:nowrap;
+.heatmap-months span{overflow:visible;white-space:nowrap;line-height:1.2;
   font-family:var(--font-mono);font-size:11px}
 .heatmap-grid{display:grid;gap:3px;width:100%}
-.heatmap-week{display:grid;grid-template-rows:repeat(7,11px);gap:3px}
-.heatmap-cell{display:block;width:100%;height:11px;border-radius:2px;
+.heatmap-week{display:grid;grid-template-rows:repeat(7,1fr);gap:3px}
+.heatmap-cell{display:block;width:100%;aspect-ratio:1;border-radius:2px;
   background:color-mix(in srgb, var(--surface-cream-strong) 86%, var(--line))}
 [data-theme="dark"] .heatmap-cell{background:color-mix(in srgb, var(--surface-dark-elevated) 86%, var(--on-dark) 8%)}
 .heatmap-cell[data-level="1"]{background:color-mix(in srgb, var(--primary) 24%, var(--art-bg))}
@@ -1322,15 +1487,8 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
 /* ==========================================================================
    31. 正文增强：代码复制 / 图片宫格 / 图片查看器
    ========================================================================== */
-.prose pre{position:relative}
-.prose pre .code-copy{position:absolute;top:var(--sp-xs);right:var(--sp-xs);
-  display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:var(--r-sm);
-  font-size:12px;color:var(--on-dark-soft);border:1px solid color-mix(in srgb, var(--on-dark) 18%, transparent);
-  background:var(--surface-dark-elevated);opacity:0;transition:opacity .18s ease,color .18s ease}
-.prose pre:hover .code-copy,
-.prose pre .code-copy:focus-visible{opacity:1}
-.prose pre .code-copy:hover{color:var(--on-dark)}
-@media (hover:none){.prose pre .code-copy{opacity:1}}
+/* 代码复制按钮已随 main.js 移入 .article-code 的 .code-bar（常显），
+   不再绝对定位悬浮在代码上——旧版 hover 才出现且会压住右上角代码 */
 
 .img-grid{display:flex;flex-direction:column;gap:var(--sp-xs);margin:var(--sp-xl) 0}
 .img-row{display:flex;gap:var(--sp-xs);align-items:center}
@@ -1451,6 +1609,8 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
 
 .eyebrow-label{display:block;margin-bottom:var(--sp-xs)}
 .list-empty{padding:var(--sp-sm) 0;color:var(--fg-muted)}
+/* 空态兜底：列表里出现过任何真实文章项，就隐藏「暂无文章」（模板变量循环外不可信，见 widget-recent.html） */
+.rank-list li:not(.list-empty)~.list-empty{display:none}
 .is-muted{color:var(--fg-muted)}
 
 .panel.span-all{grid-column:1/-1}
@@ -1461,6 +1621,6 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
 .icon-btn-sm{width:28px;height:28px;padding:0;margin-left:auto}
 
 /* 公告 / 欢迎语：编辑体但按正文尺度走（20px 的 .serif-md 只留给页脚站名） */
-.serif-quote{font-family:var(--font-display);font-size:17px;font-weight:400;
+.serif-quote{font-family:var(--font-display);font-size:14px;font-weight:300;
   line-height:1.75;letter-spacing:-.1px;color:var(--fg-body)}
 .serif-quote a{color:var(--link)}

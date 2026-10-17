@@ -43,7 +43,7 @@
       --font-mono:Consolas, Menlo, 'PingFang SC', 'Microsoft YaHei', monospace;
       
       --content-max:1150px;
-      --rail-width:260px;
+      --rail-width:300px;
     }
   </style>
   <style id="claude-custom-css">/* 基础样式重置（减少默认差异） */
@@ -186,7 +186,7 @@
   <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
   <symbol id="i-weibo" viewBox="0 0 24 24"><ellipse cx="10" cy="14.5" rx="7" ry="5"/><path d="M16.5 4.5c2.6 0 4.5 2 4.3 4.6"/><path d="M16.2 8c1.3 0 2.2 1 2.1 2.3"/></symbol>
   <symbol id="i-bilibili" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="3"/><path d="M7 3.5l2.5 3M17 3.5l-2.5 3"/><path d="M9 11v3M15 11v3"/></symbol>
-  <symbol id="i-zhihu" viewBox="0 0 24 24"><path d="M5 4h9v6.5H5z"/><path d="M5 14h13"/><path d="M18 4v7M18 14l2.5-2.5M18 14l2.5 2.5"/></symbol>
+  <symbol id="i-zhihu" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M7.685 4.078c-.271.73-.5 1.434-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58.104 58.104 0 01-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.223 9.223 0 01-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607-.523.468-1.58.82-2.64.516 2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753-.594 1.095-1.603 1.122-1.907 1.155.906-1.821 1.416-3.6 1.591-4.064.425-1.124 1.671-1.125 1.671-1.125zM13.078 6h6.377v11.33h-2.573l-2.184 1.373-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937 1.455-.938h1.456v-8.86z"/></symbol>
   <symbol id="i-qq" viewBox="0 0 24 24"><path d="M12 3.5c3.6 0 6 2.6 6 6.4 0 1.6.6 2.3 1.2 3.4.5.9-.3 1.7-1.3 1.4-.7 1.5-2.5 2.8-5.9 2.8s-5.2-1.3-5.9-2.8c-1 .3-1.8-.5-1.3-1.4.6-1.1 1.2-1.8 1.2-3.4 0-3.8 2.4-6.4 6-6.4z"/><circle cx="9.6" cy="10.4" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="10.4" r=".9" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 3s4.5 3.6 4.5 8.2A4.5 4.5 0 0 1 12 21a4.5 4.5 0 0 1-4.5-9.8C7.5 8.6 12 3 12 3z"/><path d="M12 17.5c1.2 0 2-.8 2-1.9 0-1.4-2-2.9-2-2.9s-2 1.5-2 2.9c0 1.1.8 1.9 2 1.9z"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.7 5.6 6.1.8-4.4 4.3 1.1 6.1L12 17.4l-5.5 2.9 1.1-6.1-4.4-4.3 6.1-.8z"/></symbol>
@@ -402,8 +402,6 @@
       <div class="article-head">
         
         <h1 class="display-lg">🎯一起来“找茬”</h1>
-        <p class="lead">欢迎浏览本站的同时化身质检员！如果你发现网站存在页面bug、样式错位、文字笔误、交互不顺、体验别扭，或是有可以优化的小细节，都欢迎在评论区指出。
-大到布局错乱，小到一个错别字，任何想法都可以分享出来，帮助 Sunrise&amp;rsquo;s blog 一点点打磨得更好。</p>
         <div class="byline">
           <span class="who">
             
@@ -421,28 +419,9 @@
   </section>
 
   
-  <div class="wrap">
-    <div class="article-cover">
-      
-      
-      
-
-<svg class="art" viewBox="0 0 560 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-
-  <g fill="none" stroke="var(--primary)" stroke-width="1.5">
-    <circle cx="280" cy="150" r="96"/>
-    <circle cx="280" cy="150" r="62"/>
-    <circle cx="280" cy="150" r="30"/>
-    <path d="M160 150h-36M400 150h36M280 30v34M280 236v34"/>
-  </g>
-  <circle cx="280" cy="150" r="5" fill="var(--accent-teal)"/>
-  <circle cx="342" cy="88" r="3.5" fill="var(--accent-teal)"/>
-
-</svg>
-
-      
-    </div>
-  </div>
+  
+  
+  
 
   
   <div class="wrap mt-xxl">
@@ -698,10 +677,10 @@
       
     
     
-      <li class="body-sm list-empty">暂无文章</li>
-    
+    <li class="body-sm list-empty" aria-hidden="true">暂无文章</li>
   </ul>
 </section>
+
 </div>
   
   
