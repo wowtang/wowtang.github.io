@@ -518,9 +518,13 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .article-cover{margin-top:var(--sp-xxl);border-radius:var(--r-xl);overflow:hidden;
   border:1px solid var(--line);background:var(--art-bg)}
 .article-cover svg{display:block;width:100%;height:auto}
+/* 版心与左右留白由外层 .wrap 统一提供：这一层若再写 max-width / padding-inline，
+   移动端就会出现「标题容器 ≠ 正文容器」（正文多缩进 24px、窄 48px）的双重留白 */
 .post-layout{display:grid;grid-template-columns:minmax(0,1fr) var(--rail-width,300px);gap:var(--sp-xxl);
-  max-width:var(--content-max,1200px);margin:var(--sp-section) auto 0;padding-inline:var(--sp-lg);align-items:start}
-.prose{max-width:720px}
+  margin-top:var(--sp-section);align-items:start}
+/* 正文列必须能压到轨道宽度：min-content 由长代码行决定，默认 auto 最小值会把轨道撑宽 */
+.post-main{min-width:0}
+.prose{max-width:720px;overflow-wrap:break-word}
 .prose>*+*{margin-top:var(--sp-lg)}
 .prose h2{font-size:clamp(24px,2.4vw,32px);letter-spacing:-.5px;margin-top:var(--sp-xxl);
   scroll-margin-top:88px}
@@ -793,7 +797,9 @@ kbd{font-family:var(--font-mono);font-size:12px;padding:2px 6px;border:1px solid
   .feature-post{grid-template-columns:1fr;padding:var(--sp-xl)}
   .feature-art{order:-1}
   .callout{grid-template-columns:1fr;padding:var(--sp-xxl)}
-  .post-layout{grid-template-columns:1fr;gap:var(--sp-xxl)}
+  /* 单栏时正文/右侧卡片与标题同处一列（820 = .article-head 上限）：1024 下版心 976px，
+     不收敛的话正文会贴到 wrap 左边缘、与居中的标题错开一截 */
+  .post-layout{grid-template-columns:minmax(0,1fr);gap:var(--sp-xxl);max-width:820px;margin-inline:auto}
   /* 窄屏：文章在上、侧栏卡片沉到文末（保持 DOM 源顺序，不用 order 提前） */
   .rail{position:static}
   .footer-cols{grid-template-columns:1fr 1fr;gap:var(--sp-xxl)}
@@ -1588,6 +1594,8 @@ html.not-loaded *::after{transition:none !important;animation:none !important}
   .nav-extra{display:none}
   .nav-actions{gap:var(--sp-xxs)}
   .nav-link{padding:0 9px}
+  /* 宽表格自己横滑：320px 下 4 列表格 min-content 327px，会把正文列和整个文档撑出视口 */
+  .prose table{display:block;width:100%;overflow-x:auto}
 }
 
 /* ==========================================================================
