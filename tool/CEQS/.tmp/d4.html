@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>化学方程式速查 · 反应式 / 离子式 / 现象 / 电子转移</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">化</div>
+    <div class="brand-txt">
+      <h1>化学方程式速查</h1>
+      <p>Equation Reference</p>
+    </div>
+  </div>
+
+  <div class="searchwrap">
+    <svg class="ico" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21" stroke-linecap="round"/></svg>
+    <input id="q" type="search" placeholder="搜化学式、中文名、现象：Fe、硫酸铜、蓝色沉淀…" autocomplete="off" spellcheck="false">
+    <span class="kbd">/</span>
+  </div>
+
+  <div class="topbar-tools">
+    <div class="ctl">
+      <span class="ctl-label">电子转移</span>
+      <div class="seg" id="globalBridge" role="group" aria-label="电子转移桥显示模式">
+        <button data-global="none" aria-pressed="true">隐藏</button>
+        <button data-global="double" aria-pressed="false">双线桥</button>
+        <button data-global="single" aria-pressed="false">单线桥</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-label">离子式</span>
+      <div class="seg" id="ionSwitch" role="group" aria-label="离子方程式显示">
+        <button data-ion="show" aria-pressed="true">显示</button>
+        <button data-ion="hide" aria-pressed="false">隐藏</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="filters">
+    <div class="fgroup">
+      <div class="fgroup-head"><h2>反应分类</h2><span id="catTotal"></span></div>
+      <div class="catlist" id="catList"></div>
+    </div>
+    <div class="fgroup">
+      <div class="fgroup-head"><h2>反应特征</h2><span>可多选</span></div>
+      <div class="taglist" id="tagList"></div>
+    </div>
+    <div class="fgroup">
+      <div class="fgroup-head"><h2>教材出处</h2><span>人教 2019 版</span></div>
+      <div class="taglist" id="bookList"></div>
+      <p class="fg-note">页码为教材正文页码；未标注＝五本教材中未检到该反应</p>
+    </div>
+    <div class="fgroup">
+      <div class="fgroup-head"><h2>涉及物质</h2><span id="spCount">精确到物质</span></div>
+      <div class="sp-search-wrap">
+        <input id="spQ" type="search" placeholder="找物质：铁 / 硫酸 / 乙醇…" autocomplete="off" spellcheck="false">
+      </div>
+      <div id="speciesList"></div>
+    </div>
+    <div class="fgroup" style="margin-bottom:0">
+      <button class="btn-clear" id="clearAll">清除全部筛选</button>
+    </div>
+  </aside>
+
+  <section class="results">
+    <div class="result-head">
+      <span class="count" id="count">共 <b>0</b> 条</span>
+      <div class="chips" id="activeChips"></div>
+    </div>
+    <div id="list"></div>
+  </section>
+</main>
+
+<button class="totop" id="totop" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+<script>window.addEventListener("load",()=>setTimeout(()=>{document.querySelectorAll(".rec").forEach(r=>{const b=r.querySelector('[data-bridge="double"]'); if(b&&!b.disabled) b.click();});},700));</script>
+</body>
+</html>
